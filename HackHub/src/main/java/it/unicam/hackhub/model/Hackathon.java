@@ -2,6 +2,8 @@ package it.unicam.hackhub.model;
 
 import it.unicam.hackhub.state.HackathonState;
 import it.unicam.hackhub.state.inIscrizioneState;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +24,7 @@ public class Hackathon {
     private String place;
     private int prize;
 
-    
+
 
     public Hackathon(String name){
         this.name=name;
@@ -76,7 +78,7 @@ public class Hackathon {
     }
     public List<Submission> getSottomissioni() {
         return sottomissioni;
-    }   
+    }
     public List<User> getUtenti() {
         return utenti;
     }

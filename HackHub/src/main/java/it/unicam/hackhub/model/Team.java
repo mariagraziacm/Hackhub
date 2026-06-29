@@ -6,7 +6,7 @@ public class Team {
     private List<User> members;
     private List<Submission> submissions;
     private String hackathonId;
-     
+
     public Team(String name, String id, List<User> members, List<Submission> submissions, String hackathonId) {
         this.name = name;
         this.id = id;

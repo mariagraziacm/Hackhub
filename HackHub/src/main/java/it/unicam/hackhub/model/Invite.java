@@ -9,7 +9,7 @@ public class Invite {
         PENDING,
         ACCEPTED,
         DECLINED
-    } 
+    }
 
     public enum PartecipationRequest {
         PENDING,

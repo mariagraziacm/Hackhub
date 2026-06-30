@@ -1,16 +1,16 @@
 package it.unicam.hackhub.model;
 
 public abstract class MembroStaff {
-    private String ruolo;
+    private String role;
     private String userId;
 
-    public MembroStaff(String ruolo, String userId) {
-        this.ruolo = ruolo;
+    public MembroStaff(String role, String userId) {
+        this.role = role;
         this.userId = userId;
     }
 
-    public String getRuolo() {
-        return ruolo;
+    public String getRole() {
+        return role;
     }
 
     public String getUserId() {

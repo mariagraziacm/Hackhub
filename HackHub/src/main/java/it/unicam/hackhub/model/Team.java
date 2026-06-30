@@ -21,7 +21,9 @@ public class Team {
 
     public String getName() { return name; }
     public void setId(String id) { this.id = id; }
-
+    public String getId(){
+        return id;
+    }
     public List<TeamMember> getMembers() { return members; }
     public List<Submission> getSubmissions() { return submissions; }
     public String getHackathonId() { return hackathonId; }

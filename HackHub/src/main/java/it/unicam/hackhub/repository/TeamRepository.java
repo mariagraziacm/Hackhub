@@ -1,0 +1,29 @@
+package it.unicam.hackhub.repository;
+
+import it.unicam.hackhub.model.Team;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class TeamRepository {
+    private final List<Team> teams = new ArrayList<>();
+
+    public void save(Team team) {
+        teams.add(team);
+    }
+
+    public List<Team> findAll() {
+        return teams;
+    }
+
+    public Optional<Team> findById(String id) {
+        return teams.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst();
+    }
+
+    public boolean existsByName(String name) {
+        return teams.stream()
+                .anyMatch(t -> t.getName().equalsIgnoreCase(name));
+    }
+}

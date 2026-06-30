@@ -1,21 +1,15 @@
 package it.unicam.hackhub.model;
 
+
+import main.java.it.unicam.hackhub.model.InviteState;
+import main.java.it.unicam.hackhub.model.PartecipationRequest;
+
 public class Invite {
     private String id;
     private InviteState state;
     private PartecipationRequest partecipationRequest;
 
-    public enum InviteState {
-        PENDING,
-        ACCEPTED,
-        DECLINED
-    }
 
-    public enum PartecipationRequest {
-        PENDING,
-        ACCEPTED,
-        DECLINED
-    }
 
     public Invite(String id, InviteState state, PartecipationRequest partecipationRequest) {
         this.id = id;

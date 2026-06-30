@@ -1,5 +1,9 @@
 package it.unicam.hackhub.model;
 
+import  it.unicam.hackhub.model.User;
+
+import java.util.List;
+
 public class Team {
     private String name;
     private String id;

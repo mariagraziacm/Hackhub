@@ -1,5 +1,9 @@
 package it.unicam.hackhub.model;
 
+import it.unicam.hackhub.model.InviteState;
+import it.unicam.hackhub.model.User;
+import it.unicam.hackhub.model.Team;
+
 public class PartecipationRequest {
     private String id;
     private InviteState requestState;

@@ -1,9 +1,10 @@
 package it.unicam.hackhub.model;
 
-import it.unicam.hackhub.model.state.HackathonState;
-import it.unicam.hackhub.model.state.InIscrizioneState;
+import it.unicam.hackhub.state.HackathonState;
+import it.unicam.hackhub.state.InIscrizioneState;
 import it.unicam.hackhub.model.Submission;
 import it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.model.User;
 
 
 import java.time.LocalDateTime;

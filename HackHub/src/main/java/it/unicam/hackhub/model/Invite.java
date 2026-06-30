@@ -1,8 +1,8 @@
 package it.unicam.hackhub.model;
 
 
-import main.java.it.unicam.hackhub.model.InviteState;
-import main.java.it.unicam.hackhub.model.PartecipationRequest;
+import it.unicam.hackhub.model.InviteState;
+import it.unicam.hackhub.model.PartecipationRequest;
 
 public class Invite {
     private String id;

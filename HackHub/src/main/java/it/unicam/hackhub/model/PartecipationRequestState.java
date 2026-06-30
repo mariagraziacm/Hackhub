@@ -1,4 +1,4 @@
-package main.java.it.unicam.hackhub.model;
+package it.unicam.hackhub.model;
 
 public enum PartecipationRequestState {
     PENDING,

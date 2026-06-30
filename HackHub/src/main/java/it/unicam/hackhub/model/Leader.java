@@ -1,5 +1,7 @@
 package it.unicam.hackhub.model;
 
+import it.unicam.hackhub.model.TeamMember;
+
 public class Leader {
     private String name;
     private TeamMember teamMember;

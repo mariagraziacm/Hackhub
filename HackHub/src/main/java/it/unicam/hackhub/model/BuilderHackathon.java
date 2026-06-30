@@ -2,7 +2,6 @@ package it.unicam.hackhub.model;
 
 import it.unicam.hackhub.model.state.HackathonState;
 import it.unicam.hackhub.state.InIscrizioneState;
-import it.unicam.hackhub.model.Hackathon;
 
 public class BuilderHackathon {
     private String id;
@@ -28,7 +27,7 @@ public class BuilderHackathon {
         Hackathon h = new Hackathon();
         h.setId(this.id);
         h.setName(this.name);
-        h.setPartecipanti(this.partecipanti);
+        h.setPartecipants(this.partecipanti);
         h.setSpecifications(this.specifications);
         h.setHackathonState(this.hackathonState);
         return h;

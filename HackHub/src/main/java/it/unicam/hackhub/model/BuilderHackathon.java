@@ -6,7 +6,6 @@ import it.unicam.hackhub.model.Hackathon;
 public class BuilderHackathon {
     private String id;
     private String name;
-    private int partecipanti;
     private String specifications;
 
     public BuilderHackathon setData(String id, String name, int partecipanti, String specifications){

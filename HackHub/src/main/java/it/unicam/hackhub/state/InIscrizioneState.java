@@ -17,17 +17,14 @@ public class InIscrizioneState implements HackathonState {
         System.out.println("Team " + team.getName() + " iscritto con successo!");
     }
 
-    @Override
-    public void inviaSottomissione(Hackathon context, Team team, String contenuto) {
-        throw new IllegalStateException("Non si possono inviare sottomissioni in fase di iscrizione!");
-    }
 
     @Override
     public void prossimoStato(Hackathon context) {
         System.out.println("Passaggio allo stato successivo non ancora implementato completamente.");
     }
+
     @Override
-    public void prossimoStato(Hackathon context){
+    public void prossimoStato(Hackathon context) {
         context.setHackathonState(new InCorsoState());
     }
 
@@ -40,4 +37,5 @@ public class InIscrizioneState implements HackathonState {
         } else {
             System.out.println("SYSTEM [ERRORE]: Il team non risulta iscritto a questo Hackathon.");
         }
+    }
 }

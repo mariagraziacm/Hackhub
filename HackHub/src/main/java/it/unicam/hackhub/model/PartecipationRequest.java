@@ -7,44 +7,32 @@ import it.unicam.hackhub.model.PartecipationRequestState;
 
 
 public class PartecipationRequest{
-    private String id;
-    private ParticipationRequestState requestState;
-    private User user;
-    private Team team;
+    private final String id;
+    private final User user;
+    private final Team team;
+    private RequestState state;
 
-    public PartecipationRequest(String id, User user, Team team){
+    public ParticipationRequest(String id, User user, Team team) {
         this.id = id;
         this.user = user;
         this.team = team;
-        this.requestState = PartecipationRequest.PENDING;
+        this.state = PartecipationRequestState.PENDING;
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public Team getTeam() {
-        return team;
-    }
-
-    public ParticipationRequestState getRequestState() {
-        return requestState;
-    }
+    public String getId() { return id; }
+    public User getUser() { return user; }
+    public Team getTeam() { return team; }
+    public PartecipationRequestState getState() { return state; }
 
     public void accept() {
-        if (requestState != ParticipationRequestState.PENDING)
-            throw new IllegalStateException("Request già processata");
-
-        requestState = ParticipationRequestState.ACCEPTED;
+        if (state != PartecipationRequestState.PENDING)
+            throw new IllegalStateException("Already processed");
+        state = PartecipationRequestState.ACCEPTED;
     }
-    public void decline() {
-        if (requestState != ParticipationRequestState.PENDING)
-            throw new IllegalStateException("Request già processata");
 
-        requestState = ParticipationRequestState.DECLINED;
+    public void decline() {
+        if (state != PartecipationRequestState.PENDING)
+            throw new IllegalStateException("Already processed");
+        state = PartecipationRequestState.DECLINED;
     }
 }

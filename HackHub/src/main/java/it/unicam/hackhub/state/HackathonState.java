@@ -7,6 +7,5 @@ public interface HackathonState{
     String returnState();
     void iscriviTeam(Hackathon context, Team team);
     void disiscriviTeam(Hackathon context, Team team);
-    void inviaSottomissione(Hackathon context, Team team, String contenuto);
     void prossimoStato(Hackathon context);
 }

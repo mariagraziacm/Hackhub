@@ -2,7 +2,6 @@ package it.unicam.hackhub.model;
 
 import it.unicam.hackhub.state.HackathonState;
 import it.unicam.hackhub.state.InIscrizioneState;
-import it.unicam.hackhub.model.Submission;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.User;
 
@@ -13,74 +12,52 @@ import java.util.List;
 
 
 public class Hackathon {
+    private final String id;
     private String name;
-    private HackathonState statoHackathon;
-    private List<Team> teamIscritti = new ArrayList<>();
-    private List<Submission> sottomissioni = new ArrayList<>();
-    private String id;
-    private List<User> utenti = new ArrayList<>();
+    private HackathonState state;
+    private final List<Team> teams = new ArrayList<>();
+    private final List<Submission> submissions = new ArrayList<>();
     private String rules;
-    private int partecipants;
     private String specifications;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
-    private LocalDateTime submissionDeadline;
     private LocalDateTime registrationDeadline;
     private String place;
     private int prize;
 
-    public Hackathon() {
-        this.statoHackathon = new InIscrizioneState();
-    }
-
-    public Hackathon(String name){
+    public Hackathon(String id, String name) {
+        this.id = id;
         this.name = name;
-        this.statoHackathon = new InIscrizioneState();
+        this.state = new InIscrizioneState();
     }
 
-    public void setHackathonState(HackathonState nuovoStato){
-        this.statoHackathon = nuovoStato;
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public HackathonState getState() { return state; }
+    public List<Team> getTeams() {
+        return List.copyOf(teams);
+    }
+    public void setState(HackathonState state) {
+        this.state = state;
     }
 
-    public HackathonState getHackathonState() {
-        return statoHackathon;
+    public void addTeam(Team team) {
+        teams.add(team);
     }
 
-    public void iscriviTeam(Team team){
-        statoHackathon.iscriviTeam(this, team);
+    public void removeTeam(Team team) {
+        teams.remove(team);
     }
 
-    public void inviaSottomissione(Team team, String contenuto){
-        statoHackathon.inviaSottomissione(this, team, contenuto);
+    public void iscriviTeam(Team team) {
+        state.iscriviTeam(this, team);
     }
 
     public void disiscriviTeam(Team team) {
-        statoHackathon.disiscriviTeam(this, team);
-    }
-    public void avanzaStato(){
-        statoHackathon.prossimoStato(this);
+        state.disiscriviTeam(this, team);
     }
 
-    public List<Team> getTeamIscritti(){ return teamIscritti; }
-    public String getName(){ return name; }
-    public void setId(String id){ this.id = id; }
-    public void setName(String name) { this.name = name; }
-    public void setPartecipants(int partecipants) { this.partecipants = partecipants; }
-    public void setSpecifications(String specifications) { this.specifications = specifications; }
-    public String getId() {
-        return id;
+    public void nextState() {
+        state.prossimoStato(this);
     }
-    public void aggiungiTeam(Team team) {
-        teamIscritti.add(team);
-    }
-    public String getRules() { return rules; }
-    public String getSpecifications() { return specifications; }
-    public LocalDateTime getStartDate() { return startDate; }
-    public LocalDateTime getEndDate() { return endDate; }
-    public LocalDateTime getSubmissionDeadline() { return submissionDeadline; }
-    public LocalDateTime getRegistrationDeadline() { return registrationDeadline; }
-    public String getPlace() { return place; }
-    public int getPrize() { return prize; }
-    public List<Submission> getSottomissioni() { return sottomissioni; }
-    public List<User> getUtenti() { return utenti; }
 }

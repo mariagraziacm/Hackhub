@@ -1,97 +1,51 @@
 package it.unicam.hackhub.controller;
 
-import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Team;
-import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.User;
-import it.unicam.hackhub.repository.HackathonRepository;
-import it.unicam.hackhub.repository.TeamRepository;
-import it.unicam.hackhub.model.Leader;
-
-import java.util.Optional;
+import it.unicam.hackhub.service.TeamService;
+import it.unicam.hackhub.service.HackathonService;
 
 public class IscrizioneController {
-    private final TeamRepository teamRepository;
-    private final HackathonRepository hackathonRepository;
+    private final TeamService teamService;
+    private final HackathonService hackathonService;
 
-    public IscrizioneController(TeamRepository teamRepository, HackathonRepository hackathonRepository) {
-        this.teamRepository = teamRepository;
-        this.hackathonRepository = hackathonRepository;
+    public IscrizioneController(TeamService teamService, HackathonService hackathonService) {
+        this.teamService = teamService;
+        this.hackathonService = hackathonService;
     }
 
     public Team creaTeam(String id, String name, User creatore) {
-        if (name == null || name.isBlank() || id == null || id.isBlank()) {
-            System.out.println("ISCRIZIONE [ERRORE]: Dati del team non validi!");
+        try {
+            Team nuovoTeam = teamService.createTeam(id, name, creatore);
+            System.out.println("ISCRIZIONE: Team '" + name + "' registrato nel sistema. Leader: " + creatore.getName());
+            return nuovoTeam;
+        } catch (IllegalArgumentException | IllegalStateException e) {
+            System.out.println("ISCRIZIONE [ERRORE]: " + e.getMessage());
             return null;
         }
-
-        if (creatore == null) {
-            System.out.println("ISCRIZIONE [ERRORE]: Il team deve essere creato da un utente valido!");
-            return null;
-        }
-
-        if (teamRepository.isUserInAnyTeam(creatore.getid())) {
-            System.out.println("ISCRIZIONE [ERRORE]: L'utente '" + creatore.getName() + "' fa già parte di un altro team!");
-            return null;
-        }
-
-        if (teamRepository.existsByName(name)) {
-            System.out.println("ISCRIZIONE [ERRORE]: Esiste già un team chiamato '" + name + "'!");
-            return null;
-        }
-
-        Team nuovoTeam = new Team(id, name);
-
-        TeamMember leaderMember = new TeamMember("TM-" + id, id, null, creatore);
-        nuovoTeam.getMembers().add(leaderMember);
-
-        Leader leaderDelTeam = new Leader(creatore.getName(), leaderMember);
-        nuovoTeam.setLeader(leaderDelTeam);
-
-        teamRepository.save(nuovoTeam);
-
-        System.out.println("ISCRIZIONE: Team '" + name + "' registrato nel sistema. Leader: " + creatore.getName());
-        return nuovoTeam;
     }
 
     public void iscriviTeamAdHackathon(String teamId, String hackathonId) {
-        Optional<Team> teamOpt = teamRepository.findById(teamId);
-        if (teamOpt.isEmpty()) {
-            System.out.println("ISCRIZIONE [ERRORE]: Team con ID " + teamId + " non trovato!");
-            return;
-        }
-        Team team = teamOpt.get();
-
-        Optional<Hackathon> hackathonOpt = hackathonRepository.findById(hackathonId);
-        if(hackathonOpt.isEmpty()){
-            return;
-        }
-        Hackathon hackathon = hackathonOpt.get();
-        hackathon.iscriviTeam(team);
-    }
-    public void abbandonaHackathon(String idLeaderUser, String teamId, String hackathonId) {
-        Optional<Team> teamOpt = teamRepository.findById(teamId);
-        if (teamOpt.isEmpty()) {
-            System.out.println("ISCRIZIONE [ERRORE]: Team non trovato!");
-            return;
-        }
-        Team team = teamOpt.get();
-
-        if (team.getLeader() == null || !team.getLeader().getTeamMember().getUser().getid().equals(idLeaderUser)) {
-            System.out.println("ISCRIZIONE [ERRORE]: Solo il leader del team può disiscrivere il team dall'hackathon!");
-            return;
-        }
-
-        Optional<Hackathon> hackathonOpt = hackathonRepository.findById(hackathonId);
-        if (hackathonOpt.isEmpty()) {
-            System.out.println("ISCRIZIONE [ERRORE]: Hackathon non trovato!");
-            return;
-        }
-        Hackathon hackathon = hackathonOpt.get();
-
         try {
-            hackathon.disiscriviTeam(team);
-        } catch (IllegalStateException e) {
+            Team team = teamService.getById(teamId);
+            hackathonService.iscriviTeam(team, hackathonId);
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            System.out.println("ISCRIZIONE [ERRORE]: " + e.getMessage());
+        }
+    }
+
+    public void abbandonaHackathon(String idLeaderUser, String teamId, String hackathonId) {
+        try {
+            Team team = teamService.getById(teamId);
+
+            if (team.getLeader() == null || !team.getLeader().getTeamMember().getUser().getId().equals(idLeaderUser)) {
+                System.out.println("ISCRIZIONE [ERRORE]: Solo il leader del team può disiscrivere il team dall'hackathon!");
+                return;
+            }
+
+            hackathonService.disiscriviTeam(team, hackathonId);
+            System.out.println("SYSTEM: Il team '" + team.getName() + "' non è più iscritto all'hackathon.");
+        } catch (IllegalStateException | IllegalArgumentException e) {
             System.out.println("ISCRIZIONE [ERRORE]: " + e.getMessage());
         }
     }

@@ -11,69 +11,57 @@ import it.unicam.hackhub.model.PartecipationRequest;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PartecipationRequestService {
+public class PartecipationRequestService{
     private final TeamRepository teamRepository;
     private final UsersRepository usersRepository;
-
     private final List<PartecipationRequestService> requests = new ArrayList<>();
 
-    public PartecipationRequestService(
-            TeamRepository teamRepository,
-            UsersRepository usersRepository
-    ) {
+    public PartecipationRequestService(TeamRepository teamRepository, UsersRepository usersRepository){
         this.teamRepository = teamRepository;
         this.usersRepository = usersRepository;
     }
 
-
-    public PartecipationRequestService sendRequest(String teamId, String userId) {
-
+    public PartecipationRequest sendRequest(String teamId, String userId){
         User user = usersRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("User non trovato"));
-
+                .orElseThrow(() -> new IllegalStateException("Utente richiedente non trovato"));
         Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalStateException("Team non trovato"));
+                .orElseThrow(() -> new IllegalStateException("Team selezionato non esistente"));
 
-        if (team.getMembers().size() >= 5) {
-            throw new IllegalStateException("Team pieno");
+        if (teamRepository.isUserInAnyTeam(userId)){
+            throw new IllegalStateException("Impossibile inviare la richiesta: fai già parte di un team!");
+        }
+        if (team.isAlCompleto()){
+            throw new IllegalStateException("Il team '" + team.getName() + "' è al completo!");
         }
 
-        PartecipationRequestService request = new PartecipationRequestService(
-                "REQ-" + (requests.size() + 1), user, team);
-
+        String requestId = "REQ-" + (requests.size() + 1);
+        PartecipationRequest request = new PartecipationRequest(requestId, user, team);
         requests.add(request);
-
         return request;
     }
 
-    public void acceptRequest(String requestId) {
-        PartecipationRequestService req = findRequest(requestId);
-        req.accept();
+    public void acceptRequest(String requestId){
+        PartecipationRequest req = requests.stream()
+                .filter(r -> r.getId().equals(requestId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"));
 
+        req.accept();
         Team team = req.getTeam();
 
-        TeamMember member = new TeamMember(
-                "TM-" + req.getId(),
-                team.getId(),
-                null,
-                req.getUser()
-        );
-
-        team.getMembers().add(member);
+        TeamMember newMember = new TeamMember("TM-" + req.getId(), team.getId(), null, req.getUser());
+        team.addMember(newMember);
     }
 
-    public void declineRequest(String requestId) {
-        findRequest(requestId).decline();
-    }
-
-    private PartecipationRequestService findRequest(String id) {
-        return requests.stream()
-                .filter(r -> r.getId().equals(id))
+    public void declineRequest(String requestId){
+        requests.stream()
+                .filter(r -> r.getId().equals(requestId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Request non trovata"));
+                .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"))
+                .decline();
     }
 
-    public List<PartecipationRequestService> getRequests() {
+    public List<PartecipationRequest> getRequests(){
         return requests;
     }
 }

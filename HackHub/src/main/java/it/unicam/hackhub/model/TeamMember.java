@@ -3,20 +3,21 @@ package it.unicam.hackhub.model;
 import it.unicam.hackhub.model.User;
 
 public class TeamMember {
-    private String id;
-    private String teamId;
-    private String mentorId;
-    private User user;
+    private final String id;
+    private final User user;
+    private final Role role;
 
-    public TeamMember(String id, String teamId, String mentorId, User user) {
+    public TeamMember(String id, User user, Role role) {
         this.id = id;
-        this.teamId = teamId;
-        this.mentorId = mentorId;
         this.user = user;
+        this.role = role;
     }
 
     public String getId() { return id; }
-    public String getTeamId() { return teamId; }
-    public String getMentorId() { return mentorId; }
     public User getUser() { return user; }
+    public Role getRole() { return role; }
+
+    public boolean isLeader() {
+        return role == Role.LEADER;
+    }
 }

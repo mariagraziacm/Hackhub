@@ -18,7 +18,7 @@ public class InviteController {
     private final UsersRepository usersRepository;
     private final List<Invite> invites = new ArrayList<>();
 
-    public InvitaController(TeamRepository teamRepository, UsersRepository usersRepository) {
+    public InviteController(TeamRepository teamRepository, UsersRepository usersRepository) {
         this.teamRepository = teamRepository;
         this.usersRepository = usersRepository;
     }
@@ -31,11 +31,10 @@ public class InviteController {
         }
         Team team = teamOpt.get();
 
-        if (team.getLeader() == null || !team.getLeader().getTeamMember().getUser().getid().equals(idLeaderUser)) {
+        if (team.getLeader() == null || !team.getLeader().getTeamMember().getUser().getId().equals(idLeaderUser)) {
             System.out.println("SYSTEM [ERRORE]: Solo il leader del team può inviare inviti!");
             return;
         }
-
         if (team.isAlCompleto()) {
             System.out.println("SYSTEM [ERRORE]: Impossibile invitare altri utenti, il team è al completo!");
             return;
@@ -55,13 +54,8 @@ public class InviteController {
 
         String inviteId = "INV-" + (invites.size() + 1);
         Invite nuovoInvito = new Invite(inviteId, InviteState.PENDING, utenteDaInvitare, team);
-
         invites.add(nuovoInvito);
 
         System.out.println("SYSTEM: Invito (" + inviteId + ") inoltrato con successo all'utente " + utenteDaInvitare.getName());
-    }
-
-    public List<Invite> getInvites() {
-        return invites;
     }
 }

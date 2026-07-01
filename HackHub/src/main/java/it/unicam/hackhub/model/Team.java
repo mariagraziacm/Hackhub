@@ -1,9 +1,7 @@
 package it.unicam.hackhub.model;
 
-import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.TeamMember;
-import it.unicam.hackhub.model.Submission;
-import it.unicam.hackhub.model.Leader;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,29 +10,44 @@ public class Team {
     private String name;
     private String id;
     private List<TeamMember> members = new ArrayList<>();
-    private List<Submission> submissions = new ArrayList<>();
-    private String hackathonId;
-    private Leader leader;
-    private int maxMembers;
+    private final int maxMembers=5;
 
     public Team(String id, String name) {
         this.id = id;
         this.name = name;
-        this.maxMembers = 5;
     }
-    public Leader getLeader() { return leader; }
-    public void setLeader(Leader leader) { this.leader = leader; }
 
+    public String getId() { return id; }
     public String getName() { return name; }
-    public void setId(String id) { this.id = id; }
-    public String getId(){
-        return id;
+
+    public List<TeamMember> getMembers() {
+        return List.copyOf(members);
     }
-    public List<TeamMember> getMembers() { return members; }
-    public List<Submission> getSubmissions() { return submissions; }
-    public String getHackathonId() { return hackathonId; }
-    public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
-    public boolean isAlCompleto() {
+
+    public void addMember(TeamMember member) {
+        if (isFull()) {
+            throw new IllegalStateException("Team pieno");
+        }
+        members.add(member);
+    }
+
+    public boolean isFull() {
         return members.size() >= maxMembers;
+    }
+
+    public boolean hasUser(String userId) {
+        return members.stream()
+                .anyMatch(m -> m.getUser().getId().equals(userId));
+    }
+
+    public boolean hasMinimumMembers() {
+        return members.size() >= 2;
+    }
+
+    public TeamMember getLeader() {
+        return members.stream()
+                .filter(TeamMember::isLeader)
+                .findFirst()
+                .orElse(null);
     }
 }

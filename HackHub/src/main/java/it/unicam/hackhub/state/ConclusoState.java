@@ -2,8 +2,9 @@ package main.java.it.unicam.hackhub.state;
 
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.Hackathon;
+import it.unicam.hackhub.state.HackathonState;
 
-public class ConclusoState {
+public class ConclusoState implements HackathonState{
     @Override
     public String getName() {
         return "CONCLUSO";

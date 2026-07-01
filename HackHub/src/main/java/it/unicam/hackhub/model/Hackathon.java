@@ -27,9 +27,10 @@ public class Hackathon {
     private String place;
     private int prize;
 
-    public Hackathon(String id, String name) {
+    public Hackathon(String id, String name, String specifications){
         this.id = id;
         this.name = name;
+        this.specifications = specifications;
         this.state = new InIscrizioneState();
     }
 
@@ -50,6 +51,10 @@ public class Hackathon {
         if (!teams.contains(team)) {
             teams.add(team);
         }
+    }
+
+    public void setSpecifications(String specifications) {
+        this.specifications = specifications;
     }
 
     public void removeTeam(Team team) {

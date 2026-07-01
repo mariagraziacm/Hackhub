@@ -7,7 +7,7 @@ import it.unicam.hackhub.state.InCorsoState;
 
 public class InIscrizioneState implements HackathonState {
     @Override
-    public String returnState() {
+    public String getName() {
         return "IN_ISCRIZIONE";
     }
 

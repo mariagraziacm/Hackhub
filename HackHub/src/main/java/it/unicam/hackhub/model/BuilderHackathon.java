@@ -4,24 +4,31 @@ import it.unicam.hackhub.state.HackathonState;
 import it.unicam.hackhub.model.Hackathon;
 
 public class BuilderHackathon {
-    private String id;
-    private String name;
-    private String specifications;
+        private String id;
+        private String name;
+        private String specifications;
 
-    public BuilderHackathon setData(String id, String name, int partecipanti, String specifications){
-        this.id = id;
-        this.name = name;
-        this.partecipanti = partecipanti;
-        this.specifications = specifications;
-        return this;
-    }
+        public BuilderHackathon setId(String id) {
+            this.id = id;
+            return this;
+        }
 
-    public Hackathon build(){
-        Hackathon h = new Hackathon();
-        h.setId(this.id);
-        h.setName(this.name);
-        h.setPartecipants(this.partecipanti);
-        h.setSpecifications(this.specifications);
-        return h;
-    }
+        public BuilderHackathon setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public BuilderHackathon setSpecifications(String specifications) {
+            this.specifications = specifications;
+            return this;
+        }
+
+        public Hackathon build() {
+
+            if (id == null || name == null) {
+                throw new IllegalStateException("Id e Name obbligatori");
+            }
+
+            return new Hackathon(id, name, specifications);
+        }
 }

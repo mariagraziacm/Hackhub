@@ -2,10 +2,11 @@ package main.java.it.unicam.hackhub.state;
 
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.Hackathon;
+import it.unicam.hackhub.state.HackathonState;
 
-public class InCorsoState {
+public class InCorsoState implements HackathonState {
     @Override
-    public String returnState() { return "IN_CORSO"; }
+    public String getName() { return "IN_CORSO"; }
 
     @Override
     public void iscriviTeam(Hackathon context, Team team) {
@@ -20,6 +21,6 @@ public class InCorsoState {
 
     @Override
     public void next(Hackathon context) {
-        hackathon.setState(new InValutazioneState());
+        context.setState(new InValutazioneState());
     }
 }

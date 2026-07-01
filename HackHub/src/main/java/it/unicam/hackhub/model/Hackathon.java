@@ -64,7 +64,12 @@ public class Hackathon {
     public void setName(String name) { this.name = name; }
     public void setPartecipants(int partecipants) { this.partecipants = partecipants; }
     public void setSpecifications(String specifications) { this.specifications = specifications; }
-
+    public String getId() {
+        return id;
+    }
+    public void aggiungiTeam(Team team) {
+        teamIscritti.add(team);
+    }
     public String getRules() { return rules; }
     public String getSpecifications() { return specifications; }
     public LocalDateTime getStartDate() { return startDate; }

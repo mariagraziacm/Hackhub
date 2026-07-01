@@ -31,7 +31,6 @@ public class HackathonController {
         BuilderHackathon builder = new BuilderHackathon();
         Hackathon nuovoHackathon = builder
                 .setData(id, name, partecipanti, specifications)
-                .setHackathonState()
                 .build();
 
         hackathonRepository.save(nuovoHackathon);

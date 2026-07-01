@@ -3,19 +3,24 @@ package it.unicam.hackhub.repository;
 import it.unicam.hackhub.model.Hackathon;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class HackathonRepository {
+public class HackathonRepository{
     private final List<Hackathon> hackathons = new ArrayList<>();
 
-    public void save(Hackathon hackathon) {
+    public void save(Hackathon hackathon){
         hackathons.add(hackathon);
     }
 
-    public List<Hackathon> findAll() {
+    public List<Hackathon> findAll(){
         return hackathons;
     }
-    public boolean existsByName(String name) {
+    public boolean existsByName(String name){
         return hackathons.stream()
                 .anyMatch(h -> h.getName().equalsIgnoreCase(name));
+    }
+    public Optional<Hackathon>
+    findById(String id){
+        return hackathons.stream().filter(h-> h.getId().equals(id)).findFirst();
     }
 }

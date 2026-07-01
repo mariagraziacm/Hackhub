@@ -53,20 +53,18 @@ public class IscrizioneController {
         }
         Team team = teamOpt.get();
 
-        Optional<Hackathon> hackathonOpt = hackathonRepository.findAll().stream()
-                .filter(h -> h.getRules() != null ? h.getRules().equals(hackathonId) : true) //簡易 Cerca per ID dinamico
-                .findFirst();
+        Optional<Hackathon> hackathonOpt = hackathonRepository.findById(hackathonId);
 
-        Hackathon hackathon = hackathonRepository.findAll().stream()
-                .findFirst()
-                .orElse(null);
+        if(hackathonOpt.isEmpty()){
+            return;
+        }
+
+        Hackathon hackathon = hackathonOpt.get();
 
         if (hackathon == null) {
             System.out.println("ISCRIZIONE [ERRORE]: Hackathon non trovato nel sistema!");
             return;
         }
-
-        team.setHackathonId(hackathonId);
 
         hackathon.iscriviTeam(team);
     }

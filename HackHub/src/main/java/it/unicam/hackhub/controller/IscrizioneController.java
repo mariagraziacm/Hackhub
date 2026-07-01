@@ -54,7 +54,6 @@ public class IscrizioneController {
         return nuovoTeam;
     }
 
-
     public void iscriviTeamAdHackathon(String teamId, String hackathonId) {
         Optional<Team> teamOpt = teamRepository.findById(teamId);
         if (teamOpt.isEmpty()) {
@@ -69,5 +68,31 @@ public class IscrizioneController {
         }
         Hackathon hackathon = hackathonOpt.get();
         hackathon.iscriviTeam(team);
+    }
+    public void abbandonaHackathon(String idLeaderUser, String teamId, String hackathonId) {
+        Optional<Team> teamOpt = teamRepository.findById(teamId);
+        if (teamOpt.isEmpty()) {
+            System.out.println("ISCRIZIONE [ERRORE]: Team non trovato!");
+            return;
+        }
+        Team team = teamOpt.get();
+
+        if (team.getLeader() == null || !team.getLeader().getTeamMember().getUser().getid().equals(idLeaderUser)) {
+            System.out.println("ISCRIZIONE [ERRORE]: Solo il leader del team può disiscrivere il team dall'hackathon!");
+            return;
+        }
+
+        Optional<Hackathon> hackathonOpt = hackathonRepository.findById(hackathonId);
+        if (hackathonOpt.isEmpty()) {
+            System.out.println("ISCRIZIONE [ERRORE]: Hackathon non trovato!");
+            return;
+        }
+        Hackathon hackathon = hackathonOpt.get();
+
+        try {
+            hackathon.disiscriviTeam(team);
+        } catch (IllegalStateException e) {
+            System.out.println("ISCRIZIONE [ERRORE]: " + e.getMessage());
+        }
     }
 }

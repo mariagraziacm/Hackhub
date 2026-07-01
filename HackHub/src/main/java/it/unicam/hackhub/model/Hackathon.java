@@ -54,6 +54,9 @@ public class Hackathon {
         statoHackathon.inviaSottomissione(this, team, contenuto);
     }
 
+    public void disiscriviTeam(Team team) {
+        statoHackathon.disiscriviTeam(this, team);
+    }
     public void avanzaStato(){
         statoHackathon.prossimoStato(this);
     }

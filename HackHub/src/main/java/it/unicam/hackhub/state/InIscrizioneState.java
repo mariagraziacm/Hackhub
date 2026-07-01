@@ -30,4 +30,14 @@ public class InIscrizioneState implements HackathonState {
     public void prossimoStato(Hackathon context){
         context.setHackathonState(new InCorsoState());
     }
+
+    @Override
+    public void disiscriviTeam(Hackathon context, Team team) {
+        if (context.getTeamIscritti().contains(team)) {
+            context.getTeamIscritti().remove(team);
+            team.setHackathonId(null);
+            System.out.println("SYSTEM: Il team '" + team.getName() + "' si è disiscritto con successo dall'Hackathon.");
+        } else {
+            System.out.println("SYSTEM [ERRORE]: Il team non risulta iscritto a questo Hackathon.");
+        }
 }

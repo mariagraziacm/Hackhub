@@ -13,19 +13,13 @@ public class InCorsoState {
     }
 
 
-
     @Override
-    public void disiscriviTeam(Hackathon context, Team team) {
-        if (context.getTeamIscritti().contains(team)) {
-            context.getTeamIscritti().remove(team);
-            team.setHackathonId(null);
-            System.out.println("SYSTEM: Il team '" + team.getName() + "' si è disiscritto con successo dall'Hackathon.");
-        } else {
-            System.out.println("SYSTEM [ERRORE]: Il team non risulta iscritto a questo Hackathon.");
-        }
+    public void disiscriviTeam(Hackathon hackathon, Team team) {
+        hackathon.removeTeam(team);
     }
 
     @Override
-    public void prossimoStato(Hackathon context) {
+    public void next(Hackathon context) {
+        hackathon.setState(new InValutazioneState());
     }
 }

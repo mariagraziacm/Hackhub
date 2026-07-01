@@ -12,30 +12,20 @@ public class InIscrizioneState implements HackathonState {
     }
 
     @Override
-    public void iscriviTeam(Hackathon context, Team team) {
-        context.aggiungiTeam(team);
-        System.out.println("Team " + team.getName() + " iscritto con successo!");
-    }
-
-
-    @Override
-    public void prossimoStato(Hackathon context) {
-        System.out.println("Passaggio allo stato successivo non ancora implementato completamente.");
-    }
-
-    @Override
-    public void prossimoStato(Hackathon context) {
-        context.setHackathonState(new InCorsoState());
-    }
-
-    @Override
-    public void disiscriviTeam(Hackathon context, Team team) {
-        if (context.getTeamIscritti().contains(team)) {
-            context.getTeamIscritti().remove(team);
-            team.setHackathonId(null);
-            System.out.println("SYSTEM: Il team '" + team.getName() + "' si è disiscritto con successo dall'Hackathon.");
-        } else {
-            System.out.println("SYSTEM [ERRORE]: Il team non risulta iscritto a questo Hackathon.");
+    public void iscriviTeam(Hackathon hackathon, Team team) {
+        if (team.isFull()) {
+            throw new IllegalStateException("Team pieno");
         }
+        hackathon.addTeam(team);
+    }
+
+    @Override
+    public void disiscriviTeam(Hackathon hackathon, Team team) {
+        hackathon.removeTeam(team);
+    }
+
+    @Override
+    public void next(Hackathon hackathon) {
+        hackathon.setState(new InCorsoState());
     }
 }

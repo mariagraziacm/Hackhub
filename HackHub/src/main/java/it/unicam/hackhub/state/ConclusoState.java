@@ -4,10 +4,23 @@ import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.Hackathon;
 
 public class ConclusoState {
-
+    @Override
+    public String getName() {
+        return "CONCLUSO";
+    }
 
     @Override
-    public void disiscriviTeam(Hackathon context, Team team) {
-        throw new IllegalStateException("Impossibile abbandonare: l'hackathon non è più in fase di iscrizione!");
+    public void iscriviTeam(Hackathon hackathon, Team team) {
+        throw new IllegalStateException("Hackathon concluso");
+    }
+
+    @Override
+    public void disiscriviTeam(Hackathon hackathon, Team team) {
+        throw new IllegalStateException("Hackathon concluso");
+    }
+
+    @Override
+    public void next(Hackathon hackathon) {
+        throw new IllegalStateException("Non ci sono stati successivi");
     }
 }

@@ -15,8 +15,10 @@ public class Hackathon {
     private final String id;
     private String name;
     private HackathonState state;
+
     private final List<Team> teams = new ArrayList<>();
     private final List<Submission> submissions = new ArrayList<>();
+
     private String rules;
     private String specifications;
     private LocalDateTime startDate;
@@ -33,16 +35,21 @@ public class Hackathon {
 
     public String getId() { return id; }
     public String getName() { return name; }
+
     public HackathonState getState() { return state; }
+
     public List<Team> getTeams() {
         return List.copyOf(teams);
     }
+
     public void setState(HackathonState state) {
         this.state = state;
     }
 
     public void addTeam(Team team) {
-        teams.add(team);
+        if (!teams.contains(team)) {
+            teams.add(team);
+        }
     }
 
     public void removeTeam(Team team) {
@@ -58,6 +65,6 @@ public class Hackathon {
     }
 
     public void nextState() {
-        state.prossimoStato(this);
+        state.next(this);
     }
 }

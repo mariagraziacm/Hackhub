@@ -6,62 +6,74 @@ import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.PartecipationRequest;
+import it.unicam.hackhub.model.Role;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class PartecipationRequestService{
-    private final TeamRepository teamRepository;
-    private final UsersRepository usersRepository;
-    private final List<PartecipationRequestService> requests = new ArrayList<>();
+    private final ParticipationRequestRepository repo;
+    private final TeamService teamService;
+    private final UserRepository userRepo;
 
-    public PartecipationRequestService(TeamRepository teamRepository, UsersRepository usersRepository){
-        this.teamRepository = teamRepository;
-        this.usersRepository = usersRepository;
+    public ParticipationRequestService(
+            ParticipationRequestRepository repo,
+            TeamService teamService,
+            UserRepository userRepo) {
+
+        this.repo = repo;
+        this.teamService = teamService;
+        this.userRepo = userRepo;
     }
 
-    public PartecipationRequest sendRequest(String teamId, String userId){
-        User user = usersRepository.findById(userId)
-                .orElseThrow(() -> new IllegalStateException("Utente richiedente non trovato"));
-        Team team = teamRepository.findById(teamId)
-                .orElseThrow(() -> new IllegalStateException("Team selezionato non esistente"));
+    public ParticipationRequest sendRequest(String teamId, String userId) {
 
-        if (teamRepository.isUserInAnyTeam(userId)){
-            throw new IllegalStateException("Impossibile inviare la richiesta: fai già parte di un team!");
-        }
-        if (team.isAlCompleto()){
-            throw new IllegalStateException("Il team '" + team.getName() + "' è al completo!");
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("User non trovato"));
+
+        Team team = teamService.getById(teamId);
+
+        if (team.isFull()) {
+            throw new IllegalStateException("Team pieno");
         }
 
-        String requestId = "REQ-" + (requests.size() + 1);
-        PartecipationRequest request = new PartecipationRequest(requestId, user, team);
-        requests.add(request);
-        return request;
+        if (teamService.isUserInAnyTeam(userId)) {
+            throw new IllegalStateException("Utente già in team");
+        }
+
+        ParticipationRequest req = new ParticipationRequest(
+                UUID.randomUUID().toString(),
+                user,
+                team
+        );
+
+        repo.save(req);
+        return req;
     }
 
-    public void acceptRequest(String requestId){
-        PartecipationRequest req = requests.stream()
-                .filter(r -> r.getId().equals(requestId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"));
+    public void acceptRequest(String requestId) {
+
+        ParticipationRequest req = repo.findById(requestId)
+                .orElseThrow(() -> new IllegalStateException("Request non trovata"));
 
         req.accept();
+
         Team team = req.getTeam();
 
-        TeamMember newMember = new TeamMember("TM-" + req.getId(), team.getId(), null, req.getUser());
-        team.addMember(newMember);
+        team.addMember(new TeamMember(
+                UUID.randomUUID().toString(),
+                req.getUser(),
+                Role.MEMBER
+        ));
     }
 
-    public void declineRequest(String requestId){
-        requests.stream()
-                .filter(r -> r.getId().equals(requestId))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"))
-                .decline();
-    }
+    public void declineRequest(String requestId) {
 
-    public List<PartecipationRequest> getRequests(){
-        return requests;
+        ParticipationRequest req = repo.findById(requestId)
+                .orElseThrow(() -> new IllegalStateException("Request non trovata"));
+
+        req.decline();
     }
 }

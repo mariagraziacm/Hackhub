@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Team {
+    private final String id;
     private String name;
-    private String id;
-    private List<TeamMember> members = new ArrayList<>();
-    private final int maxMembers=5;
+    private final List<TeamMember> members = new ArrayList<>();
+    private final int maxMembers = 5;
 
     public Team(String id, String name) {
         this.id = id;
@@ -35,19 +35,12 @@ public class Team {
         return members.size() >= maxMembers;
     }
 
-    public boolean hasUser(String userId) {
-        return members.stream()
-                .anyMatch(m -> m.getUser().getId().equals(userId));
-    }
-
-    public boolean hasMinimumMembers() {
+    public boolean hasMinMembers() {
         return members.size() >= 2;
     }
 
-    public TeamMember getLeader() {
+    public boolean hasUser(String userId) {
         return members.stream()
-                .filter(TeamMember::isLeader)
-                .findFirst()
-                .orElse(null);
+                .anyMatch(m -> m.getUser().getId().equals(userId));
     }
 }

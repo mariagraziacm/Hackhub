@@ -5,7 +5,22 @@ import it.unicam.hackhub.model.Hackathon;
 
 public class InValutazioneState {
     @Override
-    public void disiscriviTeam(Hackathon context, Team team) {
-        throw new IllegalStateException("Impossibile abbandonare: l'hackathon non è più in fase di iscrizione!");
+    public String getName() {
+        return "IN_VALUTAZIONE";
+    }
+
+    @Override
+    public void iscriviTeam(Hackathon hackathon, Team team) {
+        throw new IllegalStateException("Valutazione in corso");
+    }
+
+    @Override
+    public void disiscriviTeam(Hackathon hackathon, Team team) {
+        throw new IllegalStateException("Non puoi disiscriverti in valutazione");
+    }
+
+    @Override
+    public void next(Hackathon hackathon) {
+        hackathon.setState(new ConclusoState());
     }
 }

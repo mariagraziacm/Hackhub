@@ -17,6 +17,11 @@ public class TeamService{
             throw new IllegalArgumentException("Nome non valido");
         }
 
+        if (teamRepository.isUserInAnyTeam(creator.getid())) {
+            throw new IllegalStateException("L'utente fa già parte di un altro team");
+        }
+
+
         if (teamRepository.existsByName(name)){
             throw new IllegalStateException("Team già esistente");
         }
@@ -25,6 +30,10 @@ public class TeamService{
 
         TeamMember leader = new TeamMember("TM-" + id, id, null, creator);
         team.getMembers().add(leader);
+
+        Leader leader = new Leader(creator.getName(), leaderMember);
+        team.setLeader(leader);
+
         teamRepository.save(team);
         return team;
     }

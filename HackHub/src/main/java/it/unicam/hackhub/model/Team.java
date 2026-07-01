@@ -3,6 +3,7 @@ package it.unicam.hackhub.model;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.Submission;
+import it.unicam.hackhub.model.Leader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,11 +14,16 @@ public class Team {
     private List<TeamMember> members = new ArrayList<>();
     private List<Submission> submissions = new ArrayList<>();
     private String hackathonId;
+    private Leader leader;
+    private int maxMembers;
 
     public Team(String id, String name) {
         this.id = id;
         this.name = name;
+        this.maxMembers = 5;
     }
+    public Leader getLeader() { return leader; }
+    public void setLeader(Leader leader) { this.leader = leader; }
 
     public String getName() { return name; }
     public void setId(String id) { this.id = id; }
@@ -28,4 +34,7 @@ public class Team {
     public List<Submission> getSubmissions() { return submissions; }
     public String getHackathonId() { return hackathonId; }
     public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
+    public boolean isAlCompleto() {
+        return members.size() >= maxMembers;
+    }
 }

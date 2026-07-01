@@ -12,7 +12,6 @@ public abstract class MembroStaff {
     public String getRole() {
         return role;
     }
-
     public String getUserId() {
         return userId;
     }

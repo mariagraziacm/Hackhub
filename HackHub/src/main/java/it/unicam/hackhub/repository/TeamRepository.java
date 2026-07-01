@@ -26,4 +26,10 @@ public class TeamRepository {
         return teams.stream()
                 .anyMatch(t -> t.getName().equalsIgnoreCase(name));
     }
+
+    public boolean isUserInAnyTeam(String userId) {
+        return teams.stream()
+                .flatMap(team -> team.getMembers().stream())
+                .anyMatch(member -> member.getUser().getid().equals(userId));
+    }
 }

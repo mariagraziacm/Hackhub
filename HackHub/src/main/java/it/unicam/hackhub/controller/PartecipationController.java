@@ -34,15 +34,14 @@ public class PartecipationController {
         }
         Team team = teamOpt.get();
 
-        if (team.getMembers().size() >= 5) {
-            System.out.println("Errore: Il team '" + team.getName() + "' è al completo!");
+        if(team.isAlCompleto()){
+            System.out.println("SYSTEM [ERRORE]: Il team '" + team.getName() + "' è al completo!");
             return;
         }
 
         String requestId = "REQ-" + (requests.size() + 1);
 
-        PartecipationRequest newRequest =
-                new PartecipationRequest(requestId, richiedente, team);
+        PartecipationRequest newRequest = new PartecipationRequest(requestId, richiedente, team);
 
         requests.add(newRequest);
 

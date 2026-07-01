@@ -6,6 +6,7 @@ import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.repository.TeamRepository;
+import it.unicam.hackhub.model.Leader;
 
 import java.util.Optional;
 
@@ -29,6 +30,11 @@ public class IscrizioneController {
             return null;
         }
 
+        if (teamRepository.isUserInAnyTeam(creatore.getid())) {
+            System.out.println("ISCRIZIONE [ERRORE]: L'utente '" + creatore.getName() + "' fa già parte di un altro team!");
+            return null;
+        }
+
         if (teamRepository.existsByName(name)) {
             System.out.println("ISCRIZIONE [ERRORE]: Esiste già un team chiamato '" + name + "'!");
             return null;
@@ -39,7 +45,11 @@ public class IscrizioneController {
         TeamMember leaderMember = new TeamMember("TM-" + id, id, null, creatore);
         nuovoTeam.getMembers().add(leaderMember);
 
+        Leader leaderDelTeam = new Leader(creatore.getName(), leaderMember);
+        nuovoTeam.setLeader(leaderDelTeam);
+
         teamRepository.save(nuovoTeam);
+
         System.out.println("ISCRIZIONE: Team '" + name + "' registrato nel sistema. Leader: " + creatore.getName());
         return nuovoTeam;
     }
@@ -54,18 +64,10 @@ public class IscrizioneController {
         Team team = teamOpt.get();
 
         Optional<Hackathon> hackathonOpt = hackathonRepository.findById(hackathonId);
-
         if(hackathonOpt.isEmpty()){
             return;
         }
-
         Hackathon hackathon = hackathonOpt.get();
-
-        if (hackathon == null) {
-            System.out.println("ISCRIZIONE [ERRORE]: Hackathon non trovato nel sistema!");
-            return;
-        }
-
         hackathon.iscriviTeam(team);
     }
 }

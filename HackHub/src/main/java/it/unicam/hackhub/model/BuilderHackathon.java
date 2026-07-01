@@ -9,7 +9,7 @@ public class BuilderHackathon {
     private int partecipanti;
     private String specifications;
 
-    public BuilderHackathon setData(String id, String name, int partecipanti, String specifications) {
+    public BuilderHackathon setData(String id, String name, int partecipanti, String specifications){
         this.id = id;
         this.name = name;
         this.partecipanti = partecipanti;
@@ -17,8 +17,7 @@ public class BuilderHackathon {
         return this;
     }
 
-
-    public Hackathon build() {
+    public Hackathon build(){
         Hackathon h = new Hackathon();
         h.setId(this.id);
         h.setName(this.name);

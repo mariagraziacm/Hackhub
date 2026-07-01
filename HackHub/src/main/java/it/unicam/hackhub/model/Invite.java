@@ -39,5 +39,4 @@ public class Invite {
             throw new IllegalStateException("Invite già processato");
         state = InviteState.DECLINED;
     }
-
 }

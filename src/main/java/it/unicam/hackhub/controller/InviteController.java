@@ -1,60 +1,63 @@
 package it.unicam.hackhub.controller;
 
-import it.unicam.hackhub.model.Team;
-import it.unicam.hackhub.repository.TeamRepository;
 import it.unicam.hackhub.model.Invite;
-import it.unicam.hackhub.model.User;
-import it.unicam.hackhub.model.InviteState;
-
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import it.unicam.hackhub.service.InviteService;
 
 public class InviteController {
-    private final TeamRepository teamRepository;
-    private final it.unicam.hackhub.repository.UserRepository userRepository;
-    private final List<Invite> invites = new ArrayList<>();
 
-    public InviteController(TeamRepository teamRepository, it.unicam.hackhub.repository.UserRepository userRepository) {
-        this.teamRepository = teamRepository;
-        this.userRepository = userRepository;
+    private final InviteService inviteService;
+
+    public InviteController(InviteService inviteService) {
+        this.inviteService = inviteService;
     }
 
+    // Compatibile con la tua firma iniziale:
+    // leader invia invito a utente per un team
     public void sendInvite(String idLeaderUser, String idTeam, String idUserDaInvitare) {
-        Optional<Team> teamOpt = teamRepository.findById(idTeam);
-        if (teamOpt.isEmpty()) {
-            System.out.println("SYSTEM [ERRORE]: Team non trovato!");
-            return;
-        }
-        Team team = teamOpt.get();
+        try {
+            // il check "solo leader può invitare" deve stare nel service
+            Invite invite = inviteService.sendInvite(idLeaderUser, idTeam, idUserDaInvitare);
 
-        if (team.getLeader() == null || !team.getLeader().getUser().getId().equals(idLeaderUser)) {
-            System.out.println("SYSTEM [ERRORE]: Solo il leader del team può inviare inviti!");
-            return;
+            System.out.println("Invito (" + invite.getId() + ") inoltrato con successo all'utente "
+                    + invite.getUser().getName());
+        } catch (IllegalStateException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
         }
-        if (team.isFull()) {
-            System.out.println("SYSTEM [ERRORE]: Impossibile invitare altri utenti, il team è al completo!");
-            return;
+    }
+
+    public void acceptInvite(String inviteId) {
+        try {
+            inviteService.acceptInvite(inviteId);
+            System.out.println("Invito accettato con successo.");
+        } catch (IllegalStateException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
         }
+    }
 
-        Optional<User> userOpt = userRepository.findById(idUserDaInvitare);
-        if (userOpt.isEmpty()) {
-            System.out.println("SYSTEM [ERRORE]: L'utente selezionato non esiste!");
-            return;
+    public void declineInvite(String inviteId) {
+        try {
+            inviteService.declineInvite(inviteId);
+            System.out.println("SYSTEM: Invito rifiutato.");
+        } catch (IllegalStateException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
         }
-        User utenteDaInvitare = userOpt.get();
+    }
 
-        if (teamRepository.isUserInAnyTeam(utenteDaInvitare.getId())) {
-            System.out.println("SYSTEM [ERRORE]: L'utente selezionato fa già parte di un altro team!");
-            return;
+    public void inviteMentor(String hackathonId, String userId) {
+        try {
+            Invite invite = inviteService.inviteMentor(hackathonId, userId);
+            System.out.println("SYSTEM: Invito mentor creato (" + invite.getId() + ").");
+        } catch (IllegalStateException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
         }
+    }
 
-        String inviteId = "INV-" + (invites.size() + 1);
-        Invite nuovoInvito = new Invite(inviteId, utenteDaInvitare, team);
-        invites.add(nuovoInvito);
-
-        System.out.println("SYSTEM: Invito (" + inviteId + ") inoltrato con successo all'utente " + utenteDaInvitare.getName());
+    public void inviteJudge(String hackathonId, String userId) {
+        try {
+            Invite invite = inviteService.inviteJudge(hackathonId, userId);
+            System.out.println("SYSTEM: Invito judge creato (" + invite.getId() + ").");
+        } catch (IllegalStateException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+        }
     }
 }

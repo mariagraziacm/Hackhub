@@ -25,12 +25,12 @@ public class IscrizioneController {
         }
     }
 
-    public void iscriviTeamAdHackathon(String hackathonId, String teamId) {
+    public void addTeamToHackathon(String hackathonId, String teamId) {
         try {
-            Team team = teamService.getById(teamId);
-            hackathonService.addTeamToHackathon(hackathonId, team);
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            System.out.println("ISCRIZIONE [ERRORE]: " + e.getMessage());
+            hackathonService.addTeamToHackathon(hackathonId, teamId);
+            System.out.println("OK iscrizione");
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getMessage());
         }
     }
 

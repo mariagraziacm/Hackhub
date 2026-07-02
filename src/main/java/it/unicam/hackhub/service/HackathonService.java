@@ -37,12 +37,20 @@ public class HackathonService{
         return hackathon;
     }
 
-    public void addTeamToHackathon(String hackathonId, Team team) {
+    public void addTeamToHackathon(String hackathonId, String teamId) {
 
         Hackathon hackathon = repo.findById(hackathonId)
-                .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
+                .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
+
+        Team team = teamService.getById(teamId);
+
+        if (teamService.isUserInAnyTeam(team.getLeader().getUserId())) {
+            throw new IllegalStateException("Leader già in un altro team");
+        }
 
         hackathon.iscriviTeam(team);
+
+        repo.save(hackathon);
     }
 
     public void removeTeamFromHackathon(String hackathonId, Team team) {

@@ -23,7 +23,18 @@ public class Team {
     public List<TeamMember> getMembers() {
         return List.copyOf(members);
     }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Team)) return false;
+        Team team = (Team) o;
+        return id.equals(team.id);
+    }
 
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id);
+    }
     public void addMember(TeamMember member) {
         if (isFull()) {
             throw new IllegalStateException("Team pieno");
@@ -33,15 +44,8 @@ public class Team {
             throw new IllegalStateException("Utente già presente");
         }
 
-        if (member.isLeader()) {
-
-            boolean alreadyLeader =
-                    members.stream()
-                            .anyMatch(TeamMember::isLeader);
-
-            if (alreadyLeader) {
-                throw new IllegalStateException("Leader già presente");
-            }
+        if (member.isLeader() && members.stream().anyMatch(TeamMember::isLeader)) {
+            throw new IllegalStateException("Leader già presente");
         }
 
         members.add(member);
@@ -78,5 +82,8 @@ public class Team {
                 .filter(TeamMember::isLeader)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Leader non trovato"));
+    }
+    public int getSize() {
+        return members.size();
     }
 }

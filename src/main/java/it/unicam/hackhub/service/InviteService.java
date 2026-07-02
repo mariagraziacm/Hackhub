@@ -1,7 +1,6 @@
 package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.model.Invite;
-import it.unicam.hackhub.model.InviteState;
 import it.unicam.hackhub.model.Role;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.TeamMember;
@@ -51,7 +50,7 @@ public class InviteService {
                         i.getUser().getId().equals(userId)
                                 && i.getTeam() != null
                                 && i.getTeam().getId().equals(teamId)
-                                && i.getState() == InviteState.PENDING
+                                && i.getState() == Invite.InviteState.PENDING
                 );
 
         if (alreadyInvited) {
@@ -117,8 +116,8 @@ public class InviteService {
                 .anyMatch(i ->
                         i.getUser().getId().equals(userId)
                                 && hackathonId.equals(i.getHackathonId())
-                                && "MENTOR".equals(i.getInviteType())
-                                && i.getState() == InviteState.PENDING
+                               && "MENTOR".equals(i.getInviteType().name())
+                                    && i.getState() == Invite.InviteState.PENDING
                 );
 
         if (alreadyPending) {
@@ -149,8 +148,8 @@ public class InviteService {
                 .anyMatch(i ->
                         i.getUser().getId().equals(userId)
                                 && hackathonId.equals(i.getHackathonId())
-                                && "JUDGE".equals(i.getInviteType())
-                                && i.getState() == InviteState.PENDING
+                                && "JUDGE".equals(i.getInviteType().name())
+                                && i.getState() == Invite.  InviteState.PENDING
                 );
 
         if (alreadyPending) {

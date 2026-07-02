@@ -11,11 +11,11 @@ public class InviteController {
         this.inviteService = inviteService;
     }
 
-    // Compatibile con la tua firma iniziale:
+   
     // leader invia invito a utente per un team
     public void sendInvite(String idLeaderUser, String idTeam, String idUserDaInvitare) {
         try {
-            // il check "solo leader può invitare" deve stare nel service
+            
             Invite invite = inviteService.sendInvite(idLeaderUser, idTeam, idUserDaInvitare);
 
             System.out.println("Invito (" + invite.getId() + ") inoltrato con successo all'utente "

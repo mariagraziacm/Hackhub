@@ -1,11 +1,14 @@
 package it.unicam.hackhub.model;
 
-import it.unicam.hackhub.model.ParticipationRequestState;
-import  it.unicam.hackhub.model.User;
-import it.unicam.hackhub.model.Team;
 
 
 public class ParticipationRequest {
+// ENUM
+    public enum ParticipationRequestState {
+    PENDING,
+    ACCEPTED,
+    DECLINED
+}
     private final String id;
     private final User user;
     private final Team team;

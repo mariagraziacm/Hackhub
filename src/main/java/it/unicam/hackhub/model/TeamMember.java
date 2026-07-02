@@ -1,7 +1,5 @@
 package it.unicam.hackhub.model;
 
-import it.unicam.hackhub.model.Role;
-import it.unicam.hackhub.model.User;
 
 
 public class TeamMember {

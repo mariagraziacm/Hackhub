@@ -42,21 +42,21 @@ public class ViolationService {
     // squalifica del Team
     public void handleDisqualifyTeam(String violationId) {
         Violation violation = getById(violationId);
-        violation.setDisqualifyTeam(); // Chiama il metodo corretto del modello
+        violation.setDisqualifyTeam(); 
         repo.save(violation);
     }
 
     // squalifica del  Membro
     public void handleDisqualifyMember(String violationId) {
         Violation violation = getById(violationId);
-        violation.setDisqualifyMember(); // Chiama il metodo corretto del modello
+        violation.setDisqualifyMember(); 
         repo.save(violation);
     }
 
     // Archivia senza nessuna azione
     public void handleNoAction(String violationId) {
         Violation violation = getById(violationId);
-        violation.setNoAction(); // Chiama il metodo corretto del modello
+        violation.setNoAction(); 
         repo.save(violation);
     }
 }

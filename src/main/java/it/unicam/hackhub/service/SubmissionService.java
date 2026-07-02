@@ -15,7 +15,7 @@ public class SubmissionService {
 
   
 
-    // Costruttore c
+    // Costruttore
     public SubmissionService(SubmissionRepository repo, HackathonRepository hackathonRepo, TeamRepository teamRepo) {
         this.repo = repo;
         this.hackathonRepo = hackathonRepo;

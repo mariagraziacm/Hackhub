@@ -1,8 +1,6 @@
 package it.unicam.hackhub.controller;
 
-import it.unicam.hackhub.model.BuilderHackathon;
 import it.unicam.hackhub.model.Hackathon;
-import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.service.HackathonService;
 
 public class HackathonController {

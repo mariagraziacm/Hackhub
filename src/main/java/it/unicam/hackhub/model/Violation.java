@@ -4,7 +4,7 @@ import java.util.Objects;
 
 public class Violation {
     
-    // Spostato PUBLIC ENUM all'interno della classe come tipo nidificato
+    // ENUM 
     public enum ViolationStatus {
         PENDING, DISQUALIFY_TEAM, DISQUALIFY_MEMBER, NO_ACTION
     }
@@ -12,11 +12,11 @@ public class Violation {
     private final String id;
     private final String hackathonId;
     private final String teamId;
-    private final String reportedMemberId; // opzionale: può essere null
+    private final String reportedMemberId;
     private final String mentorId;
     private final String reason;
 
-    // Inizializzazione sicura con lo stato PENDING
+    // Inizializzazione con stato PENDING
     private ViolationStatus status = ViolationStatus.PENDING;
 
     public Violation(String id,
@@ -68,7 +68,6 @@ public class Violation {
 
     private String requireNotBlank(String value, String message) {
         if (value == null || value.isBlank()) {
-            // Nota: solitamente per argomenti errati nel costruttore si lancia IllegalArgumentException
             throw new IllegalArgumentException(message);
         }
         return value;

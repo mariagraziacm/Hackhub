@@ -1,7 +1,5 @@
 package it.unicam.hackhub.model;
 
-import it.unicam.hackhub.model.TeamMember;
-
 
 import java.util.ArrayList;
 import java.util.List;

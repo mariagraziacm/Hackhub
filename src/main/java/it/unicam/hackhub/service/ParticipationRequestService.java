@@ -6,7 +6,6 @@ import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.ParticipationRequest;
 import it.unicam.hackhub.model.Role;
 import it.unicam.hackhub.repository.ParticipationRequestRepository;
-import it.unicam.hackhub.service.TeamService;
 import it.unicam.hackhub.repository.UserRepository;
 import it.unicam.hackhub.model.ParticipationRequestState;
 

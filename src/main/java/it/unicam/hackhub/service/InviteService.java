@@ -25,7 +25,7 @@ public class InviteService {
         this.userRepo = userRepo;
     }
 
-    // INVITO TEAM (firma allineata al tuo controller: leaderId, teamId, userId)
+    // INVITO TEAM 
     public Invite sendInvite(String leaderId, String teamId, String userId) {
 
         Team team = teamService.getById(teamId);
@@ -75,7 +75,7 @@ public class InviteService {
         Team team = invite.getTeam();
         User user = invite.getUser();
 
-        // Qui gestiamo solo inviti team
+        // inviti team
         if (team == null) {
             throw new IllegalStateException("Invito non valido per team");
         }
@@ -104,7 +104,7 @@ public class InviteService {
         invite.decline();
     }
 
-    // INVITO MENTOR (richiede model Invite con costruttore: Invite(id, user, hackathonId, "MENTOR"))
+    // INVITO MENTOR 
     public Invite inviteMentor(String hackathonId, String userId) {
         if (hackathonId == null || hackathonId.isBlank()) {
             throw new IllegalStateException("Hackathon non valido");
@@ -136,7 +136,7 @@ public class InviteService {
         return invite;
     }
 
-    // INVITO JUDGE (richiede model Invite con costruttore: Invite(id, user, hackathonId, "JUDGE"))
+    // INVITO JUDGE 
     public Invite inviteJudge(String hackathonId, String userId) {
         if (hackathonId == null || hackathonId.isBlank()) {
             throw new IllegalStateException("Hackathon non valido");

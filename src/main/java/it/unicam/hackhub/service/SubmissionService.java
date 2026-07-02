@@ -13,19 +13,18 @@ public class SubmissionService {
     private HackathonRepository hackathonRepo;
     private TeamRepository teamRepo;
 
-    // Costruttore originale (per compatibilità con la tua inizializzazione esistente)
-    public SubmissionService(SubmissionRepository repo) {
-        this.repo = repo;
-    }
+  
 
-    // Costruttore completo (se preferisci fare dependency injection completa)
+    // Costruttore c
     public SubmissionService(SubmissionRepository repo, HackathonRepository hackathonRepo, TeamRepository teamRepo) {
         this.repo = repo;
         this.hackathonRepo = hackathonRepo;
         this.teamRepo = teamRepo;
     }
 
-    // Setter per configurare i repository mancanti se usi il costruttore a 1 parametro
+    public SubmissionService(SubmissionRepository repo) {
+        this.repo = repo;
+    }
     public void setHackathonRepo(HackathonRepository hackathonRepo) {
         this.hackathonRepo = hackathonRepo;
     }
@@ -51,7 +50,7 @@ public class SubmissionService {
                 description
         );
 
-        // Se hackathonRepo è configurato, esegui il controllo dello stato tramite lo State Pattern
+        // controllo  stato con State Pattern
         if (hackathonRepo != null) {
             Hackathon hackathon = hackathonRepo.findById(hackathonId)
                     .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
@@ -74,7 +73,7 @@ public class SubmissionService {
             throw new IllegalStateException("Campi sottomissione non validi");
         }
 
-        // Se hackathonRepo è configurato, esegui il controllo dello stato prima della modifica
+        // controllo dello stato prima della modifica
         if (hackathonRepo != null) {
             Hackathon hackathon = hackathonRepo.findById(submission.getHackathonId())
                     .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));

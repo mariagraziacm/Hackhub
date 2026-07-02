@@ -1,7 +1,6 @@
 package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.model.Violation;
-import it.unicam.hackhub.model.Violation.ViolationStatus;
 import it.unicam.hackhub.repository.ViolationRepository;
 
 import java.util.List;
@@ -33,21 +32,21 @@ public class ViolationService {
                 .orElseThrow(() -> new IllegalStateException("Violazione non trovata"));
     }
 
-    // Ritorna tutte le violazioni ancora in stato PENDING
+    // Ritorna violazioni PENDING
     public List<Violation> listPendingViolations() {
         return repo.findAll().stream()
                 .filter(Violation::isPending)
                 .collect(Collectors.toList());
     }
 
-    // Gestisce la squalifica del Team
+    // squalifica del Team
     public void handleDisqualifyTeam(String violationId) {
         Violation violation = getById(violationId);
         violation.setDisqualifyTeam(); // Chiama il metodo corretto del modello
         repo.save(violation);
     }
 
-    // Gestisce la squalifica del singolo Membro
+    // squalifica del  Membro
     public void handleDisqualifyMember(String violationId) {
         Violation violation = getById(violationId);
         violation.setDisqualifyMember(); // Chiama il metodo corretto del modello

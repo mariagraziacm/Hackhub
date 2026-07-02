@@ -4,7 +4,6 @@ import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.BuilderHackathon;
 import  it.unicam.hackhub.model.Team;
-import it.unicam.hackhub.service.TeamService;
 
 import java.util.List;
 

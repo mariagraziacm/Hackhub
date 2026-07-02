@@ -37,11 +37,11 @@ public class TeamService {
         return repo.isUserInAnyTeam(userId);
     }
 
-    // UC: Cambio Leader (effettuabile solo dal leader attuale)
+    // UC: Cambio Leader 
     public void changeLeader(String requesterUserId, String teamId, String newLeaderUserId) {
         Team team = getById(teamId);
         
-        // 1. Trova l'oggetto TeamMember del leader attuale per estrarre l'utente User
+        //  Trova leader attuale 
         TeamMember oldLeaderMember = team.getMembers().stream()
                 .filter(m -> m.getUserId().equals(requesterUserId))
                 .findFirst()
@@ -51,24 +51,24 @@ public class TeamService {
             throw new IllegalStateException("Solo l'attuale leader può cedere il comando del team!");
         }
         
-        // 2. Trova l'oggetto TeamMember del nuovo leader per estrarre l'utente User
+        // Trova nuovo leader 
         TeamMember newLeaderMember = team.getMembers().stream()
                 .filter(m -> m.getUserId().equals(newLeaderUserId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("L'utente designato non fa parte di questo team!"));
 
-        // 3. Usa i metodi interni di Team per rimuovere i nodi in modo sicuro
+        // Rimuovere i membri
         team.removeMember(requesterUserId);
         team.removeMember(newLeaderUserId);
 
-        // 4. Ri-aggiungi i membri invertendo i ruoli usando il metodo addMember nativo di Team
+        // Ri-aggiungi i membri invertendo i ruoli 
         team.addMember(new TeamMember(UUID.randomUUID().toString(), oldLeaderMember.getUser(), Role.MEMBER));
         team.addMember(new TeamMember(UUID.randomUUID().toString(), newLeaderMember.getUser(), Role.LEADER));
         
         repo.save(team);
     }
 
-    // UC: Rimozione Membro (effettuabile solo dal leader)
+    // UC: Rimozione Membro 
     public void removeMember(String leaderUserId, String teamId, String memberUserId) {
         Team team = getById(teamId);
         
@@ -86,7 +86,7 @@ public class TeamService {
         repo.save(team);
     }
 
-    // UC: Abbandono volontario del Team da parte di un membro ordinario
+    // UC: Abbandono del Team da parte di un membro 
     public void leaveTeam(String teamId, String userId) {
         Team team = getById(teamId);
         

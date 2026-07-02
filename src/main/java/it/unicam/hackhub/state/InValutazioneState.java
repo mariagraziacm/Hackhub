@@ -7,7 +7,7 @@ import it.unicam.hackhub.model.Submission;
 public class InValutazioneState implements HackathonState {
     @Override
     public String getName() {
-        return "IN_VALUTAZIONE";
+        return "IN VALUTAZIONE";
     }
 
     @Override

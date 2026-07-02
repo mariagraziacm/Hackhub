@@ -7,7 +7,7 @@ import it.unicam.hackhub.model.Submission;
 public class InCorsoState implements HackathonState {
     @Override
     public String getName() { 
-        return "IN_CORSO"; 
+        return "IN CORSO"; 
     }
 
     @Override
@@ -22,9 +22,7 @@ public class InCorsoState implements HackathonState {
 
     @Override
     public void inviaSottomissione(Hackathon hackathon, Team team, Submission submission) {
-        // Se l'hackathon memorizza le sottomissioni o delega al repository, 
-        // l'azione è permessa e valida esclusivamente in questo stato.
-        // Nota: Assicurati di aggiungere il meccanismo di salvataggio/mappa sottomissioni se necessario.
+       
     }
 
     @Override

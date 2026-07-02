@@ -9,7 +9,6 @@ public class TeamRepository {
     private final List<Team> teams = new ArrayList<>();
 
     public void save(Team team) {
-    // Se esiste già, lo rimuove per non duplicarlo, poi inserisce quello aggiornato
     teams.removeIf(t -> t.getId().equals(team.getId()));
     teams.add(team);
 }

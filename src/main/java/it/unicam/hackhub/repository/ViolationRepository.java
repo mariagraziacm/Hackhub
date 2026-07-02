@@ -20,7 +20,7 @@ public class ViolationRepository {
                 .findFirst();
     }
 
-    // NUOVO: Ritorna la lista reale di tutte le violazioni salvate
+    // Ritorna la lista reale di tutte le violazioni salvate
     public List<Violation> findAll() {
         return new ArrayList<>(violations);
     }

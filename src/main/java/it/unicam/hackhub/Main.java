@@ -7,7 +7,7 @@ import it.unicam.hackhub.controller.*;
 
 public class Main {
     public static void main(String[] args) {
-        // 1. Inizializzazione Repository
+    
         TeamRepository teamRepo = new TeamRepository();
         UserRepository userRepo = new UserRepository();
         HackathonRepository hackRepo = new HackathonRepository();
@@ -15,23 +15,23 @@ public class Main {
         SubmissionRepository submissionRepo = new SubmissionRepository();
         ViolationRepository violationRepo = new ViolationRepository();
 
-        // 2. Inizializzazione Service (Sistemati i passaggi dei Repository corretti)
+    
         TeamService teamService = new TeamService(teamRepo);
         HackathonService hackathonService = new HackathonService(hackRepo, teamService);
         InviteService inviteService = new InviteService(inviteRepo, teamService, userRepo);
         
-        // Passiamo i repository necessari a SubmissionService per i controlli di Stato
+        
         SubmissionService submissionService = new SubmissionService(submissionRepo, hackRepo, teamRepo);
         
-        // Il costruttore di ViolationService richiede solo il suo repository
+        
         ViolationService violationService = new ViolationService(violationRepo);
 
-        // 3. Inizializzazione Controller
+       
         InviteController inviteController = new InviteController(inviteService);
         SubmissionController submissionController = new SubmissionController(submissionService);
         ViolationController violationController = new ViolationController(violationService);
 
-        // 4. Creazione Utenti di Test
+        //Creazione Utenti di Test
         User leader = new User("Mario", "Rossi", "mario@mail.it", "123", "U1");
         User u2 = new User("Luca", "Bianchi", "luca@mail.it", "123", "U2");
         User u3 = new User("Anna", "Verdi", "anna@mail.it", "123", "U3");
@@ -44,7 +44,7 @@ public class Main {
         userRepo.save(mentor);
         userRepo.save(judge);
 
-        // 5. Test Iterazione 1: Creazione e Gestione Team
+        // Test Iterazione 1
         Team team = teamService.createTeam("T1", "TeamRocket", leader);
 
         System.out.println("Team creato: " + team.getName());
@@ -55,7 +55,7 @@ public class Main {
 
         System.out.println("Membri team: " + team.getMembers().size());
 
-        // 6. Test State Pattern su Hackathon
+        // Test State Pattern su Hackathon
         Hackathon hackathon = hackathonService.createHackathon("H1", "Hackathon Test", "a");
 
         System.out.println("Hackathon creato: " + hackathon.getName());
@@ -76,7 +76,7 @@ public class Main {
 
         // Avanzamento di stato: passa a IN_CORSO
         hackathon.nextState();
-        hackRepo.save(hackathon); // Aggiorna lo stato nel repository simulato
+        hackRepo.save(hackathon); 
         System.out.println("Nuovo stato: " + hackathon.getState().getName());
 
         try {
@@ -116,7 +116,7 @@ public class Main {
 
         // UC: Sottomissione Progetto (Send / Edit)
         try {
-            // Usiamo il controller per inviare la sottomissione in modo coerente
+            
             submissionController.sendSubmission("H1", "T1", "Project Rocket", "Descrizione progetto");
             String submissionId = submissionRepo.findAll().get(0).getId();
             submissionController.editSubmission(submissionId, "Project Rocket v2", "Descrizione aggiornata");
@@ -137,7 +137,7 @@ public class Main {
             System.out.println("Errore violazione: " + e.getMessage());
         }
 
-        // UC: Operazioni interne del Team (Cambio Leader, Rimozione, Abbandono)
+        // UC: (Cambio Leader, Rimozione, Abbandono)
         try {
             teamService.changeLeader("U1", "T1", "U2");
             team = teamService.getById("T1");
@@ -155,6 +155,5 @@ public class Main {
             e.printStackTrace();
         }
 
-        System.out.println("=== FINE TEST ===");
     }
 }

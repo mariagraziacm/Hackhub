@@ -1,6 +1,6 @@
-package main.java.it.unicam.hackhub.model;
+package it.unicam.hackhub.model;
 
-public class Role {
+public enum Role{
     LEADER,
     MEMBER
 }

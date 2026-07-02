@@ -1,9 +1,8 @@
-package main.java.it.unicam.hackhub.controller;
+package it.unicam.hackhub.controller;
 
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.repository.TeamRepository;
 import it.unicam.hackhub.model.Invite;
-import it.unicam.hackhub.repository.UsersRepository;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.InviteState;
 
@@ -15,12 +14,12 @@ import java.util.Optional;
 
 public class InviteController {
     private final TeamRepository teamRepository;
-    private final UsersRepository usersRepository;
+    private final it.unicam.hackhub.repository.UserRepository userRepository;
     private final List<Invite> invites = new ArrayList<>();
 
-    public InviteController(TeamRepository teamRepository, UsersRepository usersRepository) {
+    public InviteController(TeamRepository teamRepository, it.unicam.hackhub.repository.UserRepository userRepository) {
         this.teamRepository = teamRepository;
-        this.usersRepository = usersRepository;
+        this.userRepository = userRepository;
     }
 
     public void sendInvite(String idLeaderUser, String idTeam, String idUserDaInvitare) {
@@ -31,16 +30,16 @@ public class InviteController {
         }
         Team team = teamOpt.get();
 
-        if (team.getLeader() == null || !team.getLeader().getTeamMember().getUser().getId().equals(idLeaderUser)) {
+        if (team.getLeader() == null || !team.getLeader().getUser().getId().equals(idLeaderUser)) {
             System.out.println("SYSTEM [ERRORE]: Solo il leader del team può inviare inviti!");
             return;
         }
-        if (team.isAlCompleto()) {
+        if (team.isFull()) {
             System.out.println("SYSTEM [ERRORE]: Impossibile invitare altri utenti, il team è al completo!");
             return;
         }
 
-        Optional<User> userOpt = usersRepository.findById(idUserDaInvitare);
+        Optional<User> userOpt = userRepository.findById(idUserDaInvitare);
         if (userOpt.isEmpty()) {
             System.out.println("SYSTEM [ERRORE]: L'utente selezionato non esiste!");
             return;
@@ -53,7 +52,7 @@ public class InviteController {
         }
 
         String inviteId = "INV-" + (invites.size() + 1);
-        Invite nuovoInvito = new Invite(inviteId, InviteState.PENDING, utenteDaInvitare, team);
+        Invite nuovoInvito = new Invite(inviteId, utenteDaInvitare, team);
         invites.add(nuovoInvito);
 
         System.out.println("SYSTEM: Invito (" + inviteId + ") inoltrato con successo all'utente " + utenteDaInvitare.getName());

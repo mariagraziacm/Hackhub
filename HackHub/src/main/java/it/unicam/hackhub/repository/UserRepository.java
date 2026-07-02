@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UsersRepository {
+public class UserRepository {
     private final List<User> users = new ArrayList<>();
 
     public void save(User user) {
@@ -14,7 +14,7 @@ public class UsersRepository {
 
     public Optional<User> findById(String id) {
         return users.stream()
-                .filter(u -> u.getid().equals(id))
+                .filter(u -> u.getId().equals(id))
                 .findFirst();
     }
 }

@@ -1,111 +1,83 @@
 package it.unicam.hackhub;
 
-import it.unicam.hackhub.controller.PartecipationController;
-import it.unicam.hackhub.model.PartecipationRequest;
 import it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.model.Hackathon;
+import it.unicam.hackhub.service.HackathonService;
+import it.unicam.hackhub.repository.HackathonRepository;
+import it.unicam.hackhub.repository.TeamRepository;
+import it.unicam.hackhub.service.TeamService;
+import it.unicam.hackhub.repository.UserRepository;
+import it.unicam.hackhub.repository.UserRepository;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.TeamMember;
-import it.unicam.hackhub.repository.TeamRepository;
-import it.unicam.hackhub.repository.UsersRepository;
+import it.unicam.hackhub.model.Role;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("==================================================");
-        System.out.println("          STARTING HACKHUB SIMULATION             ");
-        System.out.println("==================================================\n");
+        TeamRepository teamRepo = new TeamRepository();
+        UserRepository userRepo = new UserRepository();
+        HackathonRepository hackRepo = new HackathonRepository();
 
-        // 1. INIZIALIZZAZIONE REPOSITORY
-        UsersRepository usersRepository = new UsersRepository();
-        TeamRepository teamRepository = new TeamRepository();
-        HackathonRepository hackathonRepository = new HackathonRepository();
+        TeamService teamService = new TeamService(teamRepo);
+        HackathonService hackathonService = new HackathonService(hackRepo, teamService);
 
-        // 2. INIZIALIZZAZIONE SERVIZI
-        HackathonService hackathonService = new HackathonService(hackathonRepository);
-        TeamService teamService = new TeamService(teamRepository);
-        PartecipationRequestService requestService = new PartecipationRequestService(teamRepository, usersRepository);
 
-        // 3. INIZIALIZZAZIONE CONTROLLER
-        HackathonController hackathonController = new HackathonController(hackathonService);
-        IscrizioneController iscrizioneController = new IscrizioneController(teamService, hackathonService);
-        PartecipationController partecipationController = new PartecipationController(requestService);
-        InviteController inviteController = new InviteController(teamRepository, usersRepository);
+        User leader = new User("Mario", "Rossi", "mario@mail.it", "123", "U1");
+        User u2 = new User("Luca", "Bianchi", "luca@mail.it", "123", "U2");
+        User u3 = new User("Anna", "Verdi", "anna@mail.it", "123", "U3");
 
-        // 4. POPOLAMENTO UTENTI (Simuliamo database iniziale)
-        User alice = new User("USR-1", "Alice");
-        User bob = new User("USR-2", "Bob");
-        User charlie = new User("USR-3", "Charlie");
-        User david = new User("USR-4", "David");
+        userRepo.save(leader);
+        userRepo.save(u2);
+        userRepo.save(u3);
 
-        usersRepository.save(alice);
-        usersRepository.save(bob);
-        usersRepository.save(charlie);
-        usersRepository.save(david);
 
-        // ==================================================
-        // SCENARIO 1: CREAZIONE HACKATHON
-        // ==================================================
-        System.out.println("--- Scenario 1: Creazione Hackathon ---");
-        hackathonController.newHackathon("HACK-2026", "AI Innovation Challenge", 100, "Sviluppo modelli AI");
+        Team team = teamService.createTeam("T1", "TeamRocket", leader);
 
-        // Test duplicato (Deve fallire)
-        hackathonController.newHackathon("HACK-DUP", "AI Innovation Challenge", 50, "Duplicato");
-        System.out.println();
+        System.out.println("Team creato: " + team.getName());
+        System.out.println("Leader: " + team.getLeader().getUser().getName());
 
-        // ==================================================
-        // SCENARIO 2: CREAZIONE TEAM E CONTROLLI UNICITÀ
-        // ==================================================
-        System.out.println("--- Scenario 2: Creazione Team ---");
-        Team teamAlpha = iscrizioneController.creaTeam("TEAM-A", "AlphaCoders", alice); // Alice è leader
+        team.addMember(new TeamMember("TM2", u2, Role.MEMBER));
+        team.addMember(new TeamMember("TM3", u3, Role.MEMBER));
 
-        // Test utente già in un altro team (Deve fallire)
-        iscrizioneController.creaTeam("TEAM-B", "BetaTesters", alice);
-        System.out.println();
+        System.out.println("Membri team: " + team.getMembers().size());
 
-        // ==================================================
-        // SCENARIO 3: TENTATIVO ISCRIZIONE FALLITO (Meno di 2 membri)
-        // ==================================================
-        System.out.println("--- Scenario 3: Test Vincolo Minimo Partecipanti ---");
-        System.out.println("Tentativo di iscrivere il team Alpha con 1 solo membro (Solo Alice)...");
-        iscrizioneController.iscriviTeamAdHackathon("TEAM-A", "HACK-2026");
-        System.out.println();
 
-        // ==================================================
-        // SCENARIO 4: AGGIUNTA MEMBRI (Richiesta & Invito)
-        // ==================================================
-        System.out.println("--- Scenario 4: Ampliamento Team ---");
+        Hackathon hackathon = hackathonService.createHackathon(
+                "H1",
+                "Hackathon Test",
+                "a"
+        );
 
-        // Bob manda una richiesta di partecipazione ad AlphaCoders
-        partecipationController.sendRequest("TEAM-A", "USR-2");
-        // Il service accetta la richiesta interna REQ-1 (Bob entra nel team)
-        requestService.acceptRequest("REQ-1");
-        System.out.println("SYSTEM: Bob è entrato nel team.");
+        System.out.println("Hackathon creato: " + hackathon.getName());
+        System.out.println("Stato iniziale: " + hackathon.getState().getName());
 
-        // Il leader Alice invita Charlie usando l'InviteController
-        inviteController.sendInvite("USR-1", "TEAM-A", "USR-3");
-        System.out.println();
+        hackathon.iscriviTeam(team);
 
-        // ==================================================
-        // SCENARIO 5: ISCRIZIONE CON SUCCESSO
-        // ==================================================
-        System.out.println("--- Scenario 5: Iscrizione con requisiti validi ---");
-        System.out.println("Ora il team ha " + teamRepository.findById("TEAM-A").get().getMembers().size() + " membri.");
-        iscrizioneController.iscriviTeamAdHackathon("TEAM-A", "HACK-2026");
-        System.out.println();
+        System.out.println("Team iscritti: " + hackathon.getTeams().size());
 
-        // ==================================================
-        // SCENARIO 6: CAMBIO STATO E BLOCCO ABBANDONO
-        // ==================================================
-        System.out.println("--- Scenario 6: Avanzamento Stato e Test Vincoli ---");
+        User leader2 = new User("Giulia", "Neri", "giulia@mail.it", "123", "U4");
+        userRepo.save(leader2);
 
-        // L'amministratore fa avanzare l'Hackathon allo stato IN_CORSO
-        hackathonService.advanceState("HACK-2026");
+        Team team2 = teamService.createTeam("T2", "TeamBlue", leader2);
 
-        // Ora che è IN_CORSO, il leader Alice prova ad abbandonare (Deve fallire per via dello State Pattern)
-        System.out.println("Tentativo di abbandono in fase IN_CORSO...");
-        iscrizioneController.abbandonaHackathon("USR-1", "TEAM-A", "HACK-2026");
+        team2.addMember(new TeamMember("TM4", new User("Marco","Rossi","m","p","U5"), Role.MEMBER));
+        team2.addMember(new TeamMember("TM5", new User("Sara","Verdi","s","p","U6"), Role.MEMBER));
 
-        System.out.println("\n==================================================");
-        System.out.println("          SIMULATION ENDED SUCCESSFULLY           ");
-        System.out.println("==================================================");
+        hackathon.iscriviTeam(team2);
+
+        System.out.println("Team iscritti dopo secondo team: " + hackathon.getTeams().size());
+
+
+        hackathon.nextState();
+        System.out.println("Nuovo stato: " + hackathon.getState().getName());
+
+        try {
+            Team team3 = teamService.createTeam("T3", "TeamBlocked", leader);
+            hackathon.iscriviTeam(team3);
+        } catch (Exception e) {
+            System.out.println("Errore atteso (state block): " + e.getMessage());
+        }
+
+        System.out.println("Team finali nell'hackathon: " + hackathon.getTeams().size());
     }
 }

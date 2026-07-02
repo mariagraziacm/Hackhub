@@ -14,7 +14,7 @@ public class HackathonController {
 
     public void newHackathon(String id, String name, String specifications) {
         try {
-            Hackathon nuovoHackathon = hackathonService.createHackathon(id, name, partecipanti, specifications);
+            Hackathon nuovoHackathon = hackathonService.createHackathon(id, name, specifications);
             System.out.println("SYSTEM: Hackathon '" + name + "' creato con successo e impostato in fase '"
                     + nuovoHackathon.getState().getName()+ "'.");
         } catch (IllegalArgumentException | IllegalStateException e) {

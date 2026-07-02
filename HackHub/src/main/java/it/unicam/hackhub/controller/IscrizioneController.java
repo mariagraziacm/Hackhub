@@ -25,10 +25,10 @@ public class IscrizioneController {
         }
     }
 
-    public void iscriviTeamAdHackathon(String teamId, String hackathonId) {
+    public void iscriviTeamAdHackathon(String hackathonId, String teamId) {
         try {
             Team team = teamService.getById(teamId);
-            hackathonService.iscriviTeam(team, hackathonId);
+            hackathonService.addTeamToHackathon(hackathonId, team);
         } catch (IllegalStateException | IllegalArgumentException e) {
             System.out.println("ISCRIZIONE [ERRORE]: " + e.getMessage());
         }
@@ -38,13 +38,17 @@ public class IscrizioneController {
         try {
             Team team = teamService.getById(teamId);
 
-            if (team.getLeader() == null || !team.getLeader().getTeamMember().getUser().getId().equals(idLeaderUser)) {
-                System.out.println("ISCRIZIONE [ERRORE]: Solo il leader del team può disiscrivere il team dall'hackathon!");
+            if (team.getLeader() == null ||
+                    !team.getLeader().getUser().getId().equals(idLeaderUser)) {
+
+                System.out.println("ISCRIZIONE [ERRORE]: Solo il leader può disiscrivere il team!");
                 return;
             }
 
-            hackathonService.disiscriviTeam(team, hackathonId);
-            System.out.println("SYSTEM: Il team '" + team.getName() + "' non è più iscritto all'hackathon.");
+            hackathonService.removeTeamFromHackathon(hackathonId, team);
+
+            System.out.println("SYSTEM: Team rimosso dall'hackathon");
+
         } catch (IllegalStateException | IllegalArgumentException e) {
             System.out.println("ISCRIZIONE [ERRORE]: " + e.getMessage());
         }

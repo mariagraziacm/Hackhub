@@ -1,11 +1,13 @@
 package it.unicam.hackhub.model;
 
+import it.unicam.hackhub.model.Role;
 import it.unicam.hackhub.model.User;
+
 
 public class TeamMember {
     private final String id;
     private final User user;
-    private final Role role;
+    private final  Role role;
 
     public TeamMember(String id, User user, Role role) {
         this.id = id;
@@ -16,6 +18,9 @@ public class TeamMember {
     public String getId() { return id; }
     public User getUser() { return user; }
     public Role getRole() { return role; }
+    public String getUserId() {
+        return user.getId();
+    }
 
     public boolean isLeader() {
         return role == Role.LEADER;

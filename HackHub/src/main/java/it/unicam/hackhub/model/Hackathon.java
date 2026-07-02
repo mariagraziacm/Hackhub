@@ -17,7 +17,6 @@ public class Hackathon {
     private HackathonState state;
 
     private final List<Team> teams = new ArrayList<>();
-    private final List<Submission> submissions = new ArrayList<>();
 
     private String rules;
     private String specifications;

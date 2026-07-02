@@ -1,12 +1,13 @@
 package it.unicam.hackhub.model;
 
-
-import it.unicam.hackhub.model.InviteState;
-import it.unicam.hackhub.model.PartecipationRequest;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.User;
+import it.unicam.hackhub.model.InviteState ;
+import it.unicam.hackhub.model.Team;
 
-public class Invite {
+
+
+public class Invite{
     private final String id;
     private final User user;
     private final Team team;
@@ -29,5 +30,18 @@ public class Invite {
         if (state != InviteState.PENDING)
             throw new IllegalStateException();
         state = InviteState.DECLINED;
+    }
+    public String getId(){ return id;}
+
+    public User getUser() {
+        return user;
+    }
+
+    public Team getTeam() {
+        return team;
+    }
+
+    public InviteState getState() {
+        return state;
     }
 }

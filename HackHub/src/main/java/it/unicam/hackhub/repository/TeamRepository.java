@@ -30,6 +30,6 @@ public class TeamRepository {
     public boolean isUserInAnyTeam(String userId) {
         return teams.stream()
                 .flatMap(team -> team.getMembers().stream())
-                .anyMatch(member -> member.getUser().getid().equals(userId));
+                .anyMatch(member -> member.getUser().getId().equals(userId));
     }
 }

@@ -1,4 +1,4 @@
-package main.java.it.unicam.hackhub.state;
+package it.unicam.hackhub.state;
 
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.Hackathon;

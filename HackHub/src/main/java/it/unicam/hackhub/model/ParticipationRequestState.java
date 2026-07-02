@@ -1,6 +1,6 @@
 package it.unicam.hackhub.model;
 
-public enum PartecipationRequestState {
+public enum ParticipationRequestState {
     PENDING,
     ACCEPTED,
     DECLINED

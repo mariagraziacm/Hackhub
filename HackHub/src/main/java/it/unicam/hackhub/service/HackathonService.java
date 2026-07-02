@@ -1,9 +1,10 @@
-package main.java.it.unicam.hackhub.service;
+package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.BuilderHackathon;
 import  it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.service.TeamService;
 
 import java.util.List;
 
@@ -36,7 +37,6 @@ public class HackathonService{
         return hackathon;
     }
 
-    // gestione team
     public void addTeamToHackathon(String hackathonId, Team team) {
 
         Hackathon hackathon = repo.findById(hackathonId)

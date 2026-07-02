@@ -1,38 +1,37 @@
 package it.unicam.hackhub.model;
 
-import it.unicam.hackhub.model.InviteState;
-import it.unicam.hackhub.model.User;
+import it.unicam.hackhub.model.ParticipationRequestState;
+import  it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.Team;
-import it.unicam.hackhub.model.PartecipationRequestState;
 
 
-public class PartecipationRequest{
+public class ParticipationRequest {
     private final String id;
     private final User user;
     private final Team team;
-    private RequestState state;
+    private ParticipationRequestState state;
 
     public ParticipationRequest(String id, User user, Team team) {
         this.id = id;
         this.user = user;
         this.team = team;
-        this.state = PartecipationRequestState.PENDING;
+        this.state = ParticipationRequestState.PENDING;
     }
 
     public String getId() { return id; }
     public User getUser() { return user; }
     public Team getTeam() { return team; }
-    public PartecipationRequestState getState() { return state; }
+    public ParticipationRequestState getState() { return state; }
 
     public void accept() {
-        if (state != PartecipationRequestState.PENDING)
+        if (state != ParticipationRequestState.PENDING)
             throw new IllegalStateException("Already processed");
-        state = PartecipationRequestState.ACCEPTED;
+        state = ParticipationRequestState.ACCEPTED;
     }
 
     public void decline() {
-        if (state != PartecipationRequestState.PENDING)
+        if (state != ParticipationRequestState.PENDING)
             throw new IllegalStateException("Already processed");
-        state = PartecipationRequestState.DECLINED;
+        state = ParticipationRequestState.DECLINED;
     }
 }

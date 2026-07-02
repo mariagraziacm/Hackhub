@@ -28,6 +28,22 @@ public class Team {
         if (isFull()) {
             throw new IllegalStateException("Team pieno");
         }
+
+        if (hasUser(member.getUserId())) {
+            throw new IllegalStateException("Utente già presente");
+        }
+
+        if (member.isLeader()) {
+
+            boolean alreadyLeader =
+                    members.stream()
+                            .anyMatch(TeamMember::isLeader);
+
+            if (alreadyLeader) {
+                throw new IllegalStateException("Leader già presente");
+            }
+        }
+
         members.add(member);
     }
 
@@ -42,5 +58,25 @@ public class Team {
     public boolean hasUser(String userId) {
         return members.stream()
                 .anyMatch(m -> m.getUser().getId().equals(userId));
+    }
+
+    public void removeMember(String userId) {
+
+        members.removeIf(
+                m -> m.getUserId().equals(userId)
+        );
+    }
+
+    public boolean isLeader(String userId) {
+        return getLeader()
+                .getUserId()
+                .equals(userId);
+    }
+
+    public TeamMember getLeader() {
+        return members.stream()
+                .filter(TeamMember::isLeader)
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Leader non trovato"));
     }
 }

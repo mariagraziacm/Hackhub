@@ -2,8 +2,7 @@ package it.unicam.hackhub.state;
 
 import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Team;
-import it.unicam.hackhub.state.HackathonState;
-import it.unicam.hackhub.state.InCorsoState;
+import it.unicam.hackhub.model.Submission;
 
 public class InIscrizioneState implements HackathonState {
     @Override
@@ -22,6 +21,11 @@ public class InIscrizioneState implements HackathonState {
     @Override
     public void disiscriviTeam(Hackathon hackathon, Team team) {
         hackathon.removeTeam(team);
+    }
+
+    @Override
+    public void inviaSottomissione(Hackathon hackathon, Team team, Submission submission) {
+        throw new IllegalStateException("Impossibile inviare la sottomissione: l'hackathon non è ancora in corso!");
     }
 
     @Override

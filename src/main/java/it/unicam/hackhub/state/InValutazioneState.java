@@ -1,11 +1,10 @@
 package it.unicam.hackhub.state;
 
-import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.Hackathon;
-import it.unicam.hackhub.state.HackathonState;
-import it.unicam.hackhub.state.ConclusoState;
+import it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.model.Submission;
 
-public class InValutazioneState implements HackathonState{
+public class InValutazioneState implements HackathonState {
     @Override
     public String getName() {
         return "IN_VALUTAZIONE";
@@ -19,6 +18,11 @@ public class InValutazioneState implements HackathonState{
     @Override
     public void disiscriviTeam(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Non puoi disiscriverti in valutazione");
+    }
+
+    @Override
+    public void inviaSottomissione(Hackathon hackathon, Team team, Submission submission) {
+        throw new IllegalStateException("Impossibile inviare o modificare la sottomissione: l'hackathon è in fase di valutazione!");
     }
 
     @Override

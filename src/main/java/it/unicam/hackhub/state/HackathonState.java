@@ -2,10 +2,12 @@ package it.unicam.hackhub.state;
 
 import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.model.Submission;
 
-public interface HackathonState{
+public interface HackathonState {
     String getName();
     void iscriviTeam(Hackathon context, Team team);
     void disiscriviTeam(Hackathon context, Team team);
+    void inviaSottomissione(Hackathon context, Team team, Submission submission);
     void next(Hackathon context);
 }

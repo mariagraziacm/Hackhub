@@ -71,4 +71,7 @@ public class Hackathon {
     public void nextState() {
         state.next(this);
     }
+    public void inviaSottomissione(Team team, Submission submission) {
+        state.inviaSottomissione(this, team, submission);
+    }
 }

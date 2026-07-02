@@ -22,14 +22,29 @@ public class ViolationController {
     }
 
     public void chooseDisqualifyTeam(String violationId) {
-        violationService.disqualifyTeam(violationId);
+        try {
+            violationService.handleDisqualifyTeam(violationId);
+            System.out.println("SYSTEM: Team squalificato dall'organizzatore.");
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+        }
     }
 
-    public void chooseDisqualifyMember(String violationId, String memberId) {
-        violationService.disqualifyMember(violationId, memberId);
+    public void chooseDisqualifyMember(String violationId) {
+        try {
+            violationService.handleDisqualifyMember(violationId);
+            System.out.println("SYSTEM: Membro squalificato dall'organizzatore.");
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+        }
     }
 
     public void chooseNoAction(String violationId) {
-        violationService.noAction(violationId);
+        try {
+            violationService.handleNoAction(violationId);
+            System.out.println("SYSTEM: Violazione archiviata senza provvedimenti.");
+        } catch (IllegalStateException | IllegalArgumentException e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+        }
     }
 }

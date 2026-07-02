@@ -1,7 +1,6 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.Violation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +9,9 @@ public class ViolationRepository {
     private final List<Violation> violations = new ArrayList<>();
 
     public void save(Violation violation) {
+        // Previene i duplicati rimuovendo la vecchia istanza prima di salvare quella aggiornata
+        violations.removeIf(v -> v.getId().equals(violation.getId()));
         violations.add(violation);
-    }
-
-    public List<Violation> findAll() {
-        return violations;
     }
 
     public Optional<Violation> findById(String id) {
@@ -23,13 +20,8 @@ public class ViolationRepository {
                 .findFirst();
     }
 
-    public List<Violation> findPending() {
-        return violations.stream()
-                .filter(Violation::isPending)
-                .toList();
-    }
-
-    public void deleteById(String id) {
-        violations.removeIf(v -> v.getId().equals(id));
+    // NUOVO: Ritorna la lista reale di tutte le violazioni salvate
+    public List<Violation> findAll() {
+        return new ArrayList<>(violations);
     }
 }

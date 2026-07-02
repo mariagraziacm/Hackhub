@@ -3,6 +3,12 @@ package it.unicam.hackhub.model;
 import java.util.Objects;
 
 public class Violation {
+    
+    // Spostato PUBLIC ENUM all'interno della classe come tipo nidificato
+    public enum ViolationStatus {
+        PENDING, DISQUALIFY_TEAM, DISQUALIFY_MEMBER, NO_ACTION
+    }
+
     private final String id;
     private final String hackathonId;
     private final String teamId;
@@ -10,8 +16,8 @@ public class Violation {
     private final String mentorId;
     private final String reason;
 
-    // PENDING, DISQUALIFY_TEAM, DISQUALIFY_MEMBER, NO_ACTION
-    private String status = "PENDING";
+    // Inizializzazione sicura con lo stato PENDING
+    private ViolationStatus status = ViolationStatus.PENDING;
 
     public Violation(String id,
                      String hackathonId,
@@ -33,25 +39,25 @@ public class Violation {
     public String getReportedMemberId() { return reportedMemberId; }
     public String getMentorId() { return mentorId; }
     public String getReason() { return reason; }
-    public String getStatus() { return status; }
+    public ViolationStatus getStatus() { return status; }
 
     public boolean isPending() {
-        return "PENDING".equals(status);
+        return ViolationStatus.PENDING.equals(status);
     }
 
     public void setDisqualifyTeam() {
         ensurePending();
-        this.status = "DISQUALIFY_TEAM";
+        this.status = ViolationStatus.DISQUALIFY_TEAM;
     }
 
     public void setDisqualifyMember() {
         ensurePending();
-        this.status = "DISQUALIFY_MEMBER";
+        this.status = ViolationStatus.DISQUALIFY_MEMBER;
     }
 
     public void setNoAction() {
         ensurePending();
-        this.status = "NO_ACTION";
+        this.status = ViolationStatus.NO_ACTION;
     }
 
     private void ensurePending() {
@@ -62,7 +68,8 @@ public class Violation {
 
     private String requireNotBlank(String value, String message) {
         if (value == null || value.isBlank()) {
-            throw new IllegalStateException(message);
+            // Nota: solitamente per argomenti errati nel costruttore si lancia IllegalArgumentException
+            throw new IllegalArgumentException(message);
         }
         return value;
     }

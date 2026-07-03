@@ -41,7 +41,7 @@ public class Main {
         StaffService staffService = new StaffService(staffRepository); 
         TeamService teamService = new TeamService(teamRepo);
         HackathonService hackathonService = new HackathonService(hackRepo, teamService, staffService); 
-        InviteService inviteService = new InviteService(inviteRepo, teamService, userRepo);
+        InviteService inviteService = new InviteService(inviteRepo, teamService, userRepo, staffRepository);
         SubmissionService submissionService = new SubmissionService(submissionRepo, hackRepo, teamRepo); 
         ViolationService violationService = new ViolationService(violationRepo, staffService); 
         
@@ -67,7 +67,7 @@ public class Main {
         userRepo.save(judge);
         userRepo.save(uOrganizer);
 
-        // Creazione record staff per non far fallire i controlli dei casi d'uso
+       
         Organizer organizer = new Organizer("ORG1", uOrganizer, "H1");
         Mentor mentorStaff = new Mentor("MNT1", mentor, "H1");
         staffRepository.save(organizer);
@@ -84,7 +84,7 @@ public class Main {
 
         System.out.println("Membri team: " + team.getMembers().size());
 
-        // Test State Pattern su Hackathon 
+        
         Hackathon hackathon = hackathonService.createHackathon("H1", "Hackathon Test", "a", "ORG1");
 
         System.out.println("Hackathon creato: " + hackathon.getName());
@@ -103,7 +103,7 @@ public class Main {
         hackathon.iscriviTeam(team2);
         System.out.println("Team iscritti dopo secondo team: " + hackathon.getTeams().size());
 
-        // Avanzamento di stato: passa a IN_CORSO
+       
         hackathon.nextState();
         hackRepo.save(hackathon); 
         System.out.println("Nuovo stato: " + hackathon.getState().getName());
@@ -143,7 +143,7 @@ public class Main {
             System.out.println("Errore ciclo invito: " + e.getMessage());
         }
 
-        // UC: Sottomissione Progetto (Send / Edit)
+        // UC: Sottomissione Progetto
         try {
             submissionController.sendSubmission("H1", "T1", "Project Rocket", "Descrizione progetto");
             String submissionId = submissionRepo.findAll().get(0).getId();

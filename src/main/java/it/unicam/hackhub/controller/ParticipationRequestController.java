@@ -3,10 +3,10 @@ package it.unicam.hackhub.controller;
 import it.unicam.hackhub.service.ParticipationRequestService;
 import it.unicam.hackhub.model.ParticipationRequest;
 
-public class ParticipationController {
+public class ParticipationRequestController {
     private final ParticipationRequestService requestService;
 
-    public ParticipationController(ParticipationRequestService requestService) {
+    public ParticipationRequestController(ParticipationRequestService requestService) {
         this.requestService = requestService;
     }
 

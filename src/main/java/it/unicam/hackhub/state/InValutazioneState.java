@@ -30,21 +30,31 @@ public class InValutazioneState implements HackathonState {
         hackathon.setState(new ConclusoState());
     }
 
-    @Override
-    public void proclamaVincitore(Hackathon context, Team team) {
 
-        if (!context.getTeams().contains(team)) {
-            throw new IllegalStateException("Team non parte dell'hackathon");
+
+    @Override
+    public void proclamaVincitore(Hackathon hackathon, Team team) {
+        if (!hackathon.getTeams().contains(team)) {
+            throw new IllegalStateException("Team non partecipante");
         }
 
-        context.setWinner(team);
-        context.setState(new ConclusoState());
+        hackathon.setWinner(team);
+        hackathon.setState(new ConclusoState());
 
         System.out.println("🏆 Vincitore proclamato: " + team.getName());
     }
 
     @Override
-    public void inviaSottomissione(...) {
-        throw new IllegalStateException("Non si possono modificare submission in valutazione");
+    public void valutaSottomissione(Hackathon context, Team team, Submission submission, int score, String comment) {
+
+        if (submission == null) {
+            throw new IllegalStateException("Sottomissione non trovata");
+        }
+
+        if (!submission.getTeamId().equals(team.getId())) {
+            throw new IllegalStateException("Submission non del team selezionato");
+        }
+
+        submission.evaluate(score, comment);
     }
 }

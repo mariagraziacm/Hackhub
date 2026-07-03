@@ -97,9 +97,4 @@ public class Violation {
 
         this.status = newStatus;
     }
-
-    public boolean isPending() {
-        return status == ViolationStatus.PENDING;
-    }
-
 }

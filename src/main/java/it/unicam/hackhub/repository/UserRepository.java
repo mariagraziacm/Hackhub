@@ -19,7 +19,10 @@ public class UserRepository {
     }
     public Optional<User> findByUsername(String username) {
         return users.stream()
-                .filter(u -> u.getName().equals(username))
+                .filter(u -> u.getUsername().equals(username))
                 .findFirst();
+    }
+    public List<User> findAll() {
+        return new ArrayList<>(users);
     }
 }

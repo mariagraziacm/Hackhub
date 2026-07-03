@@ -34,4 +34,9 @@ public class ConclusoState implements HackathonState {
     public void proclamaVincitore(Hackathon context, Team team) {
         throw new IllegalStateException("Hackathon già concluso");
     }
+
+    @Override
+    public void valutaSottomissione(Hackathon context, Team team, Submission submission, int score, String comment) {
+        throw new IllegalStateException("Non è fase di valutazione");
+    }
 }

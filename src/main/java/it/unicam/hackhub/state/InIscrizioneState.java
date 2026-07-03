@@ -37,4 +37,9 @@ public class InIscrizioneState implements HackathonState {
     public void proclamaVincitore(Hackathon context, Team team) {
         throw new IllegalStateException("Non puoi proclamare vincitore in iscrizione");
     }
+
+    @Override
+    public void valutaSottomissione(Hackathon context, Team team, Submission submission, int score, String comment) {
+        throw new IllegalStateException("Non è fase di valutazione");
+    }
 }

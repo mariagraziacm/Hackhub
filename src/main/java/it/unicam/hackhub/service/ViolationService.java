@@ -63,7 +63,6 @@ public class ViolationService {
     }
 
     public void resolveViolation(String violationId, Violation.ViolationStatus status) {
-
         Violation violation = repo.findById(violationId)
                 .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
 
@@ -72,20 +71,29 @@ public class ViolationService {
 
         violation.resolve(status);
 
-        if (status == Violation.ViolationStatus.DISQUALIFY_TEAM) {
-            Team team = teamService.getById(violation.getTeamId());
-            hackathon.removeTeam(team);
-            hackathonRepo.save(hackathon);
-        }
+        switch (status) {
 
-        if (status == Violation.ViolationStatus.DISQUALIFY_MEMBER) {
-            teamService.removeMember(
-                    violation.getReportedMemberId(),
-                    violation.getTeamId(),
-                    violation.getReportedMemberId()
-            );
+            case DISQUALIFY_TEAM -> {
+                Team team = teamService.getById(violation.getTeamId());
+                hackathon.removeTeam(team);
+            }
+
+            case DISQUALIFY_MEMBER -> {
+                teamService.removeMember(
+                        violation.getReportedMemberId(),
+                        violation.getTeamId(),
+                        violation.getReportedMemberId()
+                );
+            }
+
+            case NO_ACTION -> {
+                // niente
+            }
+
+            default -> throw new IllegalStateException("Stato non valido");
         }
 
         repo.save(violation);
+        hackathonRepo.save(hackathon);
     }
 }

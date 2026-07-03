@@ -79,7 +79,7 @@ public void setEvaluated(boolean evaluated) {
     }
 
     public void evaluate(int score, String comment) {
-        if (score < 0 || score > 100) {
+        if (score < 0 || score > 10) {
             throw new IllegalArgumentException("Score non valido");
         }
 

@@ -1,22 +1,28 @@
 package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.model.Hackathon;
+import it.unicam.hackhub.model.Judge;
 import it.unicam.hackhub.model.Submission;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.repository.SubmissionRepository;
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.repository.TeamRepository;
+import it.unicam.hackhub.state.InValutazioneState;
+
+
 import java.util.UUID;
 
 public class SubmissionService {
     private final SubmissionRepository repo;
     private HackathonRepository hackathonRepo;
     private TeamRepository teamRepo;
+    private final StaffService staffService;
 
-    public SubmissionService(SubmissionRepository repo, HackathonRepository hackathonRepo, TeamRepository teamRepo) {
+    public SubmissionService(SubmissionRepository repo, HackathonRepository hackathonRepo, TeamRepository teamRepo, StaffService staffService) {
         this.repo = repo;
         this.hackathonRepo = hackathonRepo;
         this.teamRepo = teamRepo;
+        this.staffService = staffService;
     }
 
     public Submission sendSubmission(String hackathonId, String teamId, String title, String description) {
@@ -70,5 +76,39 @@ public class SubmissionService {
     public Submission getById(String submissionId) {
         return repo.findById(submissionId)
                 .orElseThrow(() -> new IllegalStateException("Sottomissione non trovata"));
+    }
+
+    public void valutaSottomissione(
+            String hackathonId,
+            String teamId,
+            int score,
+            String comment,
+            String judgeId
+    ) {
+
+        Hackathon hackathon = hackathonRepo.findById(hackathonId)
+                .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
+
+        if (!(hackathon.getState() instanceof InValutazioneState)) {
+            throw new IllegalStateException("Hackathon non in fase di valutazione");
+        }
+
+        Judge judge = staffService.getJudge(judgeId);
+
+        Submission submission = repo.findByHackathonIdAndTeamId(hackathonId, teamId)
+                .orElseThrow(() -> new IllegalStateException("Submission non trovata"));
+
+        Team team = teamRepo.findById(teamId)
+                .orElseThrow(() -> new IllegalStateException("Team non trovato"));
+
+        hackathon.getState().valutaSottomissione(
+                hackathon,
+                team,
+                submission,
+                score,
+                comment
+        );
+
+        repo.save(submission);
     }
 }

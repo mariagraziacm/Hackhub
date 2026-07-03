@@ -5,6 +5,7 @@ import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.BuilderHackathon;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.Organizer;
+import it.unicam.hackhub.state.InValutazioneState;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class HackathonService {
         }
 
         Organizer organizer = staffService.getOrganizer(organizerId);
-        
+
         Hackathon hackathon = new BuilderHackathon()
                 .setId(id)
                 .setName(name)
@@ -64,7 +65,7 @@ public class HackathonService {
 
         Team team = teamService.getById(teamId);
         hackathon.disiscriviTeam(team);
-        
+
         // Rimuove tutti i partecipanti del team dall'hackathon svuotando la lista locale all'occorrenza
         repo.save(hackathon);
     }
@@ -77,30 +78,36 @@ public class HackathonService {
         return repo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
     }
-    public void addMentorToHackathon(String hackathonId, String mentorId, String organizerId) {
-    Hackathon hackathon = getById(hackathonId);
-    
-    if (!hackathon.getOrganizer().getId().equals(organizerId)) {
-        throw new IllegalStateException("Solo l'organizzatore di questo hackathon può aggiungere mentori");
-    }
 
-    it.unicam.hackhub.model.Mentor mentor = staffService.getMentor(mentorId);
-    hackathon.addMentor(mentor);
-    repo.save(hackathon);
+    public void addMentorToHackathon(String hackathonId, String mentorId, String organizerId) {
+        Hackathon hackathon = getById(hackathonId);
+
+        if (!hackathon.getOrganizer().getId().equals(organizerId)) {
+            throw new IllegalStateException("Solo l'organizzatore di questo hackathon può aggiungere mentori");
+        }
+
+        it.unicam.hackhub.model.Mentor mentor = staffService.getMentor(mentorId);
+        hackathon.addMentor(mentor);
+        repo.save(hackathon);
     }
 
     public void proclamaVincitore(String hackathonId, String teamId, String organizerId) {
-
         Hackathon hackathon = getById(hackathonId);
 
         if (!hackathon.getOrganizer().getId().equals(organizerId)) {
             throw new IllegalStateException("Solo l'organizzatore può proclamare il vincitore");
         }
 
+        if (!(hackathon.getState() instanceof InValutazioneState)) {
+            throw new IllegalStateException("Hackathon non in fase di valutazione");
+        }
+
         Team team = teamService.getById(teamId);
 
-        hackathon.proclamaVincitore(team);
+        hackathon.getState().proclamaVincitore(hackathon, team);
 
         repo.save(hackathon);
+
+        System.out.println("🏆 Vincitore proclamato: " + team.getName());
     }
 }

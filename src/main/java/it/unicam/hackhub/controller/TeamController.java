@@ -5,11 +5,11 @@ import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.service.TeamService;
 import it.unicam.hackhub.service.HackathonService;
 
-public class IscrizioneController {
+public class TeamController {
     private final TeamService teamService;
     private final HackathonService hackathonService;
 
-    public IscrizioneController(TeamService teamService, HackathonService hackathonService) {
+    public TeamController(TeamService teamService, HackathonService hackathonService) {
         this.teamService = teamService;
         this.hackathonService = hackathonService;
     }

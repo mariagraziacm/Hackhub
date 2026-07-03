@@ -1,8 +1,12 @@
 package it.unicam.hackhub.service;
 
+import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Mentor;
 import it.unicam.hackhub.model.SupportRequest;
 import it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.repository.HackathonRepository;
+import it.unicam.hackhub.repository.SupportRequestRepository;
+import it.unicam.hackhub.state.InCorsoState;
 
 import java.util.List;
 import java.util.UUID;

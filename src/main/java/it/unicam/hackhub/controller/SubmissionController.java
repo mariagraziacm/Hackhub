@@ -27,4 +27,23 @@ public class SubmissionController {
     public Submission getSubmissionById(String submissionId) {
         return submissionService.getById(submissionId);
     }
+
+    public void valutaSottomissione(String hackathonId,
+                                    String teamId,
+                                    int score,
+                                    String comment,
+                                    String judgeId) {
+        try {
+            submissionService.valutaSottomissione(
+                    hackathonId,
+                    teamId,
+                    score,
+                    comment,
+                    judgeId
+            );
+            System.out.println("SYSTEM: Valutazione salvata con successo");
+        } catch (Exception e) {
+            System.out.println("ERROR: " + e.getMessage());
+        }
+    }
 }

@@ -2,10 +2,11 @@ package it.unicam.hackhub.controller;
 
 import it.unicam.hackhub.service.EvaluationService;
 
-public class EvalutationController {
+public class EvaluationController {
+
     private final EvaluationService evaluationService;
 
-    public EvaluationController(EvaluationService evaluationService) {
+    public EvaluationController (EvaluationService evaluationService) {
         this.evaluationService = evaluationService;
     }
 

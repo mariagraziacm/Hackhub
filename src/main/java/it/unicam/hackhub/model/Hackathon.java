@@ -72,7 +72,7 @@ public class Hackathon {
     public void inviaSottomissione(Team team, Submission submission) {
         state.inviaSottomissione(this, team, submission);
     }
-    public Team getWinner(){return winner;}ù
+    public Team getWinner(){return winner;}
 
     public void setWinner(Team winner) {
         this.winner = winner;

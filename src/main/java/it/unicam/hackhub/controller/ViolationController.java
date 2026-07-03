@@ -6,46 +6,22 @@ import it.unicam.hackhub.service.ViolationService;
 import java.util.List;
 
 public class ViolationController {
+    private final ViolationService service;
 
-    private final ViolationService violationService;
-
-    public ViolationController(ViolationService violationService) {
-        this.violationService = violationService;
+    public ViolationController(ViolationService service) {
+        this.service = service;
     }
 
-    public List<Violation> showPendingViolations() {
-        return violationService.listViolations();
-    }
-
-
-
-    public void chooseDisqualifyTeam(String violationId) {
+    public void resolveViolation(String violationId, Violation.ViolationStatus status) {
         try {
-            violationService.resolveViolation(
-                    violationId,
-                    Violation.ViolationStatus.DISQUALIFY_TEAM
-            );
-            System.out.println("Team squalificato");
+            service.resolveViolation(violationId, status);
+            System.out.println("SYSTEM: Violazione gestita correttamente");
         } catch (Exception e) {
             System.out.println("ERRORE: " + e.getMessage());
         }
     }
 
-    public void chooseDisqualifyMember(String violationId) {
-        try {
-            violationService.handleDisqualifyMember(violationId);
-            System.out.println("SYSTEM: Membro squalificato dall'organizzatore.");
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
-        }
-    }
-
-    public void chooseNoAction(String violationId) {
-        try {
-            violationService.handleNoAction(violationId);
-            System.out.println("SYSTEM: Violazione archiviata senza provvedimenti.");
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
-        }
+    public List<Violation> list() {
+        return service.listViolations();
     }
 }

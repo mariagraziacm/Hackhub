@@ -4,7 +4,6 @@ import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.ParticipationRequest;
-import it.unicam.hackhub.model.Role;
 import it.unicam.hackhub.repository.ParticipationRequestRepository;
 import it.unicam.hackhub.repository.UserRepository;
 
@@ -62,14 +61,14 @@ public class ParticipationRequestService {
         return req;
     }
 
-    // Il leader del team accetta la richiesta
+    // SE leader accetta la richiesta
     public void acceptRequest(String requestId, String leaderId) {
         ParticipationRequest req = repo.findById(requestId)
                 .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"));
 
         Team team = req.getTeam();
 
-        // Solo il leader del team destinatario può accettare
+        // Solo leader del team  può accettare
         if (team.getLeader() == null || !team.getLeader().getUserId().equals(leaderId)) {
             throw new IllegalStateException("Solo il leader del team può accettare le richieste di partecipazione");
         }
@@ -85,25 +84,25 @@ public class ParticipationRequestService {
         // Cambia lo stato della richiesta in ACCEPTED
         req.accept();
 
-        // Aggiunge l'utente al team 
+        // Aggiunge l'utente al team usando enum 
         team.addMember(new TeamMember(
                 UUID.randomUUID().toString(),
                 req.getUser(),
-                Role.MEMBER
+                TeamMember.Role.MEMBER
         ));
         
-        // Salva lo stato modificato della richiesta nel repository
+        // Salva nuovo stato della richiesta nel repository
         repo.save(req);
     }
 
-    // Il leader del team rifiuta la richiesta di partecipazione
+    // SE  leader del team rifiuta richiesta di partecipazione
     public void declineRequest(String requestId, String leaderId) {
         ParticipationRequest req = repo.findById(requestId)
                 .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"));
 
         Team team = req.getTeam();
 
-        // Solo il leader del team destinatario può rifiutare
+        // Solo il leader del team può rifiutare
         if (team.getLeader() == null || !team.getLeader().getUserId().equals(leaderId)) {
             throw new IllegalStateException("Solo il leader del team può rifiutare le richieste di partecipazione");
         }
@@ -111,7 +110,7 @@ public class ParticipationRequestService {
         // Cambia lo stato della richiesta in DECLINED
         req.decline();
         
-        // Salva lo stato modificato nel repository
+        // Salva nuovo stato nel repository
         repo.save(req);
     }
 }

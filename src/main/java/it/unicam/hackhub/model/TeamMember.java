@@ -1,11 +1,15 @@
 package it.unicam.hackhub.model;
 
-
-
 public class TeamMember {
     private final String id;
     private final User user;
-    private final  Role role;
+    private final Role role;
+
+    // ENUM
+    public enum Role {
+        LEADER,
+        MEMBER
+    }
 
     public TeamMember(String id, User user, Role role) {
         this.id = id;
@@ -16,6 +20,7 @@ public class TeamMember {
     public String getId() { return id; }
     public User getUser() { return user; }
     public Role getRole() { return role; }
+    
     public String getUserId() {
         return user.getId();
     }

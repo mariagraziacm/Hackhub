@@ -1,7 +1,6 @@
 package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.model.Invite;
-import it.unicam.hackhub.model.Role;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.User;
@@ -29,7 +28,7 @@ public class InviteService {
 
         Team team = teamService.getById(teamId);
 
-        // Solo il leader del team può invitare
+        // Solo il leader può invitare
         if (team.getLeader() == null || !team.getLeader().getUserId().equals(leaderId)) {
             throw new IllegalStateException("Solo il leader del team può inviare inviti");
         }
@@ -92,7 +91,7 @@ public class InviteService {
         team.addMember(new TeamMember(
                 UUID.randomUUID().toString(),
                 user,
-                Role.MEMBER
+                TeamMember.Role.MEMBER
         ));
     }
 
@@ -149,7 +148,7 @@ public class InviteService {
                         i.getUser().getId().equals(userId)
                                 && hackathonId.equals(i.getHackathonId())
                                 && "JUDGE".equals(i.getInviteType().name())
-                                && i.getState() == Invite.  InviteState.PENDING
+                                && i.getState() == Invite.InviteState.PENDING
                 );
 
         if (alreadyPending) {

@@ -3,7 +3,6 @@ package it.unicam.hackhub;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.TeamMember;
-import it.unicam.hackhub.model.Role;
 import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Invite;
 import it.unicam.hackhub.model.Organizer;
@@ -37,16 +36,15 @@ public class Main {
         InviteRepository inviteRepo = new InviteRepository();
         SubmissionRepository submissionRepo = new SubmissionRepository();
         ViolationRepository violationRepo = new ViolationRepository();
-        StaffRepository staffRepository = new StaffRepository(); // Aggiunto repo staff
+        StaffRepository staffRepository = new StaffRepository(); 
         
-        StaffService staffService = new StaffService(staffRepository); // Aggiunto service staff
+        StaffService staffService = new StaffService(staffRepository); 
         TeamService teamService = new TeamService(teamRepo);
-        HackathonService hackathonService = new HackathonService(hackRepo, teamService, staffService); // Corretto hackRepo + staffService
+        HackathonService hackathonService = new HackathonService(hackRepo, teamService, staffService); 
         InviteService inviteService = new InviteService(inviteRepo, teamService, userRepo);
-        SubmissionService submissionService = new SubmissionService(submissionRepo, hackRepo, teamRepo); // Corretto hackRepo
-        ViolationService violationService = new ViolationService(violationRepo, staffService); // Corretto staffService
+        SubmissionService submissionService = new SubmissionService(submissionRepo, hackRepo, teamRepo); 
+        ViolationService violationService = new ViolationService(violationRepo, staffService); 
         
-        // Collegamenti per i casi d'uso delle violazioni
         violationService.setHackathonRepo(hackRepo);
         violationService.setTeamService(teamService);
 
@@ -60,7 +58,7 @@ public class Main {
         User u3 = new User("Anna", "Verdi", "anna@mail.it", "123", "U3");
         User mentor = new User("Paolo", "Mentor", "mentor@mail.it", "123", "U7");
         User judge = new User("Giulia", "Judge", "judge@mail.it", "123", "U8");
-        User uOrganizer = new User("Stefano", "Organizer", "org@mail.it", "123", "U10"); // Aggiunto per il caso d'uso
+        User uOrganizer = new User("Stefano", "Organizer", "org@mail.it", "123", "U10"); 
 
         userRepo.save(leader);
         userRepo.save(u2);
@@ -81,12 +79,12 @@ public class Main {
         System.out.println("Team creato: " + team.getName());
         System.out.println("Leader: " + team.getLeader().getUser().getName());
 
-        team.addMember(new TeamMember("TM2", u2, Role.MEMBER));
-        team.addMember(new TeamMember("TM3", u3, Role.MEMBER));
+        team.addMember(new TeamMember("TM2", u2, TeamMember.Role.MEMBER));
+        team.addMember(new TeamMember("TM3", u3, TeamMember.Role.MEMBER));
 
         System.out.println("Membri team: " + team.getMembers().size());
 
-        // Test State Pattern su Hackathon (Aggiunto parametro "ORG1" dell'organizzatore)
+        // Test State Pattern su Hackathon 
         Hackathon hackathon = hackathonService.createHackathon("H1", "Hackathon Test", "a", "ORG1");
 
         System.out.println("Hackathon creato: " + hackathon.getName());
@@ -99,8 +97,8 @@ public class Main {
         userRepo.save(leader2);
 
         Team team2 = teamService.createTeam("T2", "TeamBlue", leader2);
-        team2.addMember(new TeamMember("TM4", new User("Marco", "Rossi", "m", "p", "U5"), Role.MEMBER));
-        team2.addMember(new TeamMember("TM5", new User("Sara", "Verdi", "s", "p", "U6"), Role.MEMBER));
+        team2.addMember(new TeamMember("TM4", new User("Marco", "Rossi", "m", "p", "U5"), TeamMember.Role.MEMBER));
+        team2.addMember(new TeamMember("TM5", new User("Sara", "Verdi", "s", "p", "U6"), TeamMember.Role.MEMBER));
 
         hackathon.iscriviTeam(team2);
         System.out.println("Team iscritti dopo secondo team: " + hackathon.getTeams().size());
@@ -139,7 +137,7 @@ public class Main {
             Invite lastInvite = inviteRepo.findAll().get(inviteRepo.findAll().size() - 1);
             inviteController.acceptInvite(lastInvite.getId());
 
-            team = teamService.getById("T1"); // Sincronizza l'oggetto
+            team = teamService.getById("T1"); 
             System.out.println("Membri TeamRocket dopo accettazione U9: " + team.getMembers().size());
         } catch (Exception e) {
             System.out.println("Errore ciclo invito: " + e.getMessage());
@@ -156,7 +154,7 @@ public class Main {
             System.out.println("Errore submission: " + e.getMessage());
         }
 
-        // UC: Violazioni con gestione dell'Organizzatore (Aggiornato ID mentore a "MNT1")
+        // UC: Violazioni con gestione dell'Organizzatore
         try {
             violationService.createViolation("H1", "T1", "U2", "MNT1", "Comportamento scorretto");
             String violationId = violationRepo.findAll().get(0).getId();
@@ -184,6 +182,5 @@ public class Main {
             System.out.print("Errore use cases team: ");
             e.printStackTrace();
         }
-
     }
 }

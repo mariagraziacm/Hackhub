@@ -3,7 +3,6 @@ package it.unicam.hackhub.service;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.TeamMember;
-import it.unicam.hackhub.model.Role;
 import it.unicam.hackhub.repository.TeamRepository;
 import java.util.UUID;
 
@@ -22,8 +21,8 @@ public class TeamService {
             throw new IllegalStateException("Utente già in un team");
         }
         Team team = new Team(id, name);
-        TeamMember leader = new TeamMember(UUID.randomUUID().toString(), creator, Role.LEADER);
-        team.addMember(leader);
+        TeamMember leaderMember = new TeamMember("ID", creator, TeamMember.Role.LEADER);
+        team.addMember(leaderMember);
         repo.save(team);
         return team;
     }
@@ -41,29 +40,29 @@ public class TeamService {
     public void changeLeader(String requesterUserId, String teamId, String newLeaderUserId) {
         Team team = getById(teamId);
         
-        //  Trova leader attuale 
+        // Trova leader attuale 
         TeamMember oldLeaderMember = team.getMembers().stream()
                 .filter(m -> m.getUserId().equals(requesterUserId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Membro richiedente non trovato nel team."));
                 
-        if (oldLeaderMember.getRole() != Role.LEADER) {
+        if (oldLeaderMember.getRole() != TeamMember.Role.LEADER) {
             throw new IllegalStateException("Solo l'attuale leader può cedere il comando del team!");
         }
         
-        // Trova nuovo leader 
+        //  nuovo leader 
         TeamMember newLeaderMember = team.getMembers().stream()
                 .filter(m -> m.getUserId().equals(newLeaderUserId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("L'utente designato non fa parte di questo team!"));
 
-        // Rimuovere i membri
+        // RimuovI i membri
         team.removeMember(requesterUserId);
         team.removeMember(newLeaderUserId);
 
         // Ri-aggiungi i membri invertendo i ruoli 
-        team.addMember(new TeamMember(UUID.randomUUID().toString(), oldLeaderMember.getUser(), Role.MEMBER));
-        team.addMember(new TeamMember(UUID.randomUUID().toString(), newLeaderMember.getUser(), Role.LEADER));
+        team.addMember(new TeamMember(UUID.randomUUID().toString(), oldLeaderMember.getUser(), TeamMember.Role.MEMBER));
+        team.addMember(new TeamMember(UUID.randomUUID().toString(), newLeaderMember.getUser(), TeamMember.Role.LEADER));
         
         repo.save(team);
     }

@@ -85,4 +85,21 @@ public class Violation {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public void resolve(ViolationStatus newStatus) {
+        if (status != ViolationStatus.PENDING) {
+            throw new IllegalStateException("Violazione già gestita");
+        }
+
+        if (newStatus == ViolationStatus.PENDING) {
+            throw new IllegalArgumentException("Stato non valido");
+        }
+
+        this.status = newStatus;
+    }
+
+    public boolean isPending() {
+        return status == ViolationStatus.PENDING;
+    }
+
 }

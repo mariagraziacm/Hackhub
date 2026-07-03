@@ -32,4 +32,9 @@ public class InIscrizioneState implements HackathonState {
     public void next(Hackathon hackathon) {
         hackathon.setState(new InCorsoState());
     }
+
+    @Override
+    public void proclamaVincitore(Hackathon context, Team team) {
+        throw new IllegalStateException("Non puoi proclamare vincitore in iscrizione");
+    }
 }

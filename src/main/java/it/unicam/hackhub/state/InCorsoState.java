@@ -29,4 +29,9 @@ public class InCorsoState implements HackathonState {
     public void next(Hackathon hackathon) {
         hackathon.setState(new InValutazioneState());
     }
+
+    @Override
+    public void proclamaVincitore(Hackathon context, Team team) {
+        throw new IllegalStateException("Hackathon ancora in corso");
+    }
 }

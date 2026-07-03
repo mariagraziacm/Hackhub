@@ -27,6 +27,13 @@ public class OrganizerController {
             System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
         }
     }
-
+    public void proclamaVincitore(String hackathonId, String teamId, String organizerId) {
+        try {
+            hackathonService.proclamaVincitore(hackathonId, teamId, organizerId);
+            System.out.println("🏆 Vincitore proclamato con successo!");
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getMessage());
+        }
+    }
 
 }

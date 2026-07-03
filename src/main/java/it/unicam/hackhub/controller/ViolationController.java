@@ -17,14 +17,17 @@ public class ViolationController {
         return violationService.listViolations();
     }
 
-    
+
 
     public void chooseDisqualifyTeam(String violationId) {
         try {
-            violationService.handleDisqualifyTeam(violationId);
-            System.out.println("SYSTEM: Team squalificato dall'organizzatore.");
-        } catch (IllegalStateException | IllegalArgumentException e) {
-            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+            violationService.resolveViolation(
+                    violationId,
+                    Violation.ViolationStatus.DISQUALIFY_TEAM
+            );
+            System.out.println("Team squalificato");
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getMessage());
         }
     }
 

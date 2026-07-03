@@ -29,4 +29,9 @@ public class ConclusoState implements HackathonState {
     public void next(Hackathon hackathon) {
         throw new IllegalStateException("Non ci sono stati successivi");
     }
+
+    @Override
+    public void proclamaVincitore(Hackathon context, Team team) {
+        throw new IllegalStateException("Hackathon già concluso");
+    }
 }

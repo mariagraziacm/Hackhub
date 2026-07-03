@@ -10,4 +10,5 @@ public interface HackathonState {
     void disiscriviTeam(Hackathon context, Team team);
     void inviaSottomissione(Hackathon context, Team team, Submission submission);
     void next(Hackathon context);
+    void proclamaVincitore(Hackathon context, Team team);
 }

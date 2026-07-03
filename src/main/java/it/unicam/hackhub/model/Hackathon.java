@@ -11,7 +11,7 @@ public class Hackathon {
     private String name;
     private HackathonState state;
     private final List<Team> teams = new ArrayList<>();
-
+    private Team winner;
     private Organizer organizer;
     private Judge judge;
     private final List<Mentor> mentors = new ArrayList<>();
@@ -71,5 +71,13 @@ public class Hackathon {
     
     public void inviaSottomissione(Team team, Submission submission) {
         state.inviaSottomissione(this, team, submission);
+    }
+    public Team getWinner(){return winner;}ù
+
+    public void setWinner(Team winner) {
+        this.winner = winner;
+    }
+    public void proclamaVincitore(Team team) {
+        state.proclamaVincitore(this, team);
     }
 }

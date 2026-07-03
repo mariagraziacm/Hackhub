@@ -77,4 +77,19 @@ public void setEvaluated(boolean evaluated) {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public void evaluate(int score, String comment) {
+        if (score < 0 || score > 100) {
+            throw new IllegalArgumentException("Score non valido");
+        }
+
+        if (this.evaluated) {
+            throw new IllegalStateException("Submission già valutata");
+        }
+
+        this.score = score;
+        this.comment = comment;
+        this.evaluated = true;
+        this.updatedAt = LocalDateTime.now();
+    }
 }

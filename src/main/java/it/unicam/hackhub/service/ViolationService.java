@@ -6,6 +6,7 @@ import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.repository.ViolationRepository;
 import it.unicam.hackhub.repository.HackathonRepository;
+import it.unicam.hackhub.state.InCorsoState;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +31,16 @@ public class ViolationService {
     }
 
     public Violation createViolation(String hackathonId, String teamId, String reportedMemberId, String mentorId, String reason) {
+
         Mentor mentor = staffService.getMentor(mentorId);
+
+        Hackathon hackathon = hackathonRepo.findById(hackathonId)
+                .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
+
+        if (!(hackathon.getState() instanceof InCorsoState)) {
+            throw new IllegalStateException("Violazioni consentite solo in hackathon IN CORSO");
+        }
+
 
         Violation violation = new Violation(
                 UUID.randomUUID().toString(),
@@ -52,37 +62,30 @@ public class ViolationService {
         return list;
     }
 
-    // UC Squalifica Team 
-    public void handleDisqualifyTeam(String violationId) {
-        Violation violation = repo.findById(violationId)
-                .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
-        
-        if (hackathonRepo != null) {
-            Hackathon h = hackathonRepo.findById(violation.getHackathonId()).orElse(null);
-            Team t = teamService.getById(violation.getTeamId());
-            if (h != null && t != null) {
-                h.removeTeam(t);
-                hackathonRepo.save(h);
-            }
-        }
-        repo.delete(violationId); // Rimuove la segnalazione conclusa
-    }
+    public void resolveViolation(String violationId, Violation.ViolationStatus status) {
 
-    // UC Squalifica Membro 
-    public void handleDisqualifyMember(String violationId) {
         Violation violation = repo.findById(violationId)
                 .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
-        
-        if (teamService != null && violation.getReportedMemberId() != null) {
-            teamService.removeMember(violation.getReportedMemberId(), violation.getTeamId(), violation.getReportedMemberId());
-        }
-        repo.delete(violationId);
-    }
 
-    // UC Nessuna azione 
-    public void handleNoAction(String violationId) {
-        Violation violation = repo.findById(violationId)
-                .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
-        repo.delete(violationId);
+        Hackathon hackathon = hackathonRepo.findById(violation.getHackathonId())
+                .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
+
+        violation.resolve(status);
+
+        if (status == Violation.ViolationStatus.DISQUALIFY_TEAM) {
+            Team team = teamService.getById(violation.getTeamId());
+            hackathon.removeTeam(team);
+            hackathonRepo.save(hackathon);
+        }
+
+        if (status == Violation.ViolationStatus.DISQUALIFY_MEMBER) {
+            teamService.removeMember(
+                    violation.getReportedMemberId(),
+                    violation.getTeamId(),
+                    violation.getReportedMemberId()
+            );
+        }
+
+        repo.save(violation);
     }
 }

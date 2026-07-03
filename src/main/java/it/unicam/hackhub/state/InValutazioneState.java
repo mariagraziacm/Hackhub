@@ -29,4 +29,22 @@ public class InValutazioneState implements HackathonState {
     public void next(Hackathon hackathon) {
         hackathon.setState(new ConclusoState());
     }
+
+    @Override
+    public void proclamaVincitore(Hackathon context, Team team) {
+
+        if (!context.getTeams().contains(team)) {
+            throw new IllegalStateException("Team non parte dell'hackathon");
+        }
+
+        context.setWinner(team);
+        context.setState(new ConclusoState());
+
+        System.out.println("🏆 Vincitore proclamato: " + team.getName());
+    }
+
+    @Override
+    public void inviaSottomissione(...) {
+        throw new IllegalStateException("Non si possono modificare submission in valutazione");
+    }
 }

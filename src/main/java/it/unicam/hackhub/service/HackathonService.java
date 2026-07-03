@@ -88,4 +88,19 @@ public class HackathonService {
     hackathon.addMentor(mentor);
     repo.save(hackathon);
     }
+
+    public void proclamaVincitore(String hackathonId, String teamId, String organizerId) {
+
+        Hackathon hackathon = getById(hackathonId);
+
+        if (!hackathon.getOrganizer().getId().equals(organizerId)) {
+            throw new IllegalStateException("Solo l'organizzatore può proclamare il vincitore");
+        }
+
+        Team team = teamService.getById(teamId);
+
+        hackathon.proclamaVincitore(team);
+
+        repo.save(hackathon);
+    }
 }

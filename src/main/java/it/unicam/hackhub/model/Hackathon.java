@@ -80,4 +80,8 @@ public class Hackathon {
     public void proclamaVincitore(Team team) {
         state.proclamaVincitore(this, team);
     }
+
+    public void valutaSottomissione(Team team, Submission submission, int score, String comment) {
+        state.valutaSottomissione(this, team, submission, score, comment);
+    }
 }

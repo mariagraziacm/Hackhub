@@ -9,6 +9,7 @@ public class UserRepository {
     private final List<User> users = new ArrayList<>();
 
     public void save(User user) {
+        users.removeIf(u -> u.getId().equals(user.getId()));
         users.add(user);
     }
 

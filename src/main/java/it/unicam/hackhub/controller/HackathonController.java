@@ -19,4 +19,14 @@ public class HackathonController {
             System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
         }
     }
+
+    public void addTeamToHackathon(String hackathonId, String teamId) {
+        try {
+            hackathonService.addTeamToHackathon(hackathonId, teamId);
+            System.out.println("OK iscrizione");
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getMessage());
+        }
+    }
+
 }

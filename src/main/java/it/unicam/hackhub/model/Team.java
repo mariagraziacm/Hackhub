@@ -16,11 +16,13 @@ public class Team {
     }
 
     public String getId() { return id; }
+
     public String getName() { return name; }
 
     public List<TeamMember> getMembers() {
         return List.copyOf(members);
     }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -33,12 +35,13 @@ public class Team {
     public int hashCode() {
         return java.util.Objects.hash(id);
     }
+
     public void addMember(TeamMember member) {
         if (isFull()) {
             throw new IllegalStateException("Team pieno");
         }
 
-        if (hasUser(member.getUserId())) {
+        if (hasUser(member.getUser().getId())) {
             throw new IllegalStateException("Utente già presente");
         }
 
@@ -65,13 +68,14 @@ public class Team {
     public void removeMember(String userId) {
 
         members.removeIf(
-                m -> m.getUserId().equals(userId)
+                m -> m.getUser().getId().equals(userId)
         );
     }
 
     public boolean isLeader(String userId) {
         return getLeader()
-                .getUserId()
+                .getUser()
+                .getId()
                 .equals(userId);
     }
 

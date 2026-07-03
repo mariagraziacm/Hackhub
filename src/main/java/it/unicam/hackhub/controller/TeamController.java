@@ -25,15 +25,6 @@ public class TeamController {
         }
     }
 
-    public void addTeamToHackathon(String hackathonId, String teamId) {
-        try {
-            hackathonService.addTeamToHackathon(hackathonId, teamId);
-            System.out.println("OK iscrizione");
-        } catch (Exception e) {
-            System.out.println("ERRORE: " + e.getMessage());
-        }
-    }
-
     public void abbandonaHackathon(String idLeaderUser, String teamId, String hackathonId) {
         try {
             Team team = teamService.getById(teamId);

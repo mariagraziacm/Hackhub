@@ -21,7 +21,7 @@ public class TeamService {
             throw new IllegalStateException("Utente già in un team");
         }
         Team team = new Team(id, name);
-        TeamMember leaderMember = new TeamMember("ID", creator, TeamMember.Role.LEADER);
+        TeamMember leaderMember = new TeamMember(UUID.randomUUID().toString(), creator, TeamMember.Role.LEADER);
         team.addMember(leaderMember);
         repo.save(team);
         return team;

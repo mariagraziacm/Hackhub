@@ -14,12 +14,10 @@ public class ViolationController {
     }
 
     public List<Violation> showPendingViolations() {
-        return violationService.listPendingViolations();
+        return violationService.listViolations();
     }
 
-    public Violation showViolationDetails(String violationId) {
-        return violationService.getById(violationId);
-    }
+    
 
     public void chooseDisqualifyTeam(String violationId) {
         try {

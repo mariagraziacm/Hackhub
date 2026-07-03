@@ -9,7 +9,7 @@ public class ViolationRepository {
     private final List<Violation> violations = new ArrayList<>();
 
     public void save(Violation violation) {
-        // Previene i duplicati rimuovendo la vecchia istanza prima di salvare quella aggiornata
+        // Rimuove vecchia istanza prima di salvare quella aggiornata
         violations.removeIf(v -> v.getId().equals(violation.getId()));
         violations.add(violation);
     }
@@ -20,8 +20,12 @@ public class ViolationRepository {
                 .findFirst();
     }
 
-    // Ritorna la lista reale di tutte le violazioni salvate
+    // Ritorna lista di tutte le violazioni 
     public List<Violation> findAll() {
         return new ArrayList<>(violations);
     }
+    public void delete(String id) {
+    // Rimuove l'elemento dalla lista interna 
+    violations.removeIf(v -> v.getId().equals(id));
+}
 }

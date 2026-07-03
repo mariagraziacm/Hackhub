@@ -13,33 +13,19 @@ public class SubmissionService {
     private HackathonRepository hackathonRepo;
     private TeamRepository teamRepo;
 
-  
-
-    // Costruttore
     public SubmissionService(SubmissionRepository repo, HackathonRepository hackathonRepo, TeamRepository teamRepo) {
         this.repo = repo;
         this.hackathonRepo = hackathonRepo;
         this.teamRepo = teamRepo;
     }
 
-    public SubmissionService(SubmissionRepository repo) {
-        this.repo = repo;
-    }
-    public void setHackathonRepo(HackathonRepository hackathonRepo) {
-        this.hackathonRepo = hackathonRepo;
-    }
-
-    public void setTeamRepo(TeamRepository teamRepo) {
-        this.teamRepo = teamRepo;
-    }
-
     public Submission sendSubmission(String hackathonId, String teamId, String title, String description) {
         if (title == null || title.isBlank() || description == null || description.isBlank()) {
-            throw new IllegalStateException("Campi sottomissione non validi");
+            throw new IllegalStateException("Campi sottomissione non validi o nulli");
         }
 
         if (repo.existsByHackathonIdAndTeamId(hackathonId, teamId)) {
-            throw new IllegalStateException("Sottomissione già presente per questo team/hackathon");
+            throw new IllegalStateException("Sottomissione già presente");
         }
 
         Submission submission = new Submission(
@@ -50,14 +36,10 @@ public class SubmissionService {
                 description
         );
 
-        // controllo  stato con State Pattern
         if (hackathonRepo != null) {
             Hackathon hackathon = hackathonRepo.findById(hackathonId)
                     .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
-            
             Team team = (teamRepo != null) ? teamRepo.findById(teamId).orElse(null) : null;
-            
-            // Delega il controllo dello stato all'hackathon
             hackathon.inviaSottomissione(team, submission);
         }
 
@@ -66,25 +48,22 @@ public class SubmissionService {
     }
 
     public Submission editSubmission(String submissionId, String title, String description) {
+        if (title == null || title.isBlank() || description == null || description.isBlank()) {
+            throw new IllegalStateException("I nuovi dati inseriti non sono corretti");
+        }
+
         Submission submission = repo.findById(submissionId)
                 .orElseThrow(() -> new IllegalStateException("Sottomissione non trovata"));
 
-        if (title == null || title.isBlank() || description == null || description.isBlank()) {
-            throw new IllegalStateException("Campi sottomissione non validi");
-        }
-
-        // controllo dello stato prima della modifica
         if (hackathonRepo != null) {
             Hackathon hackathon = hackathonRepo.findById(submission.getHackathonId())
                     .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
-            
             Team team = (teamRepo != null) ? teamRepo.findById(submission.getTeamId()).orElse(null) : null;
-            
-            // Verifica se lo stato attuale permette modifiche/invii
             hackathon.inviaSottomissione(team, submission);
         }
 
         submission.update(title, description);
+        repo.save(submission);
         return submission;
     }
 

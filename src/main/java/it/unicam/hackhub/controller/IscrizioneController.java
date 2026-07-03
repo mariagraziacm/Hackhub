@@ -45,7 +45,7 @@ public class IscrizioneController {
                 return;
             }
 
-            hackathonService.removeTeamFromHackathon(hackathonId, team);
+            hackathonService.removeTeamFromHackathon(hackathonId, team.getId());
 
             System.out.println("SYSTEM: Team rimosso dall'hackathon");
 

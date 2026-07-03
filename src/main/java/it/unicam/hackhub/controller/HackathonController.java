@@ -10,9 +10,9 @@ public class HackathonController {
         this.hackathonService = hackathonService;
     }
 
-    public void newHackathon(String id, String name, String specifications) {
+    public void newHackathon(String id, String name, String specifications, String organizerId) {
         try {
-            Hackathon nuovoHackathon = hackathonService.createHackathon(id, name, specifications);
+            Hackathon nuovoHackathon = hackathonService.createHackathon(id, name, specifications, organizerId);
             System.out.println("SYSTEM: Hackathon '" + name + "' creato con successo e impostato in fase '"
                     + nuovoHackathon.getState().getName()+ "'.");
         } catch (IllegalArgumentException | IllegalStateException e) {

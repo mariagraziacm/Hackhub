@@ -1,62 +1,88 @@
 package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.model.Violation;
+import it.unicam.hackhub.model.Mentor;
+import it.unicam.hackhub.model.Hackathon;
+import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.repository.ViolationRepository;
+import it.unicam.hackhub.repository.HackathonRepository;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class ViolationService {
     private final ViolationRepository repo;
+    private final StaffService staffService;
+    private HackathonRepository hackathonRepo;
+    private TeamService teamService;
 
-    public ViolationService(ViolationRepository repo) {
+    public ViolationService(ViolationRepository repo, StaffService staffService) {
         this.repo = repo;
+        this.staffService = staffService;
+    }
+
+    public void setHackathonRepo(HackathonRepository hackathonRepo) {
+        this.hackathonRepo = hackathonRepo;
+    }
+
+    public void setTeamService(TeamService teamService) {
+        this.teamService = teamService;
     }
 
     public Violation createViolation(String hackathonId, String teamId, String reportedMemberId, String mentorId, String reason) {
+        Mentor mentor = staffService.getMentor(mentorId);
+
         Violation violation = new Violation(
                 UUID.randomUUID().toString(),
                 hackathonId,
                 teamId,
                 reportedMemberId,
-                mentorId,
+                mentor.getId(),
                 reason
         );
         repo.save(violation);
         return violation;
     }
 
-    public Violation getById(String id) {
-        return repo.findById(id)
-                .orElseThrow(() -> new IllegalStateException("Violazione non trovata"));
+    public List<Violation> listViolations() {
+        List<Violation> list = repo.findAll();
+        if (list.isEmpty()) {
+            System.out.println("SYSTEM: L'elenco delle segnalazioni è vuoto. Ritorno alla home.");
+        }
+        return list;
     }
 
-    // Ritorna violazioni PENDING
-    public List<Violation> listPendingViolations() {
-        return repo.findAll().stream()
-                .filter(Violation::isPending)
-                .collect(Collectors.toList());
-    }
-
-    // squalifica del Team
+    // UC Squalifica Team 
     public void handleDisqualifyTeam(String violationId) {
-        Violation violation = getById(violationId);
-        violation.setDisqualifyTeam(); 
-        repo.save(violation);
+        Violation violation = repo.findById(violationId)
+                .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
+        
+        if (hackathonRepo != null) {
+            Hackathon h = hackathonRepo.findById(violation.getHackathonId()).orElse(null);
+            Team t = teamService.getById(violation.getTeamId());
+            if (h != null && t != null) {
+                h.removeTeam(t);
+                hackathonRepo.save(h);
+            }
+        }
+        repo.delete(violationId); // Rimuove la segnalazione conclusa
     }
 
-    // squalifica del  Membro
+    // UC Squalifica Membro 
     public void handleDisqualifyMember(String violationId) {
-        Violation violation = getById(violationId);
-        violation.setDisqualifyMember(); 
-        repo.save(violation);
+        Violation violation = repo.findById(violationId)
+                .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
+        
+        if (teamService != null && violation.getReportedMemberId() != null) {
+            teamService.removeMember(violation.getReportedMemberId(), violation.getTeamId(), violation.getReportedMemberId());
+        }
+        repo.delete(violationId);
     }
 
-    // Archivia senza nessuna azione
+    // UC Nessuna azione 
     public void handleNoAction(String violationId) {
-        Violation violation = getById(violationId);
-        violation.setNoAction(); 
-        repo.save(violation);
+        Violation violation = repo.findById(violationId)
+                .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
+        repo.delete(violationId);
     }
 }

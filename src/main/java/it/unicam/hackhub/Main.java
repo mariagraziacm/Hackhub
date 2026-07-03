@@ -1,9 +1,32 @@
 package it.unicam.hackhub;
 
-import it.unicam.hackhub.model.*;
-import it.unicam.hackhub.repository.*;
-import it.unicam.hackhub.service.*;
-import it.unicam.hackhub.controller.*;
+import it.unicam.hackhub.model.User;
+import it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.model.TeamMember;
+import it.unicam.hackhub.model.Role;
+import it.unicam.hackhub.model.Hackathon;
+import it.unicam.hackhub.model.Invite;
+import it.unicam.hackhub.model.Organizer;
+import it.unicam.hackhub.model.Mentor;
+
+import it.unicam.hackhub.repository.TeamRepository;
+import it.unicam.hackhub.repository.UserRepository;
+import it.unicam.hackhub.repository.HackathonRepository;
+import it.unicam.hackhub.repository.InviteRepository;
+import it.unicam.hackhub.repository.SubmissionRepository;
+import it.unicam.hackhub.repository.ViolationRepository;
+import it.unicam.hackhub.repository.StaffRepository;
+
+import it.unicam.hackhub.service.StaffService;
+import it.unicam.hackhub.service.TeamService;
+import it.unicam.hackhub.service.HackathonService;
+import it.unicam.hackhub.service.InviteService;
+import it.unicam.hackhub.service.SubmissionService;
+import it.unicam.hackhub.service.ViolationService;
+
+import it.unicam.hackhub.controller.InviteController;
+import it.unicam.hackhub.controller.SubmissionController;
+import it.unicam.hackhub.controller.ViolationController;
 
 public class Main {
     public static void main(String[] args) {
@@ -14,19 +37,19 @@ public class Main {
         InviteRepository inviteRepo = new InviteRepository();
         SubmissionRepository submissionRepo = new SubmissionRepository();
         ViolationRepository violationRepo = new ViolationRepository();
-
-    
+        StaffRepository staffRepository = new StaffRepository(); // Aggiunto repo staff
+        
+        StaffService staffService = new StaffService(staffRepository); // Aggiunto service staff
         TeamService teamService = new TeamService(teamRepo);
-        HackathonService hackathonService = new HackathonService(hackRepo, teamService);
+        HackathonService hackathonService = new HackathonService(hackRepo, teamService, staffService); // Corretto hackRepo + staffService
         InviteService inviteService = new InviteService(inviteRepo, teamService, userRepo);
+        SubmissionService submissionService = new SubmissionService(submissionRepo, hackRepo, teamRepo); // Corretto hackRepo
+        ViolationService violationService = new ViolationService(violationRepo, staffService); // Corretto staffService
         
-        
-        SubmissionService submissionService = new SubmissionService(submissionRepo, hackRepo, teamRepo);
-        
-        
-        ViolationService violationService = new ViolationService(violationRepo);
+        // Collegamenti per i casi d'uso delle violazioni
+        violationService.setHackathonRepo(hackRepo);
+        violationService.setTeamService(teamService);
 
-       
         InviteController inviteController = new InviteController(inviteService);
         SubmissionController submissionController = new SubmissionController(submissionService);
         ViolationController violationController = new ViolationController(violationService);
@@ -37,12 +60,20 @@ public class Main {
         User u3 = new User("Anna", "Verdi", "anna@mail.it", "123", "U3");
         User mentor = new User("Paolo", "Mentor", "mentor@mail.it", "123", "U7");
         User judge = new User("Giulia", "Judge", "judge@mail.it", "123", "U8");
+        User uOrganizer = new User("Stefano", "Organizer", "org@mail.it", "123", "U10"); // Aggiunto per il caso d'uso
 
         userRepo.save(leader);
         userRepo.save(u2);
         userRepo.save(u3);
         userRepo.save(mentor);
         userRepo.save(judge);
+        userRepo.save(uOrganizer);
+
+        // Creazione record staff per non far fallire i controlli dei casi d'uso
+        Organizer organizer = new Organizer("ORG1", uOrganizer, "H1");
+        Mentor mentorStaff = new Mentor("MNT1", mentor, "H1");
+        staffRepository.save(organizer);
+        staffRepository.save(mentorStaff);
 
         // Test Iterazione 1
         Team team = teamService.createTeam("T1", "TeamRocket", leader);
@@ -55,8 +86,8 @@ public class Main {
 
         System.out.println("Membri team: " + team.getMembers().size());
 
-        // Test State Pattern su Hackathon
-        Hackathon hackathon = hackathonService.createHackathon("H1", "Hackathon Test", "a");
+        // Test State Pattern su Hackathon (Aggiunto parametro "ORG1" dell'organizzatore)
+        Hackathon hackathon = hackathonService.createHackathon("H1", "Hackathon Test", "a", "ORG1");
 
         System.out.println("Hackathon creato: " + hackathon.getName());
         System.out.println("Stato iniziale: " + hackathon.getState().getName());
@@ -116,7 +147,6 @@ public class Main {
 
         // UC: Sottomissione Progetto (Send / Edit)
         try {
-            
             submissionController.sendSubmission("H1", "T1", "Project Rocket", "Descrizione progetto");
             String submissionId = submissionRepo.findAll().get(0).getId();
             submissionController.editSubmission(submissionId, "Project Rocket v2", "Descrizione aggiornata");
@@ -126,13 +156,13 @@ public class Main {
             System.out.println("Errore submission: " + e.getMessage());
         }
 
-        // UC: Violazioni con gestione dell'Organizzatore
+        // UC: Violazioni con gestione dell'Organizzatore (Aggiornato ID mentore a "MNT1")
         try {
-            violationService.createViolation("H1", "T1", "U2", "U7", "Comportamento scorretto");
+            violationService.createViolation("H1", "T1", "U2", "MNT1", "Comportamento scorretto");
             String violationId = violationRepo.findAll().get(0).getId();
             violationController.chooseNoAction(violationId);
             
-            System.out.println("Violazione registrata per il team: " + violationRepo.findAll().get(0).getTeamId());
+            System.out.println("Violazione registrata per il team: " + violationRepo.findAll().size());
         } catch (Exception e) {
             System.out.println("Errore violazione: " + e.getMessage());
         }

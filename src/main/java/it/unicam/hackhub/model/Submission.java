@@ -7,6 +7,9 @@ public class Submission {
     private final String id;
     private final String hackathonId;
     private final String teamId;
+    private int score;
+    private String comment;
+    private boolean evaluated;
 
     private String title;
     private String description;
@@ -50,6 +53,17 @@ public class Submission {
         }
         return value;
     }
+    public void setScore(int score) {
+    this.score = score;
+}
+
+public void setComment(String comment) {
+    this.comment = comment;
+}
+
+public void setEvaluated(boolean evaluated) {
+    this.evaluated = evaluated;
+}
 
     @Override
     public boolean equals(Object o) {

@@ -3,6 +3,8 @@ package it.unicam.hackhub.controller;
 import it.unicam.hackhub.model.Submission;
 import it.unicam.hackhub.service.SubmissionService;
 
+import java.util.List;
+
 public class SubmissionController {
 
     private final SubmissionService submissionService;
@@ -44,6 +46,31 @@ public class SubmissionController {
             System.out.println("SYSTEM: Valutazione salvata con successo");
         } catch (Exception e) {
             System.out.println("ERROR: " + e.getMessage());
+        }
+    }
+    public void viewEvaluation(String teamId, String hackathonId) {
+        try {
+            Submission s = submissionService.getEvaluation(teamId, hackathonId);
+
+            System.out.println("=== VALUTAZIONE ===");
+            System.out.println("Score: " + s.getScore());
+            System.out.println("Commento: " + s.getComment());
+
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getMessage());
+        }
+    }
+    public void viewSubmissions(String hackathonId, String staffId) {
+        try {
+            List<Submission> subs =
+                    submissionService.getSubmissionsByHackathon(hackathonId, staffId);
+
+            subs.forEach(s ->
+                    System.out.println(s.getTeamId() + " - " + s.getTitle())
+            );
+
+        } catch (Exception e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
         }
     }
 }

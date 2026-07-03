@@ -1,6 +1,10 @@
 package it.unicam.hackhub.controller;
 
+import it.unicam.hackhub.model.Call;
+import it.unicam.hackhub.model.SupportRequest;
 import it.unicam.hackhub.service.SupportRequestService;
+
+import java.util.List;
 
 public class SupportRequestController {
     private final SupportRequestService service;
@@ -24,9 +28,41 @@ public class SupportRequestController {
     }
 
     public void showMentorRequests(String mentorId) {
-        service.getMentorRequests(mentorId)
-                .forEach(r -> System.out.println(
-                        r.getTeamId() + " - " + r.getMessage()
-                ));
+        try {
+            List<SupportRequest> requests = service.getMentorRequests(mentorId);
+
+            requests.forEach(r ->
+                    System.out.println(
+                            "TEAM: " + r.getTeamId() +
+                                    " | MSG: " + r.getMessage() +
+                                    " | STATUS: " + r.getStatus()
+                    )
+            );
+
+        } catch (Exception e) {
+            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+        }
+    }
+    public void planCall(String mentorId, String requestId, String slotId) {
+        try {
+            Call call = service.planCall(mentorId, requestId, slotId);
+            System.out.println("SYSTEM: Call creata con ID " + call.getId());
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getMessage());
+        }
+    }
+    public void respondToCall(String callId, boolean accepted) {
+        try {
+            service.respondToCall(callId, accepted);
+
+            if (accepted) {
+                System.out.println("SYSTEM: Call accettata");
+            } else {
+                System.out.println("SYSTEM: Call rifiutata");
+            }
+
+        } catch (Exception e) {
+            System.out.println("ERRORE: " + e.getMessage());
+        }
     }
 }

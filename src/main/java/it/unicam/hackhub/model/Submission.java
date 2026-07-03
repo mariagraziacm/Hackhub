@@ -92,4 +92,20 @@ public void setEvaluated(boolean evaluated) {
         this.evaluated = true;
         this.updatedAt = LocalDateTime.now();
     }
+    public boolean isEvaluated() {
+        return evaluated;
+    }
+    public void ensureEvaluated() {
+        if (!evaluated) {
+            throw new IllegalStateException("Non valutata");
+        }
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public String getComment() {
+        return comment;
+    }
 }

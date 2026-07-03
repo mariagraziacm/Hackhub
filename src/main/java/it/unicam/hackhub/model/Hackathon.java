@@ -48,6 +48,9 @@ public class Hackathon {
             teams.add(team);
         }
     }
+    public List<Team> getIscritti() {
+        return List.copyOf(teams);
+    }
 
     public void removeTeam(Team team) {
         teams.remove(team);

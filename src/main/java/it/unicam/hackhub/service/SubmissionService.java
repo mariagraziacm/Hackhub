@@ -1,15 +1,13 @@
 package it.unicam.hackhub.service;
 
-import it.unicam.hackhub.model.Hackathon;
-import it.unicam.hackhub.model.Judge;
-import it.unicam.hackhub.model.Submission;
-import it.unicam.hackhub.model.Team;
+import it.unicam.hackhub.model.*;
 import it.unicam.hackhub.repository.SubmissionRepository;
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.repository.TeamRepository;
 import it.unicam.hackhub.state.InValutazioneState;
 
 
+import java.util.List;
 import java.util.UUID;
 
 public class SubmissionService {
@@ -110,5 +108,38 @@ public class SubmissionService {
         );
 
         repo.save(submission);
+    }
+    public Submission getEvaluation(String teamId, String hackathonId) {
+
+        Submission submission = repo.findByHackathonIdAndTeamId(hackathonId, teamId)
+                .orElseThrow(() -> new IllegalStateException("Nessuna submission trovata"));
+
+        // 1. controllo esistenza submission
+        if (submission == null) {
+            throw new IllegalStateException("Submission inesistente");
+        }
+
+        submission.ensureEvaluated();
+        return submission;
+    }
+    public List<Submission> getSubmissionsByHackathon(String hackathonId, String staffId) {
+
+        StaffMember staff = staffService.getById(staffId);
+
+        Hackathon hackathon = hackathonRepo.findById(hackathonId)
+                .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
+
+        // CONTROLLO UC6: staff assegnato all’hackathon
+        if (!staff.getHackathonId().equals(hackathonId)) {
+            throw new IllegalStateException("Staff non assegnato a questo hackathon");
+        }
+
+        List<Submission> submissions = repo.findByHackathonId(hackathonId);
+
+        if (submissions.isEmpty()) {
+            throw new IllegalStateException("Nessuna sottomissione trovata");
+        }
+
+        return submissions;
     }
 }

@@ -1,10 +1,11 @@
 package it.unicam.hackhub.service;
 
+import it.unicam.hackhub.model.*;
 import it.unicam.hackhub.repository.HackathonRepository;
-import it.unicam.hackhub.model.Hackathon;
-import it.unicam.hackhub.model.BuilderHackathon;
-import it.unicam.hackhub.model.Team;
-import it.unicam.hackhub.model.Organizer;
+import it.unicam.hackhub.repository.SubmissionRepository;
+import it.unicam.hackhub.state.ConclusoState;
+import it.unicam.hackhub.state.InCorsoState;
+import it.unicam.hackhub.state.InIscrizioneState;
 import it.unicam.hackhub.state.InValutazioneState;
 
 import java.util.List;
@@ -13,11 +14,13 @@ public class HackathonService {
     private final HackathonRepository repo;
     private final TeamService teamService;
     private final StaffService staffService;
+    private final SubmissionRepository submissionRepo;
 
-    public HackathonService(HackathonRepository repo, TeamService teamService, StaffService staffService) {
+    public HackathonService(HackathonRepository repo, TeamService teamService, StaffService staffService, SubmissionRepository submissionRepo) {
         this.repo = repo;
         this.teamService = teamService;
         this.staffService = staffService;
+        this.submissionRepo = submissionRepo;
     }
 
     public Hackathon createHackathon(String id, String name, String specifications, String organizerId) {
@@ -109,5 +112,75 @@ public class HackathonService {
         repo.save(hackathon);
 
         System.out.println("🏆 Vincitore proclamato: " + team.getName());
+    }
+
+    public List<Submission> getResults(String hackathonId, String organizerId) {
+
+        Hackathon hackathon = repo.findById(hackathonId)
+                .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
+
+        // 1. controllo organizzatore (UC requisito)
+        if (!hackathon.getOrganizer().getId().equals(organizerId)) {
+            throw new IllegalStateException("Non sei l'organizzatore");
+        }
+
+        // 2. controllo stato (UC dice: concluso)
+        if (!(hackathon.getState() instanceof InValutazioneState
+                || hackathon.getState() instanceof ConclusoState)) {
+            throw new IllegalStateException("Hackathon non in fase corretta");
+        }
+
+        // 3. recupero risultati
+        return submissionRepo.findByHackathonId(hackathonId);
+    }
+    public List<Team> getIscrizioni(String hackathonId, String organizerId) {
+
+        Hackathon hackathon = repo.findById(hackathonId)
+                .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
+
+        // 1. controllo autorizzazione
+        if (!hackathon.getOrganizer().getId().equals(organizerId)) {
+            throw new IllegalStateException("Non autorizzato");
+        }
+
+        // 2. controllo stato (UC coerente)
+        if (!(hackathon.getState() instanceof InIscrizioneState
+                || hackathon.getState() instanceof InCorsoState)) {
+            throw new IllegalStateException("Hackathon non in fase di iscrizione o corso");
+        }
+
+        // 3. recupero team
+        List<Team> teams = hackathon.getIscritti();
+
+        if (teams.isEmpty()) {
+            throw new IllegalStateException("Nessun team iscritto");
+        }
+
+        return teams;
+    }
+    public List<Hackathon> getStoricoStaff(String staffId) {
+
+        // 1. verifica staff valido
+        StaffMember staff = staffService.getById(staffId);
+
+        // 2. prendi hackathon associati allo staff
+        List<Hackathon> all = repo.findAll();
+
+        List<Hackathon> storico = all.stream()
+                .filter(h -> h.getState() instanceof ConclusoState)
+                .filter(h -> isStaffInHackathon(h, staff))
+                .toList();
+
+        if (storico.isEmpty()) {
+            throw new IllegalStateException("Nessun hackathon concluso trovato");
+        }
+
+        return storico;
+    }
+    private boolean isStaffInHackathon(Hackathon h, StaffMember staff) {
+
+        return h.getOrganizer() != null && h.getOrganizer().getId().equals(staff.getId())
+                || h.getMentors().stream().anyMatch(m -> m.getId().equals(staff.getId()))
+                || (h.getJudge() != null && h.getJudge().getId().equals(staff.getId()));
     }
 }

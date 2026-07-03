@@ -11,6 +11,8 @@ public class SupportRequest {
     private final String teamId;
     private final String mentorId;
     private final String message;
+    private String callId;
+
 
     private SupportStatus status = SupportStatus.PENDING;
 
@@ -36,5 +38,11 @@ public class SupportRequest {
 
     public void markAnswered() {
         this.status = SupportStatus.ANSWERED;
+    }
+    public String getCallId() {
+        return callId;
+    }
+    public void setCallId(String callId) {
+        this.callId = callId;
     }
 }

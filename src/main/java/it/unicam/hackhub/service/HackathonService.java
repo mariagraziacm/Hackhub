@@ -87,5 +87,5 @@ public class HackathonService {
     it.unicam.hackhub.model.Mentor mentor = staffService.getMentor(mentorId);
     hackathon.addMentor(mentor);
     repo.save(hackathon);
-}
+    }
 }

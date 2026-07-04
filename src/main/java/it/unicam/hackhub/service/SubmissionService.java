@@ -114,7 +114,7 @@ public class SubmissionService {
         Submission submission = repo.findByHackathonIdAndTeamId(hackathonId, teamId)
                 .orElseThrow(() -> new IllegalStateException("Nessuna submission trovata"));
 
-        // 1. controllo esistenza submission
+        //  controllo esistenza submission
         if (submission == null) {
             throw new IllegalStateException("Submission inesistente");
         }

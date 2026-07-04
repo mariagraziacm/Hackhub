@@ -7,14 +7,16 @@ public class User {
     private String email;
     private String password;
     private final String id;
+    private String paymentInfo;
 
-    public User(String name, String surname, String username, String email, String password, String id) {
+    public User(String name, String surname, String username, String email, String password, String id,String paymentInfo) {
         this.name = name;
         this.surname = surname;
         this.username=username;
         this.email = email;
         this.password = password;
         this.id = id;
+        this.paymentInfo=paymentInfo;
     }
     public String getId() {return id; }
     public String getName() {
@@ -42,5 +44,8 @@ public class User {
         return id.hashCode();
     }
 
+    public boolean hasPaymentInfo() {
+        return paymentInfo != null && !paymentInfo.isBlank();
+    }
 
 }

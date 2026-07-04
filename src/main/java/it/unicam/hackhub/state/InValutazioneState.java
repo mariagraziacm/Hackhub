@@ -55,6 +55,6 @@ public class InValutazioneState implements HackathonState {
             throw new IllegalStateException("Submission non del team selezionato");
         }
 
-        submission.evaluate(score, comment);
+        submission.rate(score, comment);
     }
 }

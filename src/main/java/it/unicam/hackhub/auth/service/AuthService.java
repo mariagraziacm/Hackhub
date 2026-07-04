@@ -27,7 +27,7 @@ public class AuthService {
             throw new IllegalStateException("Email o username già registrati");
         }
 
-        User user = new User(id, username, name, surname, email, password);
+        User user = new User(name, surname, username, email, password, id, null);
         userRepo.save(user);
 
         return user;

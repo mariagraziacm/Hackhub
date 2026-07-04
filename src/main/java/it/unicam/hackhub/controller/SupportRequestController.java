@@ -51,18 +51,5 @@ public class SupportRequestController {
             System.out.println("ERRORE: " + e.getMessage());
         }
     }
-    public void respondToCall(String callId, boolean accepted) {
-        try {
-            service.respondToCall(callId, accepted);
-
-            if (accepted) {
-                System.out.println("SYSTEM: Call accettata");
-            } else {
-                System.out.println("SYSTEM: Call rifiutata");
-            }
-
-        } catch (Exception e) {
-            System.out.println("ERRORE: " + e.getMessage());
-        }
-    }
+    
 }

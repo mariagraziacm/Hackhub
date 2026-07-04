@@ -7,20 +7,20 @@ import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.repository.SubmissionRepository;
 import it.unicam.hackhub.state.InValutazioneState;
 
-public class EvaluationService {
+public class RatingService {
     private final SubmissionRepository submissionRepo;
     private final StaffService staffService;
     private final HackathonRepository hackathonRepo;
 
-    public EvaluationService(SubmissionRepository submissionRepo,
-                             StaffService staffService,
-                             HackathonRepository hackathonRepo) {
+    public RatingService(SubmissionRepository submissionRepo,
+                          StaffService staffService,
+                          HackathonRepository hackathonRepo) {
         this.submissionRepo = submissionRepo;
         this.staffService = staffService;
         this.hackathonRepo = hackathonRepo;
     }
 
-    public void evaluateSubmission(String judgeId,
+    public void rateSubmission(String judgeId,
                                    String submissionId,
                                    int score,
                                    String comment) {
@@ -37,7 +37,7 @@ public class EvaluationService {
             throw new IllegalStateException("Hackathon non in valutazione");
         }
 
-        submission.evaluate(score, comment);
+        submission.rate(score, comment);
 
         submissionRepo.save(submission);
     }

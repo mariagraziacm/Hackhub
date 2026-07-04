@@ -78,7 +78,7 @@ public void setEvaluated(boolean evaluated) {
         return Objects.hash(id);
     }
 
-    public void evaluate(int score, String comment) {
+    public void rate(int score, String comment) {
         if (score < 0 || score > 10) {
             throw new IllegalArgumentException("Score non valido");
         }

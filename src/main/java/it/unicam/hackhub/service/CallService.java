@@ -10,7 +10,7 @@ public class CallService {
         this.callRepo = callRepo;
     }
 
-    ppublic void respondToCall(String callId, boolean accepted) {
+    public void respondToCall(String callId, boolean accepted) {
         Call call = callRepo.findById(callId)
                 .orElseThrow(() -> new IllegalStateException("Call non trovata"));
 

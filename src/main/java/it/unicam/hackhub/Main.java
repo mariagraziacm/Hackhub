@@ -15,6 +15,7 @@ import it.unicam.hackhub.state.InValutazioneState;
 public class Main {
     public static void main(String[] args) {
 
+
         TeamRepository teamRepo = new TeamRepository();
         UserRepository userRepo = new UserRepository();
         HackathonRepository hackRepo = new HackathonRepository();
@@ -22,10 +23,12 @@ public class Main {
         SubmissionRepository submissionRepo = new SubmissionRepository();
         ViolationRepository violationRepo = new ViolationRepository();
         StaffRepository staffRepository = new StaffRepository();
+        CallRepository callRepo = new CallRepository(); 
+
 
         StaffService staffService = new StaffService(staffRepository);
         TeamService teamService = new TeamService(teamRepo);
-        HackathonService hackathonService = new HackathonService(hackRepo, teamService, staffService);
+        HackathonService hackathonService = new HackathonService(hackRepo, teamService, staffService, submissionRepo);
         InviteService inviteService = new InviteService(inviteRepo, teamService, userRepo, staffRepository);
         SubmissionService submissionService = new SubmissionService(submissionRepo, hackRepo, teamRepo, staffService);
         ViolationService violationService = new ViolationService(violationRepo, staffService);
@@ -33,17 +36,18 @@ public class Main {
         violationService.setHackathonRepo(hackRepo);
         violationService.setTeamService(teamService);
 
+
         InviteController inviteController = new InviteController(inviteService);
         SubmissionController submissionController = new SubmissionController(submissionService);
         ViolationController violationController = new ViolationController(violationService);
 
-        //Creazione Utenti di Test
-        User leader = new User("Mario", "Rossi", "mario@mail.it", "123", "U1", "3fsdfsd");
-        User u2 = new User("Luca", "Bianchi", "luca@mail.it", "123", "U2", "2sdfsdf");
-        User u3 = new User("Anna", "Verdi", "anna@mail.it", "123", "U3", "1dsffsd");
-        User mentor = new User("Paolo", "Mentor", "mentor@mail.it", "123", "U7", "12sdfsd");
-        User judge = new User("Giulia", "Judge", "judge@mail.it", "123", "U8", "11sdfsd");
-        User uOrganizer = new User("Stefano", "Organizer", "org@mail.it", "123", "U10", "1sdfsd3");
+       
+        User leader = new User("Mario", "Rossi", "mario_user", "mario@mail.it", "123", "U1", null);
+        User u2 = new User("Luca", "Bianchi", "luca_user", "luca@mail.it", "123", "U2", null);
+        User u3 = new User("Anna", "Verdi", "anna_user", "anna@mail.it", "123", "U3", null);
+        User mentor = new User("Paolo", "Mentor", "mentor_user", "mentor@mail.it", "123", "U7", null);
+        User judge = new User("Giulia", "Judge", "judge_user", "judge@mail.it", "123", "U8", null);
+        User uOrganizer = new User("Stefano", "Organizer", "org_user", "org@mail.it", "123", "U10", null);
 
         userRepo.save(leader);
         userRepo.save(u2);
@@ -51,7 +55,6 @@ public class Main {
         userRepo.save(mentor);
         userRepo.save(judge);
         userRepo.save(uOrganizer);
-
 
         Organizer organizer = new Organizer("ORG1", uOrganizer, "Hfsdfsd1");
         Mentor mentorStaff = new Mentor("MNT1", mentor, "H1");
@@ -68,7 +71,6 @@ public class Main {
 
         System.out.println("Membri team: " + team.getMembers().size());
 
-
         Hackathon hackathon = hackathonService.createHackathon("H1", "Hackathon Test", "a", "ORG1");
 
         System.out.println("Hackathon creato: " + hackathon.getName());
@@ -77,12 +79,12 @@ public class Main {
         hackathon.iscriviTeam(team);
         System.out.println("Team iscritti: " + hackathon.getTeams().size());
 
-        User leader2 = new User("Giulia", "Neri", "giulia@mail.it", "123", "U4", "1dsadasd");
+        User leader2 = new User("Giulia", "Neri", "giulia_user", "giulia@mail.it", "123", "U4", null);
         userRepo.save(leader2);
 
         Team team2 = teamService.createTeam("T2", "TeamBlue", leader2);
-        User marco = new User("Marco", "Rossi", "m", "p", "U5", "a");
-        User sara = new User("Sara", "Verdi", "s", "p", "U6", "b");
+        User marco = new User("Marco", "Rossi", "marco_user", "m", "p", "U5", null);
+        User sara = new User("Sara", "Verdi", "sara_user", "s", "p", "U6", null);
 
         userRepo.save(marco);
         userRepo.save(sara);
@@ -91,7 +93,6 @@ public class Main {
         team2.addMember(new TeamMember("TM5", sara, TeamMember.Role.MEMBER));
         hackathon.iscriviTeam(team2);
         System.out.println("Team iscritti dopo secondo team: " + hackathon.getTeams().size());
-
 
         hackathon.nextState();
         hackRepo.save(hackathon);
@@ -119,7 +120,7 @@ public class Main {
 
         // UC: Invito membro nel Team + Accettazione
         try {
-            User u9 = new User("Elena", "Test", "elena@mail.it", "123", "U9", "1414");
+            User u9 = new User("Elena", "Test", "elena_user", "elena@mail.it", "123", "U9", null);
             userRepo.save(u9);
 
             inviteController.sendInvite("U1", "T1", "U9");
@@ -184,16 +185,16 @@ public class Main {
                                     new SupportRequestRepository(),
                                     teamService,
                                     staffService,
-                                    hackRepo
-
+                                    hackRepo,
+                                    callRepo 
                             )
                     );
 
             supportController.sendSupportRequest(
-                    "H1",
                     "T1",
                     "U2",
-                    "1515",
+                    "MNT1",
+                    "H1",
                     "Ho bisogno di aiuto sul progetto"
             );
 
@@ -203,19 +204,15 @@ public class Main {
             System.out.println("Errore support request: " + e.getMessage());
         }
 
-
-
         System.out.println("\n--- UC: PROCLAMA VINCITORE ---");
 
         try {
-            // Porta hackathon in VALUTAZIONE se non lo è già
             if (!(hackathon.getState() instanceof InValutazioneState)) {
                 hackathon.nextState();
             }
 
             System.out.println("Stato attuale: " + hackathon.getState().getName());
 
-            // Proclama vincitore
             hackathon.proclamaVincitore(team2);
 
             System.out.println("🏆 Vincitore: " + hackathon.getWinner().getName());
@@ -225,10 +222,7 @@ public class Main {
             System.out.println("Errore proclamazione vincitore: " + e.getMessage());
         }
 
-
-
         System.out.println("\n--- ITERAZIONE TRE ---");
-
         System.out.println("\n--- UC: VALUTA SOTTOMISSIONE ---");
 
         try {

@@ -1,31 +1,15 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.Violation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public class ViolationRepository {
-    private final List<Violation> violations = new ArrayList<>();
+@Repository
+public interface ViolationRepository extends JpaRepository<Violation, String> {
 
-    public void save(Violation violation) {
-        // Rimuove vecchia istanza prima di salvare quella aggiornata
-        violations.removeIf(v -> v.getId().equals(violation.getId()));
-        violations.add(violation);
-    }
-
-    public Optional<Violation> findById(String id) {
-        return violations.stream()
-                .filter(v -> v.getId().equals(id))
-                .findFirst();
-    }
-
-    // Ritorna lista di tutte le violazioni 
-    public List<Violation> findAll() {
-        return new ArrayList<>(violations);
-    }
-    public void delete(String id) {
-    // Rimuove l'elemento dalla lista interna 
-    violations.removeIf(v -> v.getId().equals(id));
-}
+    // Tutti i tuoi metodi precedenti sono già inclusi automaticamente:
+    // - save(Violation) gestisce sia l'inserimento che l'aggiornamento.
+    // - findById(String) cerca per ID restituendo un Optional.
+    // - findAll() restituisce la lista completa delle violazioni presenti nel database.
+    // - deleteById(String) sostituisce il vecchio metodo delete(String) per rimuovere i record.
 }

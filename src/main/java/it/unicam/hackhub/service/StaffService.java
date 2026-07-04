@@ -5,7 +5,11 @@ import it.unicam.hackhub.model.Organizer;
 import it.unicam.hackhub.model.Mentor;
 import it.unicam.hackhub.model.Judge;
 import it.unicam.hackhub.repository.StaffRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional(readOnly = true) // Ottimizza le performance per sole letture
 public class StaffService {
     private final StaffRepository staffRepo;
 

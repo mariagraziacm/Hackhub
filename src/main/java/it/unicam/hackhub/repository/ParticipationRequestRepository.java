@@ -1,24 +1,11 @@
 package it.unicam.hackhub.repository;
+
 import it.unicam.hackhub.model.ParticipationRequest;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-public class ParticipationRequestRepository {
-    private final List<ParticipationRequest> requests = new ArrayList<>();
-
-    public void save(ParticipationRequest request) {
-        requests.add(request);
-    }
-
-    public Optional<ParticipationRequest> findById(String id) {
-        return requests.stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst();
-    }
-
-    public List<ParticipationRequest> findAll() {
-        return List.copyOf(requests);
-    }
+@Repository
+public interface ParticipationRequestRepository extends JpaRepository<ParticipationRequest, String> {
+    // save(), findById() e findAll() sono forniti nativamente da JpaRepository.
+    boolean existsByUserIdAndTeamIdAndState(String userId, String teamId, ParticipationRequest.ParticipationRequestState state);
 }

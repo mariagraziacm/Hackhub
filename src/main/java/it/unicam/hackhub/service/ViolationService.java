@@ -7,26 +7,28 @@ import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.repository.ViolationRepository;
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.state.InCorsoState;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class ViolationService {
+    
     private final ViolationRepository repo;
     private final StaffService staffService;
-    private HackathonRepository hackathonRepo;
-    private TeamService teamService;
+    private final HackathonRepository hackathonRepo;
+    private final TeamService teamService;
 
-    public ViolationService(ViolationRepository repo, StaffService staffService) {
+    // Iniezione pulita tramite un unico costruttore (niente più setter volanti)
+    public ViolationService(ViolationRepository repo, 
+                            StaffService staffService, 
+                            HackathonRepository hackathonRepo, 
+                            TeamService teamService) {
         this.repo = repo;
         this.staffService = staffService;
-    }
-
-    public void setHackathonRepo(HackathonRepository hackathonRepo) {
         this.hackathonRepo = hackathonRepo;
-    }
-
-    public void setTeamService(TeamService teamService) {
         this.teamService = teamService;
     }
 
@@ -40,7 +42,6 @@ public class ViolationService {
         if (!(hackathon.getState() instanceof InCorsoState)) {
             throw new IllegalStateException("Violazioni consentite solo in hackathon IN CORSO");
         }
-
 
         Violation violation = new Violation(
                 UUID.randomUUID().toString(),
@@ -62,6 +63,7 @@ public class ViolationService {
         return list;
     }
 
+    @Transactional // Assicura la consistenza del DB modificando più tabelle/entità insieme
     public void resolveViolation(String violationId, Violation.ViolationStatus status) {
         Violation violation = repo.findById(violationId)
                 .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
@@ -72,7 +74,6 @@ public class ViolationService {
         violation.resolve(status);
 
         switch (status) {
-
             case DISQUALIFY_TEAM -> {
                 Team team = teamService.getById(violation.getTeamId());
                 hackathon.removeTeam(team);

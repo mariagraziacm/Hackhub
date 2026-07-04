@@ -1,14 +1,30 @@
 package it.unicam.hackhub.model;
 
-
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "teams")
 public class Team {
-    private final String id;
+
+    @Id
+    private String id; // Rimosso final per JPA
+    
     private String name;
-    private final List<TeamMember> members = new ArrayList<>();
-    private final int maxMembers = 5;
+
+    // Relazione Uno-a-Molti: un Team ha molti TeamMember. 
+    // cascade = CascadeType.ALL significa che se salvi/elimini un Team, salvi/elimini anche i suoi membri.
+    // orphanRemoval = true cancella dal DB i membri rimossi dalla lista.
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
+    @JoinColumn(name = "team_id") // Crea la chiave esterna nella tabella dei TeamMember
+    private List<TeamMember> members = new ArrayList<>(); // Rimosso final per JPA
+
+    private final int maxMembers = 5; // Questo può rimanere final perché è una costante logica
+
+    // Costruttore vuoto obbligatorio per JPA
+    public Team() {
+    }
 
     public Team(String id, String name) {
         this.id = id;
@@ -19,8 +35,10 @@ public class Team {
 
     public String getName() { return name; }
 
+    // Cambiato leggermente per non rompere il tracciamento di Hibernate, 
+    // ma mantenendo l'immutabilità verso l'esterno
     public List<TeamMember> getMembers() {
-        return List.copyOf(members);
+        return java.util.Collections.unmodifiableList(members);
     }
 
     @Override
@@ -28,13 +46,15 @@ public class Team {
         if (this == o) return true;
         if (!(o instanceof Team)) return false;
         Team team = (Team) o;
-        return id.equals(team.id);
+        return id != null && id.equals(team.id);
     }
 
     @Override
     public int hashCode() {
         return java.util.Objects.hash(id);
     }
+
+    // --- TUTTA LA TUA LOGICA DI BUSINESS RIMANE IDENTICA ---
 
     public void addMember(TeamMember member) {
         if (isFull()) {
@@ -66,7 +86,6 @@ public class Team {
     }
 
     public void removeMember(String userId) {
-
         members.removeIf(
                 m -> m.getUser().getId().equals(userId)
         );
@@ -85,6 +104,7 @@ public class Team {
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("Leader non trovato"));
     }
+
     public int getSize() {
         return members.size();
     }

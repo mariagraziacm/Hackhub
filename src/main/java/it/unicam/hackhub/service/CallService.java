@@ -2,7 +2,10 @@ package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.model.Call;
 import it.unicam.hackhub.repository.CallRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class CallService {
     private final CallRepository callRepo;
 
@@ -10,6 +13,7 @@ public class CallService {
         this.callRepo = callRepo;
     }
 
+    @Transactional
     public void respondToCall(String callId, boolean accepted) {
         Call call = callRepo.findById(callId)
                 .orElseThrow(() -> new IllegalStateException("Call non trovata"));
@@ -26,4 +30,4 @@ public class CallService {
 
         callRepo.save(call);
     }
-}
+ }

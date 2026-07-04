@@ -9,9 +9,12 @@ import it.unicam.hackhub.model.Judge;
 import it.unicam.hackhub.repository.InviteRepository;
 import it.unicam.hackhub.repository.UserRepository;
 import it.unicam.hackhub.repository.StaffRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Service
 public class InviteService {
 
     private final InviteRepository repo;
@@ -29,6 +32,7 @@ public class InviteService {
         this.staffRepo = staffRepo;
     }
 
+    @Transactional
     public Invite sendInvite(String leaderId, String teamId, String userId) {
         Team team = teamService.getById(teamId);
 
@@ -47,13 +51,8 @@ public class InviteService {
             throw new IllegalStateException("Utente già in un team");
         }
 
-        boolean alreadyInvited = repo.findAll().stream()
-                .anyMatch(i ->
-                        i.getUser().getId().equals(userId)
-                                && i.getTeam() != null
-                                && i.getTeam().getId().equals(teamId)
-                                && i.getState() == Invite.InviteState.PENDING
-                );
+        // Verifica delegata in modo efficiente al database
+        boolean alreadyInvited = repo.existsByUserIdAndTeamIdAndState(userId, teamId, Invite.InviteState.PENDING);
 
         if (alreadyInvited) {
             throw new IllegalStateException("Invito già esistente");
@@ -64,6 +63,7 @@ public class InviteService {
         return invite;
     }
 
+    @Transactional
     public void acceptInvite(String inviteId) {
         Invite invite = repo.findById(inviteId)
                 .orElseThrow(() -> new IllegalStateException("Invite non trovata"));
@@ -88,13 +88,13 @@ public class InviteService {
             invite.accept();
             repo.save(invite);
         } else if (invite.getHackathonId() != null) {
-            String type = invite.getInviteType().name();
+            Invite.InviteType type = invite.getInviteType();
             String hackathonId = invite.getHackathonId();
 
-            if ("MENTOR".equals(type)) {
+            if (Invite.InviteType.MENTOR == type) {
                 Mentor newMentor = new Mentor(UUID.randomUUID().toString(), user, hackathonId);
                 staffRepo.save(newMentor); 
-            } else if ("JUDGE".equals(type)) {
+            } else if (Invite.InviteType.JUDGE == type) {
                 Judge newJudge = new Judge(UUID.randomUUID().toString(), user, hackathonId);
                 staffRepo.save(newJudge);
             }
@@ -104,14 +104,16 @@ public class InviteService {
         }
     }
 
+    @Transactional
     public void declineInvite(String inviteId) {
         Invite invite = repo.findById(inviteId)
                 .orElseThrow(() -> new IllegalStateException("Invite non trovata"));
 
         invite.decline();
-        repo.save(invite); // Salva stato DECLINED 
+        repo.save(invite); 
     }
 
+    @Transactional
     public Invite inviteMentor(String hackathonId, String userId) {
         if (hackathonId == null || hackathonId.isBlank()) {
             throw new IllegalStateException("Hackathon non valido");
@@ -120,14 +122,10 @@ public class InviteService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User non trovato"));
 
-        boolean alreadyPending = repo.findAll().stream()
-                .anyMatch(i ->
-                        i.getUser().getId().equals(userId)
-                                && hackathonId.equals(i.getHackathonId())
-                                && i.getInviteType() != null 
-                                && "MENTOR".equals(i.getInviteType().name())
-                                && i.getState() == Invite.InviteState.PENDING
-                );
+        // Ottimizzato tramite query dedicata sul DB
+        boolean alreadyPending = repo.existsByUserIdAndHackathonIdAndInviteTypeAndState(
+                userId, hackathonId, Invite.InviteType.MENTOR, Invite.InviteState.PENDING
+        );
 
         if (alreadyPending) {
             throw new IllegalStateException("Invito mentor già esistente");
@@ -138,6 +136,7 @@ public class InviteService {
         return invite;
     }
 
+    @Transactional
     public Invite inviteJudge(String hackathonId, String userId) {
         if (hackathonId == null || hackathonId.isBlank()) {
             throw new IllegalStateException("Hackathon non valido");
@@ -146,14 +145,10 @@ public class InviteService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User non trovato"));
 
-        boolean alreadyPending = repo.findAll().stream()
-                .anyMatch(i ->
-                        i.getUser().getId().equals(userId)
-                                && hackathonId.equals(i.getHackathonId())
-                                && i.getInviteType() != null
-                                && "JUDGE".equals(i.getInviteType().name())
-                                && i.getState() == Invite.InviteState.PENDING
-                );
+        // Ottimizzato tramite query dedicata sul DB
+        boolean alreadyPending = repo.existsByUserIdAndHackathonIdAndInviteTypeAndState(
+                userId, hackathonId, Invite.InviteType.JUDGE, Invite.InviteState.PENDING
+        );
 
         if (alreadyPending) {
             throw new IllegalStateException("Invito judge già esistente");

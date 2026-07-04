@@ -2,9 +2,13 @@ package it.unicam.hackhub.controller;
 
 import it.unicam.hackhub.model.Submission;
 import it.unicam.hackhub.service.SubmissionService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/submissions")
 public class SubmissionController {
 
     private final SubmissionService submissionService;
@@ -13,64 +17,127 @@ public class SubmissionController {
         this.submissionService = submissionService;
     }
 
-    public Submission sendSubmission(String hackathonId,
-                                     String teamId,
-                                     String title,
-                                     String description) {
-        return submissionService.sendSubmission(hackathonId, teamId, title, description);
+    // POST /api/submissions -> Invia una nuova sottomissione
+    @PostMapping
+    public ResponseEntity<?> sendSubmission(@RequestBody SubmissionPayload payload) {
+        try {
+            Submission submission = submissionService.sendSubmission(
+                    payload.getHackathonId(),
+                    payload.getTeamId(),
+                    payload.getTitle(),
+                    payload.getDescription()
+            );
+            return ResponseEntity.ok(submission);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("ERROR: " + e.getMessage());
+        }
     }
 
-    public Submission editSubmission(String submissionId,
-                                     String title,
-                                     String description) {
-        return submissionService.editSubmission(submissionId, title, description);
+    // PUT /api/submissions/{submissionId} -> Modifica una sottomissione esistente
+    @PutMapping("/{submissionId}")
+    public ResponseEntity<?> editSubmission(
+            @PathVariable String submissionId,
+            @RequestBody SubmissionPayload payload) {
+        try {
+            Submission submission = submissionService.editSubmission(
+                    submissionId,
+                    payload.getTitle(),
+                    payload.getDescription()
+            );
+            return ResponseEntity.ok(submission);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("ERROR: " + e.getMessage());
+        }
     }
 
-    public Submission getSubmissionById(String submissionId) {
-        return submissionService.getById(submissionId);
+    // GET /api/submissions/{submissionId} -> Recupera una sottomissione dal suo ID
+    @GetMapping("/{submissionId}")
+    public ResponseEntity<?> getSubmissionById(@PathVariable String submissionId) {
+        try {
+            Submission submission = submissionService.getById(submissionId);
+            return ResponseEntity.ok(submission);
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    public void valutaSottomissione(String hackathonId,
-                                    String teamId,
-                                    int score,
-                                    String comment,
-                                    String judgeId) {
+    // POST /api/submissions/evaluate -> Inserisce la valutazione di un giudice
+    @PostMapping("/evaluate")
+    public ResponseEntity<String> valutaSottomissione(@RequestBody EvaluationPayload payload) {
         try {
             submissionService.valutaSottomissione(
-                    hackathonId,
-                    teamId,
-                    score,
-                    comment,
-                    judgeId
+                    payload.getHackathonId(),
+                    payload.getTeamId(),
+                    payload.getScore(),
+                    payload.getComment(),
+                    payload.getJudgeId()
             );
-            System.out.println("SYSTEM: Valutazione salvata con successo");
+            return ResponseEntity.ok("SYSTEM: Valutazione salvata con successo");
         } catch (Exception e) {
-            System.out.println("ERROR: " + e.getMessage());
+            return ResponseEntity.badRequest().body("ERROR: " + e.getMessage());
         }
     }
-    public void viewEvaluation(String teamId, String hackathonId) {
+
+    // GET /api/submissions/evaluation?teamId=XYZ&hackathonId=ABC -> Visualizza il voto ricevuto
+    @GetMapping("/evaluation")
+    public ResponseEntity<?> viewEvaluation(
+            @RequestParam String teamId,
+            @RequestParam String hackathonId) {
         try {
             Submission s = submissionService.getEvaluation(teamId, hackathonId);
-
-            System.out.println("=== VALUTAZIONE ===");
-            System.out.println("Score: " + s.getScore());
-            System.out.println("Commento: " + s.getComment());
-
+            return ResponseEntity.ok(s);
         } catch (Exception e) {
-            System.out.println("ERRORE: " + e.getMessage());
+            return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
         }
     }
-    public void viewSubmissions(String hackathonId, String staffId) {
+
+    // GET /api/submissions/hackathon/{hackathonId}?staffId=XYZ -> Elenca le sottomissioni per lo staff
+    @GetMapping("/hackathon/{hackathonId}")
+    public ResponseEntity<?> viewSubmissions(
+            @PathVariable String hackathonId,
+            @RequestParam String staffId) {
         try {
-            List<Submission> subs =
-                    submissionService.getSubmissionsByHackathon(hackathonId, staffId);
-
-            subs.forEach(s ->
-                    System.out.println(s.getTeamId() + " - " + s.getTitle())
-            );
-
+            List<Submission> subs = submissionService.getSubmissionsByHackathon(hackathonId, staffId);
+            return ResponseEntity.ok(subs);
         } catch (Exception e) {
-            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+            return ResponseEntity.badRequest().body("SYSTEM [ERRORE]: " + e.getMessage());
         }
+    }
+
+    // DTO per gestire la creazione e modifica delle sottomissioni
+    public static class SubmissionPayload {
+        private String hackathonId;
+        private String teamId;
+        private String title;
+        private String description;
+
+        public String getHackathonId() { return hackathonId; }
+        public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
+        public String getTeamId() { return teamId; }
+        public void setTeamId(String teamId) { this.teamId = teamId; }
+        public String getTitle() { return title; }
+        public void setTitle(String title) { this.title = title; }
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
+    }
+
+    // DTO per gestire l'input della valutazione
+    public static class EvaluationPayload {
+        private String hackathonId;
+        private String teamId;
+        private int score;
+        private String comment;
+        private String judgeId;
+
+        public String getHackathonId() { return hackathonId; }
+        public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
+        public String getTeamId() { return teamId; }
+        public void setTeamId(String teamId) { this.teamId = teamId; }
+        public int getScore() { return score; }
+        public void setScore(int score) { this.score = score; }
+        public String getComment() { return comment; }
+        public void setComment(String comment) { this.comment = comment; }
+        public String getJudgeId() { return judgeId; }
+        public void setJudgeId(String judgeId) { this.judgeId = judgeId; }
     }
 }

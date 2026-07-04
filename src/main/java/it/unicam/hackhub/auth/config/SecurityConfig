@@ -1,0 +1,29 @@
+package it.unicam.hackhub.auth.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+        .authorizeHttpRequests(auth -> auth
+            // Permetti accesso a H2 Console, alla home e a eventuali risorse statiche
+            .requestMatchers("/h2-console/**").permitAll()
+            .requestMatchers("/").permitAll()
+            // Permetti tutto il resto (per ora) per evitare blocchi 403/404
+            .anyRequest().permitAll() 
+        );
+        // Non disabilitare il formLogin se vuoi usarlo, o lascialo così se non serve
+
+    return http.build();
+}
+}

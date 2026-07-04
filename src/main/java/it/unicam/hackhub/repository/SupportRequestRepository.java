@@ -1,32 +1,18 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.SupportRequest;
-import java.util.ArrayList;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import java.util.List;
-import java.util.Optional; 
 
-public class SupportRequestRepository {
-    private final List<SupportRequest> requests = new ArrayList<>();
+@Repository
+public interface SupportRequestRepository extends JpaRepository<SupportRequest, String> {
 
-    public void save(SupportRequest request) {
-        requests.removeIf(r -> r.getId().equals(request.getId()));
-        requests.add(request);
-    }
+    // save(), findById() e findAll() sono forniti nativamente da JpaRepository.
 
-
-    public Optional<SupportRequest> findById(String id) {
-        return requests.stream()
-                .filter(r -> r.getId().equals(id))
-                .findFirst();
-    }
-
-    public List<SupportRequest> findAll() {
-        return new ArrayList<>(requests);
-    }
-
-    public List<SupportRequest> findByMentorId(String mentorId) {
-        return requests.stream()
-                .filter(r -> r.getMentorId().equals(mentorId))
-                .toList();
-    }
+    /**
+     
+Spring genera automaticamente la query SQL per filtrare 
+le richieste di supporto in base all'ID del mentore.*/
+List<SupportRequest> findByMentorId(String mentorId);
 }

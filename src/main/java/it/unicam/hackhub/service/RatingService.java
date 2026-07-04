@@ -6,24 +6,28 @@ import it.unicam.hackhub.model.Submission;
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.repository.SubmissionRepository;
 import it.unicam.hackhub.state.InValutazioneState;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
 public class RatingService {
     private final SubmissionRepository submissionRepo;
     private final StaffService staffService;
     private final HackathonRepository hackathonRepo;
 
     public RatingService(SubmissionRepository submissionRepo,
-                          StaffService staffService,
-                          HackathonRepository hackathonRepo) {
+                         StaffService staffService,
+                         HackathonRepository hackathonRepo) {
         this.submissionRepo = submissionRepo;
         this.staffService = staffService;
         this.hackathonRepo = hackathonRepo;
     }
 
+    @Transactional
     public void rateSubmission(String judgeId,
-                                   String submissionId,
-                                   int score,
-                                   String comment) {
+                               String submissionId,
+                               int score,
+                               String comment) {
 
         Judge judge = staffService.getJudge(judgeId);
 

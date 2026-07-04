@@ -1,21 +1,36 @@
 package it.unicam.hackhub.model;
 
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
+@Entity
+@Table(name = "submissions")
 public class Submission {
-    private final String id;
-    private final String hackathonId;
-    private final String teamId;
-    private int score;
-    private String comment;
-    private boolean evaluated;
 
+    @Id
+    private String id; // Rimosso final per JPA
+    
+    private String hackathonId; // Rimosso final per JPA
+    private String teamId; // Rimosso final per JPA
+    
+    private int score;
+    
+    @Lob
+    private String comment;
+    
+    private boolean evaluated;
     private String title;
+    
+    @Lob
     private String description;
 
-    private final LocalDateTime createdAt;
+    private LocalDateTime createdAt; // Rimosso final per JPA
     private LocalDateTime updatedAt;
+
+    // Costruttore vuoto obbligatorio per Spring Boot / JPA
+    public Submission() {
+    }
 
     public Submission(String id,
                       String hackathonId,
@@ -33,6 +48,7 @@ public class Submission {
         this.updatedAt = this.createdAt;
     }
 
+    // --- GETTER ---
     public String getId() { return id; }
     public String getHackathonId() { return hackathonId; }
     public String getTeamId() { return teamId; }
@@ -40,6 +56,23 @@ public class Submission {
     public String getDescription() { return description; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public int getScore() { return score; }
+    public String getComment() { return comment; }
+    public boolean isEvaluated() { return evaluated; }
+
+    // --- SETTER (Utili per JPA) ---
+    public void setId(String id) { this.id = id; }
+    public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
+    public void setTeamId(String teamId) { this.teamId = teamId; }
+    public void setTitle(String title) { this.title = title; }
+    public void setDescription(String description) { this.description = description; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setScore(int score) { this.score = score; }
+    public void setComment(String comment) { this.comment = comment; }
+    public void setEvaluated(boolean evaluated) { this.evaluated = evaluated; }
+
+    // --- LA TUA LOGICA DI BUSINESS RIMANE IDENTICA ---
 
     public void update(String title, String description) {
         this.title = requireNotBlank(title, "title obbligatorio");
@@ -53,24 +86,13 @@ public class Submission {
         }
         return value;
     }
-    public void setScore(int score) {
-    this.score = score;
-}
-
-public void setComment(String comment) {
-    this.comment = comment;
-}
-
-public void setEvaluated(boolean evaluated) {
-    this.evaluated = evaluated;
-}
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Submission)) return false;
         Submission that = (Submission) o;
-        return id.equals(that.id);
+        return id != null && id.equals(that.id);
     }
 
     @Override
@@ -84,7 +106,7 @@ public void setEvaluated(boolean evaluated) {
         }
 
         if (this.evaluated) {
-            throw new IllegalStateException("Submission già valutata");
+            throw new IllegalStateException("Submission giÃ  valutata");
         }
 
         this.score = score;
@@ -92,20 +114,10 @@ public void setEvaluated(boolean evaluated) {
         this.evaluated = true;
         this.updatedAt = LocalDateTime.now();
     }
-    public boolean isEvaluated() {
-        return evaluated;
-    }
+
     public void ensureEvaluated() {
         if (!evaluated) {
             throw new IllegalStateException("Non valutata");
         }
-    }
-
-    public int getScore() {
-        return score;
-    }
-
-    public String getComment() {
-        return comment;
     }
 }

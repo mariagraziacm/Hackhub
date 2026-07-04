@@ -1,36 +1,25 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.Team;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-public class TeamRepository {
-    private final List<Team> teams = new ArrayList<>();
+@Repository
+public interface TeamRepository extends JpaRepository<Team, String> {
 
-    public void save(Team team) {
-    teams.removeIf(t -> t.getId().equals(team.getId()));
-    teams.add(team);
-}
+    // save(), findById() e findAll() sono già inclusi automaticamente!
 
-    public List<Team> findAll() {
-        return teams;
-    }
+     
+/*Verifica se esiste un team con il nome specificato (case-insensitive).
+Spring converte automaticamente questo metodo in una query SQL con clausola 'UPPER' o 'LOWER
+boolean existsByNameIgnoreCase(String name);
 
-    public Optional<Team> findById(String id) {
-        return teams.stream()
-                .filter(t -> t.getId().equals(id))
-                .findFirst();
-    }
+    /
+     
+Naviga le relazioni: controlla se nella tabella dei membri del team (members)
+esiste un utente (user) con lo specifico ID (id).
+Sostituisce in modo super efficiente il vecchio flatMap in memoria*/
 
-    public boolean existsByName(String name) {
-        return teams.stream()
-                .anyMatch(t -> t.getName().equalsIgnoreCase(name));
-    }
-
-    public boolean isUserInAnyTeam(String userId) {
-        return teams.stream()
-                .flatMap(team -> team.getMembers().stream())
-                .anyMatch(member -> member.getUser().getId().equals(userId));
-    }
+    boolean existsByNameIgnoreCase(String name);
+boolean existsByMembers_User_Id(String userId);
 }

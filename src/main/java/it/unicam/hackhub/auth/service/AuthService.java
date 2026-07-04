@@ -1,27 +1,28 @@
 package it.unicam.hackhub.auth.service;
 
-
 import it.unicam.hackhub.auth.security.JwtUtil;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Service
 public class AuthService {
 
     private final UserRepository userRepo;
-    private final JwtUtil jwtUtil = new JwtUtil();
+    private final JwtUtil jwtUtil;
 
-    public AuthService(UserRepository userRepo) {
+    // Iniettiamo sia il repository che la utility di JWT tramite Spring
+    public AuthService(UserRepository userRepo, JwtUtil jwtUtil) {
         this.userRepo = userRepo;
+        this.jwtUtil = jwtUtil;
     }
 
+    @Transactional
     public User register(String id, String username, String name, String surname, String email, String password) {
 
-        boolean exists = userRepo.findAll().stream()
-                .anyMatch(u ->
-                        u.getEmail().equals(email) ||
-                                u.getUsername().equals(username)
-                );
+        // Verifica delegata in modo efficiente al database
+        boolean exists = userRepo.existsByEmailOrUsername(email, username);
 
         if (exists) {
             throw new IllegalStateException("Email o username già registrati");
@@ -33,11 +34,11 @@ public class AuthService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public String login(String username, String password) {
 
-        User user = userRepo.findAll().stream()
-                .filter(u -> u.getUsername().equals(username))
-                .findFirst()
+        // Recupero mirato tramite query sul database
+        User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new IllegalStateException("User non trovato"));
 
         if (!user.getPassword().equals(password)) {

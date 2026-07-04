@@ -1,26 +1,14 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.Invite;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+@Repository
+public interface InviteRepository extends JpaRepository<Invite, String> {
+    // save(), findById() e findAll() sono forniti nativamente da JpaRepository.
+    boolean existsByUserIdAndTeamIdAndState(String userId, String teamId, Invite.InviteState state);
 
+boolean existsByUserIdAndHackathonIdAndInviteTypeAndState(String userId, String hackathonId, Invite.InviteType inviteType, Invite.InviteState state);
 
-public class InviteRepository {
-    private final List<Invite> invites = new ArrayList<>();
-
-    public void save(Invite invite) {
-        invites.add(invite);
-    }
-
-    public Optional<Invite> findById(String id) {
-        return invites.stream()
-                .filter(i -> i.getId().equals(id))
-                .findFirst();
-    }
-
-    public List<Invite> findAll() {
-        return List.copyOf(invites);
-    }
 }

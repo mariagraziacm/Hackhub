@@ -5,10 +5,13 @@ import it.unicam.hackhub.repository.CallRepository;
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.repository.SupportRequestRepository;
 import it.unicam.hackhub.state.InCorsoState;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
 
+@Service
 public class SupportRequestService {
     private final SupportRequestRepository repo;
     private final TeamService teamService;
@@ -28,6 +31,7 @@ public class SupportRequestService {
         this.callRepo = callRepo;
     }
 
+    @Transactional
     public SupportRequest sendRequest(String teamId,
                                       String memberId,
                                       String mentorId,
@@ -61,6 +65,7 @@ public class SupportRequestService {
         return request;
     }
 
+    @Transactional(readOnly = true)
     public List<SupportRequest> getMentorRequests(String mentorId) {
 
         Mentor mentor = staffService.getMentor(mentorId);
@@ -74,6 +79,8 @@ public class SupportRequestService {
 
         return repo.findByMentorId(mentorId);
     }
+
+    @Transactional
     public Call planCall(String mentorId, String requestId, String slotId) {
 
         Mentor mentor = staffService.getMentor(mentorId);

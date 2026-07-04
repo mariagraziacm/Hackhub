@@ -2,84 +2,116 @@ package it.unicam.hackhub.controller;
 
 import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Team;
-import it.unicam.hackhub.service.HackathonService;
 import it.unicam.hackhub.model.Submission;
+import it.unicam.hackhub.service.HackathonService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@RestController
+@RequestMapping("/api/hackathons")
 public class HackathonController {
+    
     private final HackathonService hackathonService;
 
     public HackathonController(HackathonService hackathonService) {
         this.hackathonService = hackathonService;
     }
 
-    public void newHackathon(String id, String name, String specifications, String organizerId) {
+    // POST /api/hackathons -> Crea un nuovo hackathon
+    @PostMapping
+    public ResponseEntity<String> newHackathon(@RequestBody HackathonRegisterPayload payload) {
         try {
-            Hackathon nuovoHackathon = hackathonService.createHackathon(id, name, specifications, organizerId);
-            System.out.println("SYSTEM: Hackathon '" + name + "' creato con successo e impostato in fase '"
-                    + nuovoHackathon.getState().getName()+ "'.");
+            Hackathon nuovoHackathon = hackathonService.createHackathon(
+                    payload.getId(), 
+                    payload.getName(), 
+                    payload.getSpecifications(), 
+                    payload.getOrganizerId()
+            );
+            return ResponseEntity.ok("SYSTEM: Hackathon '" + payload.getName() + "' creato con successo e impostato in fase '"
+                    + nuovoHackathon.getState().getName() + "'.");
         } catch (IllegalArgumentException | IllegalStateException e) {
-            System.out.println("SYSTEM [ERRORE]: " + e.getMessage());
+            return ResponseEntity.badRequest().body("SYSTEM [ERRORE]: " + e.getMessage());
         }
     }
 
-    public void addTeamToHackathon(String hackathonId, String teamId) {
+    // POST /api/hackathons/teams -> Iscrive un team a un hackathon
+    @PostMapping("/teams")
+    public ResponseEntity<String> addTeamToHackathon(@RequestBody TeamEnrollmentPayload payload) {
         try {
-            hackathonService.addTeamToHackathon(hackathonId, teamId);
-            System.out.println("OK iscrizione");
+            hackathonService.addTeamToHackathon(payload.getHackathonId(), payload.getTeamId());
+            return ResponseEntity.ok("OK iscrizione");
         } catch (Exception e) {
-            System.out.println("ERRORE: " + e.getMessage());
+            return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
         }
     }
-    public void viewResults(String hackathonId, String organizerId) {
-        try {
-            List<Submission> results =
-                    hackathonService.getResults(hackathonId, organizerId);
 
+    // GET /api/hackathons/{hackathonId}/results?organizerId=XYZ -> Visualizza i risultati delle sottomissioni
+    @GetMapping("/{hackathonId}/results")
+    public ResponseEntity<?> viewResults(
+            @PathVariable String hackathonId, 
+            @RequestParam String organizerId) {
+        try {
+            List<Submission> results = hackathonService.getResults(hackathonId, organizerId);
             if (results.isEmpty()) {
-                System.out.println("Nessun risultato disponibile");
-                return;
+                return ResponseEntity.ok("Nessun risultato disponibile");
             }
-
-            results.forEach(r -> System.out.println(
-                    "Team: " + r.getTeamId() +
-                            " | Score: " + r.getScore() +
-                            " | Comment: " + r.getComment()
-            ));
-
+            return ResponseEntity.ok(results);
         } catch (Exception e) {
-            System.out.println("ERRORE: " + e.getMessage());
+            return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
         }
     }
-    public void viewIscrizioni(String hackathonId, String organizerId) {
+
+    // GET /api/hackathons/{hackathonId}/registrations?organizerId=XYZ -> Visualizza i team iscritti
+    @GetMapping("/{hackathonId}/registrations")
+    public ResponseEntity<?> viewIscrizioni(
+            @PathVariable String hackathonId, 
+            @RequestParam String organizerId) {
         try {
             List<Team> teams = hackathonService.getIscrizioni(hackathonId, organizerId);
-
-            System.out.println("=== TEAM ISCRITTI ===");
-
-            teams.forEach(t -> System.out.println(
-                    "Team: " + t.getName() +
-                            " | Membri: " + t.getMembers().size()
-            ));
-
+            return ResponseEntity.ok(teams);
         } catch (Exception e) {
-            System.out.println("ERRORE: " + e.getMessage());
+            return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
         }
     }
-    public void viewStorico(String staffId) {
+
+    // GET /api/hackathons/history/staff/{staffId} -> Visualizza lo storico degli hackathon dello staff
+    @GetMapping("/history/staff/{staffId}")
+    public ResponseEntity<?> viewStorico(@PathVariable String staffId) {
         try {
             List<Hackathon> storico = hackathonService.getStoricoStaff(staffId);
-
-            System.out.println("=== STORICO HACKATHON ===");
-
-            storico.forEach(h -> System.out.println(
-                    "Hackathon: " + h.getName() +
-                            " | Stato: " + h.getState().getName()
-            ));
-
+            return ResponseEntity.ok(storico);
         } catch (Exception e) {
-            System.out.println("ERRORE: " + e.getMessage());
+            return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
         }
+    }
+
+    // DTO per la registrazione dell'hackathon
+    public static class HackathonRegisterPayload {
+        private String id;
+        private String name;
+        private String specifications;
+        private String organizerId;
+
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public String getSpecifications() { return specifications; }
+        public void setSpecifications(String specifications) { this.specifications = specifications; }
+        public String getOrganizerId() { return organizerId; }
+        public void setOrganizerId(String organizerId) { this.organizerId = organizerId; }
+    }
+
+    // DTO per l'iscrizione del team
+    public static class TeamEnrollmentPayload {
+        private String hackathonId;
+        private String teamId;
+
+        public String getHackathonId() { return hackathonId; }
+        public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
+        public String getTeamId() { return teamId; }
+        public void setTeamId(String teamId) { this.teamId = teamId; }
     }
 }

@@ -1,26 +1,18 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.Hackathon;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-public class HackathonRepository{
-    private final List<Hackathon> hackathons = new ArrayList<>();
+@Repository
+public interface HackathonRepository extends JpaRepository<Hackathon, String> {
 
-    public void save(Hackathon hackathon){
-        hackathons.add(hackathon);
-    }
+    // save(), findAll() e findById(String) sono già inclusi automaticamente!
 
-    public List<Hackathon> findAll(){
-        return hackathons;
-    }
-    public boolean existsByName(String name){
-        return hackathons.stream()
-                .anyMatch(h -> h.getName().equalsIgnoreCase(name));
-    }
-    public Optional<Hackathon>
-    findById(String id){
-        return hackathons.stream().filter(h-> h.getId().equals(id)).findFirst();
-    }
+    /**
+     
+Verifica se esiste un hackathon con il nome specificato, ignorando maiuscole e minuscole.
+Sostituisce il vecchio controllo in memoria stream/equalsIgnoreCase.*/
+boolean existsByNameIgnoreCase(String name);
 }

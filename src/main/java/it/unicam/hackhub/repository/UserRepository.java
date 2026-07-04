@@ -1,29 +1,22 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.User;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
-public class UserRepository {
-    private final List<User> users = new ArrayList<>();
+@Repository
+public interface UserRepository extends JpaRepository<User, String> {
+    boolean existsByEmailOrUsername(String email, String username);
 
-    public void save(User user) {
-        users.removeIf(u -> u.getId().equals(user.getId()));
-        users.add(user);
-    }
+    // Necessario per l'AuthService login
+   
 
-    public Optional<User> findById(String id) {
-        return users.stream()
-                .filter(u -> u.getId().equals(id))
-                .findFirst();
-    }
-    public Optional<User> findByUsername(String username) {
-        return users.stream()
-                .filter(u -> u.getUsername().equals(username))
-                .findFirst();
-    }
-    public List<User> findAll() {
-        return new ArrayList<>(users);
-    }
+    // I metodi save(), findById() e findAll() sono già inclusi automaticamente da JpaRepository!
+
+    /**
+     
+Spring Boot genera automaticamente la query SQL per questo metodo 
+analizzando semplicemente il nome del metodo (Property Expression).*/
+Optional<User> findByUsername(String username);
 }

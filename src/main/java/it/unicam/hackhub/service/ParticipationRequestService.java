@@ -6,9 +6,12 @@ import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.model.ParticipationRequest;
 import it.unicam.hackhub.repository.ParticipationRequestRepository;
 import it.unicam.hackhub.repository.UserRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Service
 public class ParticipationRequestService {
     private final ParticipationRequestRepository repo;
     private final TeamService teamService;
@@ -25,6 +28,7 @@ public class ParticipationRequestService {
     }
 
     // L'utente invia una richiesta per unirsi a un Team
+    @Transactional
     public ParticipationRequest sendRequest(String teamId, String userId) {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User non trovato"));
@@ -39,16 +43,15 @@ public class ParticipationRequestService {
             throw new IllegalStateException("Utente già in un team");
         }
 
-        // Verifica se esiste già una richiesta in sospeso identica
-        boolean alreadyRequested = repo.findAll().stream()
-                .anyMatch(r ->
-                        r.getUser().getId().equals(userId)
-                                && r.getTeam().getId().equals(teamId)
-                                && r.getState() == ParticipationRequest.ParticipationRequestState.PENDING
-                );
+        // Verifica delegata in modo efficiente al database tramite query mirata
+        boolean alreadyRequested = repo.existsByUserIdAndTeamIdAndState(
+                userId, 
+                teamId, 
+                ParticipationRequest.ParticipationRequestState.PENDING
+        );
 
         if (alreadyRequested) {
-            throw new IllegalStateException("Richiesta di partecipazione già esistente");
+            throw new IllegalStateException("Richiesta di partecipazione già existent");
         }
 
         ParticipationRequest req = new ParticipationRequest(
@@ -62,13 +65,14 @@ public class ParticipationRequestService {
     }
 
     // SE leader accetta la richiesta
+    @Transactional
     public void acceptRequest(String requestId, String leaderId) {
         ParticipationRequest req = repo.findById(requestId)
                 .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"));
 
         Team team = req.getTeam();
 
-        // Solo leader del team  può accettare
+        // Solo leader del team può accettare
         if (team.getLeader() == null || !team.getLeader().getUserId().equals(leaderId)) {
             throw new IllegalStateException("Solo il leader del team può accettare le richieste di partecipazione");
         }
@@ -91,11 +95,12 @@ public class ParticipationRequestService {
                 TeamMember.Role.MEMBER
         ));
         
-        // Salva nuovo stato della richiesta nel repository
+        // Salva nuovo stato della richiesta e cascata sul team nel repository
         repo.save(req);
     }
 
-    // SE  leader del team rifiuta richiesta di partecipazione
+    // SE leader del team rifiuta richiesta di partecipazione
+    @Transactional
     public void declineRequest(String requestId, String leaderId) {
         ParticipationRequest req = repo.findById(requestId)
                 .orElseThrow(() -> new IllegalStateException("Richiesta non trovata"));

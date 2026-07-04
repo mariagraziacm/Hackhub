@@ -4,8 +4,12 @@ import it.unicam.hackhub.model.Team;
 import it.unicam.hackhub.model.User;
 import it.unicam.hackhub.model.TeamMember;
 import it.unicam.hackhub.repository.TeamRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.UUID;
 
+@Service
 public class TeamService {
     private final TeamRepository repo;
 
@@ -13,11 +17,12 @@ public class TeamService {
         this.repo = repo;
     }
 
+    @Transactional
     public Team createTeam(String id, String name, User creator) {
-        if (repo.existsByName(name)) {
+        if (repo.existsByNameIgnoreCase(name)) {
             throw new IllegalStateException("Nome team già esistente");
         }
-        if (repo.isUserInAnyTeam(creator.getId())) {
+        if (repo.existsByMembers_User_Id(creator.getId())) {
             throw new IllegalStateException("Utente già in un team");
         }
         Team team = new Team(id, name);
@@ -33,10 +38,11 @@ public class TeamService {
     }
 
     public boolean isUserInAnyTeam(String userId) {
-        return repo.isUserInAnyTeam(userId);
+        return repo.existsByMembers_User_Id(userId);
     }
 
     // UC: Cambio Leader 
+    @Transactional
     public void changeLeader(String requesterUserId, String teamId, String newLeaderUserId) {
         Team team = getById(teamId);
         
@@ -50,13 +56,13 @@ public class TeamService {
             throw new IllegalStateException("Solo l'attuale leader può cedere il comando del team!");
         }
         
-        //  nuovo leader 
+        // nuovo leader 
         TeamMember newLeaderMember = team.getMembers().stream()
                 .filter(m -> m.getUserId().equals(newLeaderUserId))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("L'utente designato non fa parte di questo team!"));
 
-        // RimuovI i membri
+        // Rimuovi i membri
         team.removeMember(requesterUserId);
         team.removeMember(newLeaderUserId);
 
@@ -68,6 +74,7 @@ public class TeamService {
     }
 
     // UC: Rimozione Membro 
+    @Transactional
     public void removeMember(String leaderUserId, String teamId, String memberUserId) {
         Team team = getById(teamId);
         
@@ -86,6 +93,7 @@ public class TeamService {
     }
 
     // UC: Abbandono del Team da parte di un membro 
+    @Transactional
     public void leaveTeam(String teamId, String userId) {
         Team team = getById(teamId);
         

@@ -1,26 +1,10 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.Call;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-public class CallRepository {
-    private final List<Call> calls = new ArrayList<>();
-
-    public void save(Call call) {
-        calls.removeIf(c -> c.getId().equals(call.getId()));
-        calls.add(call);
-    }
-
-    public Optional<Call> findById(String id) {
-        return calls.stream()
-                .filter(c -> c.getId().equals(id))
-                .findFirst();
-    }
-
-    public List<Call> findAll() {
-        return new ArrayList<>(calls);
-    }
+@Repository
+public interface CallRepository extends JpaRepository<Call, String> {
+    // save(), findById() e findAll() sono già inclusi automaticamente da JpaRepository!
 }

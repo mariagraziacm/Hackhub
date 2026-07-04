@@ -1,48 +1,34 @@
 package it.unicam.hackhub.repository;
 
 import it.unicam.hackhub.model.Submission;
-
-import java.util.ArrayList;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-public class SubmissionRepository {
-    private final List<Submission> submissions = new ArrayList<>();
+@Repository
+public interface SubmissionRepository extends JpaRepository<Submission, String> {
+  
 
-    public void save(Submission submission) {
-        submissions.add(submission);
-    }
+    // Metodo mancante evidenziato in sfsdafdsafsadfas.webp
+    Optional<Submission> findByHackathonIdAndTeamId(String hackathonId, String teamId);
 
-    public List<Submission> findAll() {
-        return submissions;
-    }
+    
 
-    public Optional<Submission> findById(String id) {
-        return submissions.stream()
-                .filter(s -> s.getId().equals(id))
-                .findFirst();
-    }
+    // save(), findAll(), findById(String) e deleteById(String) sono già inclusi automaticamente!
 
-    public Optional<Submission> findByHackathonIdAndTeamId(String hackathonId, String teamId) {
-        return submissions.stream()
-                .filter(s -> s.getHackathonId().equals(hackathonId)
-                        && s.getTeamId().equals(teamId))
-                .findFirst();
-    }
+    /**
+     
+Cerca una sottomissione filtrando contemporaneamente per ID dell'hackathon e ID del team.
+  Optional<Submission> findByHackathonIdAndTeamId(String hackathonId, String teamId);
 
-    public List<Submission> findByHackathonId(String hackathonId) {
-        return submissions.stream()
-                .filter(s -> s.getHackathonId().equals(hackathonId))
-                .toList();
-    }
+    
+     
+Recupera tutte le sottomissioni associate a uno specifico hackathon.*/
+  List<Submission> findByHackathonId(String hackathonId);
 
-    public boolean existsByHackathonIdAndTeamId(String hackathonId, String teamId) {
-        return submissions.stream()
-                .anyMatch(s -> s.getHackathonId().equals(hackathonId)
-                        && s.getTeamId().equals(teamId));
-    }
-
-    public void deleteById(String id) {
-        submissions.removeIf(s -> s.getId().equals(id));
-    }
+    /**
+     
+Verifica l'esistenza di una sottomissione per una specifica accoppiata hackathon-team.*/
+  boolean existsByHackathonIdAndTeamId(String hackathonId, String teamId);
 }

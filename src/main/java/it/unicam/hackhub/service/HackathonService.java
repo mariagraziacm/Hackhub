@@ -7,28 +7,35 @@ import it.unicam.hackhub.state.ConclusoState;
 import it.unicam.hackhub.state.InCorsoState;
 import it.unicam.hackhub.state.InIscrizioneState;
 import it.unicam.hackhub.state.InValutazioneState;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
 public class HackathonService {
     private final HackathonRepository repo;
     private final TeamService teamService;
     private final StaffService staffService;
     private final SubmissionRepository submissionRepo;
 
-    public HackathonService(HackathonRepository repo, TeamService teamService, StaffService staffService, SubmissionRepository submissionRepo) {
+    public HackathonService(HackathonRepository repo, 
+                            TeamService teamService, 
+                            StaffService staffService, 
+                            SubmissionRepository submissionRepo) {
         this.repo = repo;
         this.teamService = teamService;
         this.staffService = staffService;
         this.submissionRepo = submissionRepo;
     }
 
+    @Transactional
     public Hackathon createHackathon(String id, String name, String specifications, String organizerId) {
         if (id == null || id.isBlank() || name == null || name.isBlank()) {
             throw new IllegalArgumentException("Campi non compilati o formato non valido");
         }
 
-        if (repo.existsByName(name)) {
+        if (repo.existsByNameIgnoreCase(name)) {
             throw new IllegalStateException("Hackathon già esistente");
         }
 
@@ -41,12 +48,13 @@ public class HackathonService {
                 .build();
 
         hackathon.setOrganizer(organizer);
-        hackathon.setState(new it.unicam.hackhub.state.InIscrizioneState()); // Forza stato iniziale
+        hackathon.setState(new InIscrizioneState()); // Forza stato iniziale
 
         repo.save(hackathon);
         return hackathon;
     }
 
+    @Transactional
     public void addTeamToHackathon(String hackathonId, String teamId) {
         Hackathon hackathon = repo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
@@ -62,6 +70,7 @@ public class HackathonService {
         repo.save(hackathon);
     }
 
+    @Transactional
     public void removeTeamFromHackathon(String hackathonId, String teamId) {
         Hackathon hackathon = repo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
@@ -69,19 +78,21 @@ public class HackathonService {
         Team team = teamService.getById(teamId);
         hackathon.disiscriviTeam(team);
 
-        // Rimuove tutti i partecipanti del team dall'hackathon svuotando la lista locale all'occorrenza
         repo.save(hackathon);
     }
 
+    @Transactional(readOnly = true)
     public List<Hackathon> getAllHackathons() {
         return repo.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Hackathon getById(String id) {
         return repo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
     }
 
+    @Transactional
     public void addMentorToHackathon(String hackathonId, String mentorId, String organizerId) {
         Hackathon hackathon = getById(hackathonId);
 
@@ -89,11 +100,12 @@ public class HackathonService {
             throw new IllegalStateException("Solo l'organizzatore di questo hackathon può aggiungere mentori");
         }
 
-        it.unicam.hackhub.model.Mentor mentor = staffService.getMentor(mentorId);
+        Mentor mentor = staffService.getMentor(mentorId);
         hackathon.addMentor(mentor);
         repo.save(hackathon);
     }
 
+    @Transactional
     public void proclamaVincitore(String hackathonId, String teamId, String organizerId) {
         Hackathon hackathon = getById(hackathonId);
 
@@ -114,8 +126,8 @@ public class HackathonService {
         System.out.println("🏆 Vincitore proclamato: " + team.getName());
     }
 
+    @Transactional(readOnly = true)
     public List<Submission> getResults(String hackathonId, String organizerId) {
-
         Hackathon hackathon = repo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
 
@@ -133,8 +145,9 @@ public class HackathonService {
         // 3. recupero risultati
         return submissionRepo.findByHackathonId(hackathonId);
     }
-    public List<Team> getIscrizioni(String hackathonId, String organizerId) {
 
+    @Transactional(readOnly = true)
+    public List<Team> getIscrizioni(String hackathonId, String organizerId) {
         Hackathon hackathon = repo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
 
@@ -158,8 +171,9 @@ public class HackathonService {
 
         return teams;
     }
-    public List<Hackathon> getStoricoStaff(String staffId) {
 
+    @Transactional(readOnly = true)
+    public List<Hackathon> getStoricoStaff(String staffId) {
         // 1. verifica staff valido
         StaffMember staff = staffService.getById(staffId);
 
@@ -177,9 +191,9 @@ public class HackathonService {
 
         return storico;
     }
-    private boolean isStaffInHackathon(Hackathon h, StaffMember staff) {
 
-        return h.getOrganizer() != null && h.getOrganizer().getId().equals(staff.getId())
+    private boolean isStaffInHackathon(Hackathon h, StaffMember staff) {
+        return (h.getOrganizer() != null && h.getOrganizer().getId().equals(staff.getId()))
                 || h.getMentors().stream().anyMatch(m -> m.getId().equals(staff.getId()))
                 || (h.getJudge() != null && h.getJudge().getId().equals(staff.getId()));
     }

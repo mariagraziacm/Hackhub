@@ -1,28 +1,31 @@
 package it.unicam.hackhub.auth.security;
 
+import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.Date;
 
+@Component // <-- Questa annotazione dice a Spring Boot di registrare la classe come Bean
 public class JwtUtil {
-        private static final String SECRET = "mySecretKey123";
 
-        public String generateToken(String userId, String role) {
-            String tokenData = userId + ":" + role + ":" + new Date().getTime();
-            return Base64.getEncoder().encodeToString((tokenData + SECRET).getBytes());
-        }
+    private static final String SECRET = "mySecretKey123";
 
-        public String validateAndGetUserId(String token) {
-            try {
-                String decoded = new String(Base64.getDecoder().decode(token));
-                if (!decoded.endsWith(SECRET)) {
-                    throw new IllegalStateException("Token non valido");
-                }
+    public String generateToken(String userId, String role) {
+        String tokenData = userId + ":" + role + ":" + new Date().getTime();
+        return Base64.getEncoder().encodeToString((tokenData + SECRET).getBytes());
+    }
 
-                String data = decoded.replace(SECRET, "");
-                return data.split(":")[0];
-
-            } catch (Exception e) {
+    public String validateAndGetUserId(String token) {
+        try {
+            String decoded = new String(Base64.getDecoder().decode(token));
+            if (!decoded.endsWith(SECRET)) {
                 throw new IllegalStateException("Token non valido");
             }
+
+            String data = decoded.replace(SECRET, "");
+            return data.split(":")[0];
+
+        } catch (Exception e) {
+            throw new IllegalStateException("Token non valido");
         }
+    }
 }

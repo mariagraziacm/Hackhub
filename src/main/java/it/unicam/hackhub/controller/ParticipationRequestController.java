@@ -15,7 +15,7 @@ public class ParticipationRequestController {
         this.requestService = requestService;
     }
 
-    // POST /api/participation-requests -> Invia una richiesta di partecipazione
+    
     @PostMapping
     public ResponseEntity<String> sendRequest(@RequestBody RequestPayload payload) {
         try {
@@ -27,7 +27,7 @@ public class ParticipationRequestController {
         }
     }
 
-    // PUT /api/participation-requests/{requestId}/accept?leaderId=XYZ -> Accetta la richiesta
+    
     @PutMapping("/{requestId}/accept")
     public ResponseEntity<String> acceptRequest(
             @PathVariable String requestId, 
@@ -40,7 +40,7 @@ public class ParticipationRequestController {
         }
     }
 
-    // PUT /api/participation-requests/{requestId}/decline?leaderId=XYZ -> Rifiuta la richiesta
+    
     @PutMapping("/{requestId}/decline")
     public ResponseEntity<String> declineRequest(
             @PathVariable String requestId, 
@@ -53,7 +53,7 @@ public class ParticipationRequestController {
         }
     }
 
-    // DTO Helper per mappare la richiesta JSON iniziale
+    
     public static class RequestPayload {
         private String idTeam;
         private String idUser;

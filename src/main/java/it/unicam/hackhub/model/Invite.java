@@ -17,31 +17,30 @@ public class Invite {
     }
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id; 
 
-    // Molti inviti possono essere associati allo stesso utente
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Rimosso final per JPA
+    private User user; 
 
-    // Molti inviti possono fare riferimento allo stesso team (può essere null se è un invito mentor/judge)
+    
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id")
-    private Team team; // Rimosso final per JPA
+    private Team team; 
 
-    private String hackathonId; // Rimosso final per JPA
-
+    private String hackathonId; 
     @Enumerated(EnumType.STRING)
-    private InviteType inviteType; // Rimosso final per JPA
+    private InviteType inviteType; 
 
     @Enumerated(EnumType.STRING)
     private InviteState state;
 
-    // Costruttore vuoto obbligatorio per Spring Boot / JPA
+    
     public Invite() {
     }
 
-    // Costruttore: invito team
+    
     public Invite(String id, User user, Team team) {
         this.id = id;
         this.user = user;
@@ -51,13 +50,13 @@ public class Invite {
         this.state = InviteState.PENDING;
     }
 
-    // Costruttore: invito mentor/judge
+    
     public Invite(String id, User user, String hackathonId, String typeStr) {
         if (hackathonId == null || hackathonId.isBlank()) {
             throw new IllegalStateException("hackathonId non valido");
         }
         
-        // Converti ("MENTOR" o "JUDGE") nell'enum corrispondente
+       
         InviteType t = InviteType.valueOf(typeStr.toUpperCase());
         
         if (t == null) {
@@ -68,11 +67,11 @@ public class Invite {
         this.user = user;
         this.team = null;
         this.hackathonId = hackathonId;
-        this.inviteType = t; // Assegna l'enum convertito
+        this.inviteType = t; 
         this.state = InviteState.PENDING;
     }
 
-    // --- LA TUA LOGICA DI BUSINESS RIMANE INTATTA ---
+    
 
     public void accept() {
         if (state != InviteState.PENDING) {
@@ -88,7 +87,7 @@ public class Invite {
         state = InviteState.DECLINED;
     }
 
-    // --- GETTER ---
+    
     public String getId() { return id; }
     public User getUser() { return user; }
     public Team getTeam() { return team; }
@@ -96,7 +95,7 @@ public class Invite {
     public InviteType getInviteType() { return inviteType; }
     public InviteState getState() { return state; }
 
-    // --- SETTER (Utili per gli aggiornamenti di JPA) ---
+    
     public void setId(String id) { this.id = id; }
     public void setUser(User user) { this.user = user; }
     public void setTeam(Team team) { this.team = team; }

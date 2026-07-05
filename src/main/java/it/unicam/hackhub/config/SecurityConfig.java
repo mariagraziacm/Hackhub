@@ -1,5 +1,5 @@
 package it.unicam.hackhub.config;
-
+/* 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -37,6 +37,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 }
+*/
 
 
 
@@ -87,7 +88,6 @@ public class SecurityConfig {
 
 
 
-/*
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -98,7 +98,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    /*@Bean
+   /*  @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Fondamentale per le API
@@ -107,15 +107,15 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // Permette tutto
                 );
         return http.build();
-    }
+    }*/
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // Fondamentale per le API
+                .csrf(csrf -> csrf.disable()) 
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Disabilita tutti i controlli di sicurezza
+                        .anyRequest().permitAll() 
                 );
         return http.build();
     }
-}*/
+}

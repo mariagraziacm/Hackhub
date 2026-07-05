@@ -9,20 +9,17 @@ import java.util.List;
 public class Team {
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id; 
     
     private String name;
 
-    // Relazione Uno-a-Molti: un Team ha molti TeamMember. 
-    // cascade = CascadeType.ALL significa che se salvi/elimini un Team, salvi/elimini anche i suoi membri.
-    // orphanRemoval = true cancella dal DB i membri rimossi dalla lista.
+    
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
-    @JoinColumn(name = "team_id") // Crea la chiave esterna nella tabella dei TeamMember
-    private List<TeamMember> members = new ArrayList<>(); // Rimosso final per JPA
+    @JoinColumn(name = "team_id") 
+    private List<TeamMember> members = new ArrayList<>(); 
 
-    private final int maxMembers = 5; // Questo può rimanere final perché è una costante logica
-
-    // Costruttore vuoto obbligatorio per JPA
+    private final int maxMembers = 5;
+    
     public Team() {
     }
 
@@ -35,8 +32,6 @@ public class Team {
 
     public String getName() { return name; }
 
-    // Cambiato leggermente per non rompere il tracciamento di Hibernate, 
-    // ma mantenendo l'immutabilità verso l'esterno
     public List<TeamMember> getMembers() {
         return java.util.Collections.unmodifiableList(members);
     }
@@ -54,7 +49,7 @@ public class Team {
         return java.util.Objects.hash(id);
     }
 
-    // --- TUTTA LA TUA LOGICA DI BUSINESS RIMANE IDENTICA ---
+    
 
     public void addMember(TeamMember member) {
         if (isFull()) {

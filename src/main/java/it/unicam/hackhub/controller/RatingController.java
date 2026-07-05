@@ -14,7 +14,7 @@ public class RatingController {
         this.ratingService = ratingService;
     }
 
-    // POST /api/ratings -> Invia la valutazione per una sottomissione
+  
     @PostMapping
     public ResponseEntity<String> rate(@RequestBody RatePayload payload) {
         try {
@@ -30,7 +30,7 @@ public class RatingController {
         }
     }
 
-    // DTO Helper per incapsulare il corpo della richiesta JSON
+   
     public static class RatePayload {
         private String judgeId;
         private String submissionId;

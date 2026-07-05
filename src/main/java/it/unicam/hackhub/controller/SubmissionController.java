@@ -17,7 +17,7 @@ public class SubmissionController {
         this.submissionService = submissionService;
     }
 
-    // POST /api/submissions -> Invia una nuova sottomissione
+  
     @PostMapping
     public ResponseEntity<?> sendSubmission(@RequestBody SubmissionPayload payload) {
         try {
@@ -33,7 +33,6 @@ public class SubmissionController {
         }
     }
 
-    // PUT /api/submissions/{submissionId} -> Modifica una sottomissione esistente
     @PutMapping("/{submissionId}")
     public ResponseEntity<?> editSubmission(
             @PathVariable String submissionId,
@@ -50,7 +49,7 @@ public class SubmissionController {
         }
     }
 
-    // GET /api/submissions/{submissionId} -> Recupera una sottomissione dal suo ID
+    
     @GetMapping("/{submissionId}")
     public ResponseEntity<?> getSubmissionById(@PathVariable String submissionId) {
         try {
@@ -61,11 +60,11 @@ public class SubmissionController {
         }
     }
 
-    // POST /api/submissions/evaluate -> Inserisce la valutazione di un giudice
+    
     @PostMapping("/evaluate")
-    public ResponseEntity<String> valutaSottomissione(@RequestBody EvaluationPayload payload) {
+    public ResponseEntity<String> rateSubmission(@RequestBody EvaluationPayload payload) {
         try {
-            submissionService.valutaSottomissione(
+            submissionService.rateSubmission(
                     payload.getHackathonId(),
                     payload.getTeamId(),
                     payload.getScore(),
@@ -78,7 +77,7 @@ public class SubmissionController {
         }
     }
 
-    // GET /api/submissions/evaluation?teamId=XYZ&hackathonId=ABC -> Visualizza il voto ricevuto
+    
     @GetMapping("/evaluation")
     public ResponseEntity<?> viewEvaluation(
             @RequestParam String teamId,
@@ -91,7 +90,7 @@ public class SubmissionController {
         }
     }
 
-    // GET /api/submissions/hackathon/{hackathonId}?staffId=XYZ -> Elenca le sottomissioni per lo staff
+    
     @GetMapping("/hackathon/{hackathonId}")
     public ResponseEntity<?> viewSubmissions(
             @PathVariable String hackathonId,
@@ -104,7 +103,7 @@ public class SubmissionController {
         }
     }
 
-    // DTO per gestire la creazione e modifica delle sottomissioni
+    
     public static class SubmissionPayload {
         private String hackathonId;
         private String teamId;
@@ -121,7 +120,7 @@ public class SubmissionController {
         public void setDescription(String description) { this.description = description; }
     }
 
-    // DTO per gestire l'input della valutazione
+    
     public static class EvaluationPayload {
         private String hackathonId;
         private String teamId;

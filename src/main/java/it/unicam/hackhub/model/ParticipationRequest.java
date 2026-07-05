@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Table(name = "participation_requests")
 public class ParticipationRequest {
 
-    // ENUM (Rimane identico)
+    
     public enum ParticipationRequestState {
         PENDING,
         ACCEPTED,
@@ -14,22 +14,20 @@ public class ParticipationRequest {
     }
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id; 
 
-    // Molte richieste possono appartenere allo stesso utente
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user; // Rimosso final per JPA
+    private User user; 
 
-    // Molte richieste possono essere dirette allo stesso team
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "team_id", nullable = false)
-    private Team team; // Rimosso final per JPA
+    private Team team; 
 
-    @Enumerated(EnumType.STRING) // Salva l'enum come testo nel database
+    @Enumerated(EnumType.STRING) 
     private ParticipationRequestState state;
 
-    // Costruttore vuoto obbligatorio per Spring Boot / JPA
+    
     public ParticipationRequest() {
     }
 
@@ -40,19 +38,17 @@ public class ParticipationRequest {
         this.state = ParticipationRequestState.PENDING;
     }
 
-    // --- GETTER ---
     public String getId() { return id; }
     public User getUser() { return user; }
     public Team getTeam() { return team; }
     public ParticipationRequestState getState() { return state; }
 
-    // --- SETTER (Utili per JPA) ---
+  
     public void setId(String id) { this.id = id; }
     public void setUser(User user) { this.user = user; }
     public void setTeam(Team team) { this.team = team; }
     public void setState(ParticipationRequestState state) { this.state = state; }
 
-    // --- LA TUA LOGICA DI BUSINESS RIMANE INTATTA ---
 
     public void accept() {
         if (state != ParticipationRequestState.PENDING)

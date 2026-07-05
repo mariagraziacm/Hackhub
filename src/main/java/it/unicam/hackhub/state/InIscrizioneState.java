@@ -11,7 +11,7 @@ public class InIscrizioneState implements HackathonState {
     }
 
     @Override
-    public void addTeamToHakchaton(Hackathon hackathon, Team team) {
+    public void addTeamToHackathon(Hackathon hackathon, Team team) {
         if (team.isFull()) {
             throw new IllegalStateException("Team pieno");
         }
@@ -19,12 +19,12 @@ public class InIscrizioneState implements HackathonState {
     }
 
     @Override
-    public void removeTeamFromHackahon(Hackathon hackathon, Team team) {
+    public void removeTeamFromHackathon(Hackathon hackathon, Team team) {
         hackathon.removeTeam(team);
     }
 
     @Override
-    public void inviaSottomissione(Hackathon hackathon, Team team, Submission submission) {
+    public void sendSubmission(Hackathon hackathon, Team team, Submission submission) {
         throw new IllegalStateException("Impossibile inviare la sottomissione: l'hackathon non è ancora in corso!");
     }
 
@@ -34,12 +34,14 @@ public class InIscrizioneState implements HackathonState {
     }
 
     @Override
-    public void proclamaVincitore(Hackathon context, Team team) {
+    public void proclaimWinner(Hackathon context, Team team) {
         throw new IllegalStateException("Non puoi proclamare vincitore in iscrizione");
     }
 
     @Override
-    public void valutaSottomissione(Hackathon context, Team team, Submission submission, int score, String comment) {
+    public void rateSubmission(Hackathon context, Team team, Submission submission, int score, String comment) {
         throw new IllegalStateException("Non è fase di valutazione");
     }
+
+    
 }

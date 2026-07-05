@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CallRepository extends JpaRepository<Call, String> {
-    // save(), findById() e findAll() sono già inclusi automaticamente da JpaRepository!
+   
 }

@@ -12,7 +12,7 @@ public class AuthService {
     private final UserRepository userRepo;
     private final JwtUtil jwtUtil;
 
-    // Iniettiamo sia il repository che la utility di JWT tramite Spring
+
     public AuthService(UserRepository userRepo, JwtUtil jwtUtil) {
         this.userRepo = userRepo;
         this.jwtUtil = jwtUtil;
@@ -21,7 +21,7 @@ public class AuthService {
     @Transactional
     public User register(String id, String username, String name, String surname, String email, String password) {
 
-        // Verifica delegata in modo efficiente al database
+       
         boolean exists = userRepo.existsByEmailOrUsername(email, username);
 
         if (exists) {
@@ -37,7 +37,7 @@ public class AuthService {
     @Transactional(readOnly = true)
     public String login(String username, String password) {
 
-        // Recupero mirato tramite query sul database
+        
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new IllegalStateException("User non trovato"));
 

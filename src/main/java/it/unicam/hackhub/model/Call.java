@@ -14,18 +14,18 @@ public class Call {
     }
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id; 
     
-    private String mentorId; // Rimosso final per JPA
-    private String teamId; // Rimosso final per JPA
-    private String hackathonId; // Rimosso final per JPA
+    private String mentorId; 
+    private String teamId; 
+    private String hackathonId; 
 
     private String slotId;
 
-    @Enumerated(EnumType.STRING) // Salva l'enum come testo nel DB
+    @Enumerated(EnumType.STRING) 
     private CallStatus status;
 
-    // Costruttore vuoto obbligatorio per Spring Boot / JPA
+   
     public Call() {
     }
 
@@ -38,7 +38,7 @@ public class Call {
         this.status = CallStatus.RESERVED;
     }
 
-    // --- GETTER ---
+
     public String getId() {
         return id;
     }
@@ -63,7 +63,7 @@ public class Call {
         return status;
     }
 
-    // --- SETTER (Utili per le operazioni di aggiornamento di JPA) ---
+
     public void setId(String id) { this.id = id; }
     public void setMentorId(String mentorId) { this.mentorId = mentorId; }
     public void setTeamId(String teamId) { this.teamId = teamId; }
@@ -71,7 +71,7 @@ public class Call {
     public void setSlotId(String slotId) { this.slotId = slotId; }
     public void setStatus(CallStatus status) { this.status = status; }
 
-    // --- LA TUA LOGICA DI BUSINESS RIMANE INTATTA ---
+
 
     public void setWaitingResponse() {
         this.status = CallStatus.WAITING_TEAM_RESPONSE;

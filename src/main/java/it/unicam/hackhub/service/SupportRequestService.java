@@ -110,7 +110,7 @@ public class SupportRequestService {
 
         call.setWaitingResponse();
 
-        // collega request ↔ call
+        
         request.setCallId(call.getId());
 
         callRepo.save(call);

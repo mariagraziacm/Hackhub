@@ -51,7 +51,6 @@ public class InviteService {
             throw new IllegalStateException("Utente già in un team");
         }
 
-        // Verifica delegata in modo efficiente al database
         boolean alreadyInvited = repo.existsByUserIdAndTeamIdAndState(userId, teamId, Invite.InviteState.PENDING);
 
         if (alreadyInvited) {
@@ -107,7 +106,7 @@ public class InviteService {
     @Transactional
     public void declineInvite(String inviteId) {
         Invite invite = repo.findById(inviteId)
-                .orElseThrow(() -> new IllegalStateException("Invite non trovata"));
+                .orElseThrow(() -> new IllegalStateException("Invito non trovato"));
 
         invite.decline();
         repo.save(invite); 
@@ -122,7 +121,6 @@ public class InviteService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User non trovato"));
 
-        // Ottimizzato tramite query dedicata sul DB
         boolean alreadyPending = repo.existsByUserIdAndHackathonIdAndInviteTypeAndState(
                 userId, hackathonId, Invite.InviteType.MENTOR, Invite.InviteState.PENDING
         );
@@ -145,7 +143,7 @@ public class InviteService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("User non trovato"));
 
-        // Ottimizzato tramite query dedicata sul DB
+       
         boolean alreadyPending = repo.existsByUserIdAndHackathonIdAndInviteTypeAndState(
                 userId, hackathonId, Invite.InviteType.JUDGE, Invite.InviteState.PENDING
         );

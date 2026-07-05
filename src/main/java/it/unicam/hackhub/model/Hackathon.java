@@ -113,7 +113,7 @@ public class Hackathon{
         }
     }
     
-    public List<Team> getIscritti() {
+    public List<Team> getPartecipantTeams() {
         return java.util.Collections.unmodifiableList(teams);
     }
 
@@ -148,7 +148,7 @@ public class Hackathon{
     }
     
     public void sendSubmission(Team team, Submission submission) {
-        getState().inviaSottomissione(this, team, submission);
+        getState().sendSubmission(this, team, submission);
     }
 
     public void proclaimWinner(Team team) {
@@ -158,4 +158,5 @@ public class Hackathon{
     public void rateSubmission(Team team, Submission submission, int score, String comment) {
         getState().rateSubmission(this, team, submission, score, comment);
     }
+ 
 }

@@ -18,14 +18,14 @@ public class ViolationController {
         this.service = service;
     }
 
-    // GET /api/violations -> Ritorna la lista di tutte le segnalazioni
+    
     @GetMapping
     public ResponseEntity<List<Violation>> list() {
         List<Violation> violations = service.listViolations();
         return ResponseEntity.ok(violations);
     }
 
-    // PUT /api/violations/{violationId}/resolve?status=DISQUALIFY_TEAM -> Risolve la violazione
+    
     @PutMapping("/{violationId}/resolve")
     public ResponseEntity<String> resolveViolation(
             @PathVariable String violationId, 

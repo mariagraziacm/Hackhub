@@ -11,17 +11,17 @@ public class ConclusoState implements HackathonState {
     }
 
     @Override
-    public void addTeamToHackthon(Hackathon hackathon, Team team) {
+    public void addTeamToHackathon(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Hackathon concluso");
     }
 
     @Override
-    public void removeFromHackathon(Hackathon hackathon, Team team) {
+    public void removeTeamFromHackathon(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Hackathon concluso");
     }
 
     @Override
-    public void inviaSottomissione(Hackathon hackathon, Team team, Submission submission) {
+    public void sendSubmission(Hackathon hackathon, Team team, Submission submission) {
         throw new IllegalStateException("Impossibile inviare sottomissioni: l'hackathon è concluso!");
     }
 
@@ -31,12 +31,13 @@ public class ConclusoState implements HackathonState {
     }
 
     @Override
-    public void proclamaVincitore(Hackathon context, Team team) {
+    public void proclaimWinner(Hackathon context, Team team) {
         throw new IllegalStateException("Hackathon già concluso");
     }
 
     @Override
-    public void valutaSottomissione(Hackathon context, Team team, Submission submission, int score, String comment) {
+    public void rateSubmission(Hackathon context, Team team, Submission submission, int score, String comment) {
         throw new IllegalStateException("Non è fase di valutazione");
     }
+
 }

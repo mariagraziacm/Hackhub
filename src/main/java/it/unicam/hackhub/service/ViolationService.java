@@ -21,7 +21,7 @@ public class ViolationService {
     private final HackathonRepository hackathonRepo;
     private final TeamService teamService;
 
-    // Iniezione pulita tramite un unico costruttore (niente più setter volanti)
+    
     public ViolationService(ViolationRepository repo, 
                             StaffService staffService, 
                             HackathonRepository hackathonRepo, 
@@ -63,7 +63,7 @@ public class ViolationService {
         return list;
     }
 
-    @Transactional // Assicura la consistenza del DB modificando più tabelle/entità insieme
+    @Transactional 
     public void resolveViolation(String violationId, Violation.ViolationStatus status) {
         Violation violation = repo.findById(violationId)
                 .orElseThrow(() -> new IllegalStateException("Segnalazione non trovata"));
@@ -88,7 +88,7 @@ public class ViolationService {
             }
 
             case NO_ACTION -> {
-                // niente
+              
             }
 
             default -> throw new IllegalStateException("Stato non valido");

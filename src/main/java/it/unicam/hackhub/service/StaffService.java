@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional(readOnly = true) // Ottimizza le performance per sole letture
+@Transactional(readOnly = true) 
 public class StaffService {
     private final StaffRepository staffRepo;
 

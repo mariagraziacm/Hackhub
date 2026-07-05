@@ -7,24 +7,22 @@ import jakarta.persistence.*;
 public class TeamMember {
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id; 
 
-    // Molti TeamMember fanno riferimento a un solo User.
-    // Usiamo FetchType.EAGER perché quando carichiamo un membro vogliamo quasi sempre sapere chi è l'utente associato.
+    
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false) // Chiave esterna verso la tabella degli utenti
-    private User user; // Rimosso final per JPA
+    @JoinColumn(name = "user_id", nullable = false) 
+    private User user; 
+    @Enumerated(EnumType.STRING) 
+    private Role role; 
 
-    @Enumerated(EnumType.STRING) // Salva l'enum nel database come testo ("LEADER", "MEMBER")
-    private Role role; // Rimosso final per JPA
-
-    // ENUM (Rimane identico)
+    
     public enum Role {
         LEADER,
         MEMBER
     }
 
-    // Costruttore vuoto obbligatorio per JPA
+    
     public TeamMember() {
     }
 

@@ -10,6 +10,7 @@ public interface HackathonState {
     void removeTeamFromHackathon(Hackathon context, Team team);
     void sendSubmission(Hackathon context, Team team, Submission submission);
     void next(Hackathon context);
-    void proclamaVincitore(Hackathon context, Team team);
-    void valutaSottomissione(Hackathon hackathon, Team team, Submission submission, int score, String comment);
+    void proclaimWinner(Hackathon context, Team team);
+    void rateSubmission(Hackathon hackathon, Team team, Submission submission, int score, String comment);
+   
 }

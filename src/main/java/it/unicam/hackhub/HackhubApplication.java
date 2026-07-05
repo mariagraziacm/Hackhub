@@ -377,7 +377,7 @@ public class HackhubApplication {
                 if (!(hackathon.getState() instanceof InValutazioneState)) {
                     hackathon.nextState(); // Va in InValutazioneState
                 }
-                hackathon.proclamaVincitore(team2); // Diventa CONCLUSO nello State Pattern
+                hackathon.proclaimWinner(team2); // Diventa CONCLUSO nello State Pattern
                 hackRepo.save(hackathon); // FISSATO: Salviamo lo stato Concluso nel DB MySQL!
                 System.out.println("🏆 Vincitore proclamato per H1! Stato attuale del DB: " + hackathon.getState().getName());
             } catch (Exception e) {
@@ -386,7 +386,7 @@ public class HackhubApplication {
 
             System.out.println("\n--- ITERAZIONE TRE: VALUTA SOTTOMISSIONE ---");
             try {
-                hackathon.valutaSottomissione(team, submissionRepo.findAll().get(0), 9, "Ottimo lavoro");
+                hackathon.rateSubmission(team, submissionRepo.findAll().get(0), 9, "Ottimo lavoro");
                 hackRepo.save(hackathon);
                 System.out.println("Valutazione completata per team: " + team.getName());
             } catch (Exception e) {

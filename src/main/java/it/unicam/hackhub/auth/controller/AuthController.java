@@ -17,7 +17,7 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // POST /api/auth/register -> Registra un nuovo utente nel sistema
+   
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody RegisterPayload payload) {
         try {
@@ -35,19 +35,19 @@ public class AuthController {
         }
     }
 
-    // POST /api/auth/login -> Autentica un utente e restituisce il token JWT
+    
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginPayload payload) {
         try {
             String token = authService.login(payload.getUsername(), payload.getPassword());
-            // Restituiamo il token all'interno di un oggetto JSON
+            
             return ResponseEntity.ok(Map.of("token", token));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
         }
     }
 
-    // DTO per la registrazione
+   
     public static class RegisterPayload {
         private String id;
         private String username;
@@ -70,7 +70,7 @@ public class AuthController {
         public void setPassword(String password) { this.password = password; }
     }
 
-    // DTO per il login
+    
     public static class LoginPayload {
         private String username;
         private String password;

@@ -6,11 +6,10 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "judges")
-// Collega la chiave primaria di questa tabella a quella della classe madre StaffMember
+
 @PrimaryKeyJoinColumn(name = "id")
 public class Judge extends StaffMember {
 
-    // Costruttore vuoto obbligatorio per Spring Boot / JPA
     public Judge() {
         super();
     }

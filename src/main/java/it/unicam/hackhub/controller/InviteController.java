@@ -15,7 +15,7 @@ public class InviteController {
         this.inviteService = inviteService;
     }
 
-    // POST /api/invites/team -> Il leader invia un invito a un utente per unirsi al team
+    
     @PostMapping("/team")
     public ResponseEntity<String> sendInvite(@RequestBody TeamInvitePayload payload) {
         try {
@@ -31,7 +31,7 @@ public class InviteController {
         }
     }
 
-    // PUT /api/invites/{inviteId}/accept -> L'utente accetta l'invito
+    
     @PutMapping("/{inviteId}/accept")
     public ResponseEntity<String> acceptInvite(@PathVariable String inviteId) {
         try {
@@ -42,7 +42,7 @@ public class InviteController {
         }
     }
 
-    // PUT /api/invites/{inviteId}/decline -> L'utente rifiuta l'invito
+
     @PutMapping("/{inviteId}/decline")
     public ResponseEntity<String> declineInvite(@PathVariable String inviteId) {
         try {
@@ -53,7 +53,7 @@ public class InviteController {
         }
     }
 
-    // POST /api/invites/mentor -> Invita un utente come Mentor per un hackathon
+    
     @PostMapping("/mentor")
     public ResponseEntity<String> inviteMentor(@RequestBody StaffInvitePayload payload) {
         try {
@@ -64,7 +64,6 @@ public class InviteController {
         }
     }
 
-    // POST /api/invites/judge -> Invita un utente come Judge per un hackathon
     @PostMapping("/judge")
     public ResponseEntity<String> inviteJudge(@RequestBody StaffInvitePayload payload) {
         try {
@@ -75,7 +74,7 @@ public class InviteController {
         }
     }
 
-    // DTO per l'invito al team
+    
     public static class TeamInvitePayload {
         private String idLeaderUser;
         private String idTeam;
@@ -89,7 +88,7 @@ public class InviteController {
         public void setIdUserDaInvitare(String idUserDaInvitare) { this.idUserDaInvitare = idUserDaInvitare; }
     }
 
-    // DTO riutilizzabile per gli inviti dello staff (Mentor/Judge)
+   
     public static class StaffInvitePayload {
         private String hackathonId;
         private String userId;

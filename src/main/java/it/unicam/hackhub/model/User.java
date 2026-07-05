@@ -5,10 +5,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "users") // Evita conflitti con parole riservate SQL come "user"
+@Table(name = "users") 
 public class User {
 
-    @Id // Definisce la chiave primaria sul database
+    @Id 
     private String id; 
 
     private String name;
@@ -18,11 +18,11 @@ public class User {
     private String password;
     private String paymentInfo;
 
-    // Spring Boot / JPA richiede obbligatoriamente un costruttore vuoto (senza argomenti)
+    
     public User() {
     }
 
-    // Costruttore completo per creare l'utente all'interno del tuo codice
+    
     public User(String id, String name, String surname, String username, String email, String password, String paymentInfo) {
         this.id = id;
         this.name = name;
@@ -33,7 +33,7 @@ public class User {
         this.paymentInfo = paymentInfo;
     }
 
-    // --- GETTER ---
+   
     public String getId() { return id; }
     public String getName() { return name; }
     public String getSurname() { return surname; }
@@ -42,7 +42,7 @@ public class User {
     public String getEmail() { return email; }
     public String getPaymentInfo() { return paymentInfo; }
 
-    // --- SETTER (Utili per gli aggiornamenti dei dati con JPA) ---
+   
     public void setId(String id) { this.id = id; }
     public void setName(String name) { this.name = name; }
     public void setSurname(String surname) { this.surname = surname; }
@@ -64,7 +64,6 @@ public class User {
         return id != null ? id.hashCode() : 0;
     }
 
-    // La tua logica di business originale rimane intatta
     public boolean hasPaymentInfo() {
         return paymentInfo != null && !paymentInfo.isBlank();
     }

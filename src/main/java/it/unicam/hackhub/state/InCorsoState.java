@@ -21,7 +21,7 @@ public class InCorsoState implements HackathonState {
     }
 
     @Override
-    public void inviaSottomissione(Hackathon hackathon, Team team, Submission submission) {
+    public void sendSubmission(Hackathon hackathon, Team team, Submission submission) {
 
     }
 
@@ -31,12 +31,14 @@ public class InCorsoState implements HackathonState {
     }
 
     @Override
-    public void proclamaVincitore(Hackathon context, Team team) {
+    public void proclaimWinner(Hackathon context, Team team) {
         throw new IllegalStateException("Hackathon ancora in corso");
     }
 
     @Override
-    public void valutaSottomissione(Hackathon context, Team team, Submission submission, int score, String comment) {
+    public void rateSubmission(Hackathon context, Team team, Submission submission, int score, String comment) {
         throw new IllegalStateException("Non è fase di valutazione");
     }
+
+  
 }

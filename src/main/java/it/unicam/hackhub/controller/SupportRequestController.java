@@ -18,7 +18,7 @@ public class SupportRequestController {
         this.service = service;
     }
 
-    // POST /api/support-requests -> Invia una richiesta di supporto
+    
     @PostMapping
     public ResponseEntity<String> sendSupportRequest(@RequestBody SupportRequestPayload payload) {
         try {
@@ -35,7 +35,7 @@ public class SupportRequestController {
         }
     }
 
-    // GET /api/support-requests/mentor/{mentorId} -> Mostra le richieste destinate a un mentore
+    
     @GetMapping("/mentor/{mentorId}")
     public ResponseEntity<?> showMentorRequests(@PathVariable String mentorId) {
         try {
@@ -46,7 +46,7 @@ public class SupportRequestController {
         }
     }
 
-    // POST /api/support-requests/plan-call -> Pianifica una call per una richiesta
+   
     @PostMapping("/plan-call")
     public ResponseEntity<String> planCall(@RequestBody PlanCallPayload payload) {
         try {
@@ -57,7 +57,7 @@ public class SupportRequestController {
         }
     }
 
-    // DTO Helper per la creazione della richiesta di supporto
+    
     public static class SupportRequestPayload {
         private String teamId;
         private String memberId;
@@ -77,7 +77,7 @@ public class SupportRequestController {
         public void setMessage(String message) { this.message = message; }
     }
 
-    // DTO Helper per la pianificazione della chiamata
+   
     public static class PlanCallPayload {
         private String mentorId;
         private String requestId;

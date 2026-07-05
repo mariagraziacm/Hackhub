@@ -50,7 +50,7 @@ public class SubmissionService {
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
         Team team = teamRepo.findById(teamId).orElse(null);
         
-        hackathon.inviaSottomissione(team, submission);
+        hackathon.sendSubmission(team, submission);
 
         repo.save(submission);
         return submission;
@@ -69,7 +69,7 @@ public class SubmissionService {
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
         Team team = teamRepo.findById(submission.getTeamId()).orElse(null);
         
-        hackathon.inviaSottomissione(team, submission);
+        hackathon.sendSubmission(team, submission);
 
         submission.update(title, description);
         repo.save(submission);
@@ -83,7 +83,7 @@ public class SubmissionService {
     }
 
     @Transactional
-    public void valutaSottomissione(
+    public void rateSubmission(
             String hackathonId,
             String teamId,
             int score,
@@ -106,7 +106,7 @@ public class SubmissionService {
         Team team = teamRepo.findById(teamId)
                 .orElseThrow(() -> new IllegalStateException("Team non trovato"));
 
-        hackathon.getState().valutaSottomissione(
+        hackathon.getState().rateSubmission(
                 hackathon,
                 team,
                 submission,
@@ -133,7 +133,7 @@ public class SubmissionService {
         Hackathon hackathon = hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
 
-        // CONTROLLO UC6: staff assegnato all’hackathon
+        // CONTROLLO: staff assegnato all’hackathon
         if (!staff.getHackathonId().equals(hackathonId)) {
             throw new IllegalStateException("Staff non assegnato a questo hackathon");
         }

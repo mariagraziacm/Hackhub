@@ -27,7 +27,7 @@ public class ParticipationRequestService {
         this.userRepo = userRepo;
     }
 
-    // L'utente invia una richiesta per unirsi a un Team
+   
     @Transactional
     public ParticipationRequest sendRequest(String teamId, String userId) {
         User user = userRepo.findById(userId)
@@ -43,7 +43,7 @@ public class ParticipationRequestService {
             throw new IllegalStateException("Utente già in un team");
         }
 
-        // Verifica delegata in modo efficiente al database tramite query mirata
+        
         boolean alreadyRequested = repo.existsByUserIdAndTeamIdAndState(
                 userId, 
                 teamId, 
@@ -95,7 +95,7 @@ public class ParticipationRequestService {
                 TeamMember.Role.MEMBER
         ));
         
-        // Salva nuovo stato della richiesta e cascata sul team nel repository
+       
         repo.save(req);
     }
 
@@ -115,7 +115,7 @@ public class ParticipationRequestService {
         // Cambia lo stato della richiesta in DECLINED
         req.decline();
         
-        // Salva nuovo stato nel repository
+      
         repo.save(req);
     }
 }

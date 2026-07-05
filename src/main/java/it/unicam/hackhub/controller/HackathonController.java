@@ -19,7 +19,7 @@ public class HackathonController {
         this.hackathonService = hackathonService;
     }
 
-    // POST /api/hackathons -> Crea un nuovo hackathon
+
     @PostMapping
     public ResponseEntity<String> newHackathon(@RequestBody HackathonRegisterPayload payload) {
         try {
@@ -36,7 +36,7 @@ public class HackathonController {
         }
     }
 
-    // POST /api/hackathons/teams -> Iscrive un team a un hackathon
+    
     @PostMapping("/teams")
     public ResponseEntity<String> addTeamToHackathon(@RequestBody TeamEnrollmentPayload payload) {
         try {
@@ -47,7 +47,7 @@ public class HackathonController {
         }
     }
 
-    // GET /api/hackathons/{hackathonId}/results?organizerId=XYZ -> Visualizza i risultati delle sottomissioni
+    
     @GetMapping("/{hackathonId}/results")
     public ResponseEntity<?> viewResults(
             @PathVariable String hackathonId, 
@@ -63,7 +63,7 @@ public class HackathonController {
         }
     }
 
-    // GET /api/hackathons/{hackathonId}/registrations?organizerId=XYZ -> Visualizza i team iscritti
+    
     @GetMapping("/{hackathonId}/registrations")
     public ResponseEntity<?> viewIscrizioni(
             @PathVariable String hackathonId, 
@@ -76,18 +76,18 @@ public class HackathonController {
         }
     }
 
-    // GET /api/hackathons/history/staff/{staffId} -> Visualizza lo storico degli hackathon dello staff
+   
     @GetMapping("/history/staff/{staffId}")
     public ResponseEntity<?> viewStorico(@PathVariable String staffId) {
         try {
-            List<Hackathon> storico = hackathonService.getStoricoStaff(staffId);
+            List<Hackathon> storico = hackathonService.getHistoryStaff(staffId);
             return ResponseEntity.ok(storico);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
         }
     }
 
-    // DELETE /api/hackathons/{hackathonId}/teams/{teamId} -> Rimuove un team da un hackathon
+    
     @DeleteMapping("/{hackathonId}/teams/{teamId}")
     public ResponseEntity<String> removeTeamFromHackathon(
             @PathVariable String hackathonId,
@@ -100,7 +100,6 @@ public class HackathonController {
         }
     }
 
-    // DTO per la registrazione dell'hackathon
     public static class HackathonRegisterPayload {
         private String id;
         private String name;
@@ -117,7 +116,6 @@ public class HackathonController {
         public void setOrganizerId(String organizerId) { this.organizerId = organizerId; }
     }
 
-    // DTO per l'iscrizione del team
     public static class TeamEnrollmentPayload {
         private String hackathonId;
         private String teamId;

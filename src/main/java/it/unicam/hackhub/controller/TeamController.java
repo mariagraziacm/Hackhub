@@ -19,14 +19,14 @@ public class TeamController {
         this.hackathonService = hackathonService;
     }
 
-    // POST /api/teams -> Crea un nuovo team
+    
     @PostMapping
     public ResponseEntity<?> creaTeam(@RequestBody TeamCreationRequest request) {
         try {
-            // Aggiungi questo log per vedere cosa arriva dal JSON
+           
             System.out.println("Ricevuta richiesta per team: " + request.getName());
 
-            // Assicuriamoci di non passare oggetti nulli o errati
+           
             if(request.getCreatore() == null) {
                 return ResponseEntity.badRequest().body("Creatore mancante nel JSON!");
             }
@@ -37,7 +37,7 @@ public class TeamController {
         }
     }
 
-    // DELETE /api/teams/{teamId}/hackathons/{hackathonId}?leaderId=XYZ -> Disiscrive il team da un hackathon
+    
     @DeleteMapping("/{teamId}/hackathons/{hackathonId}")
     public ResponseEntity<String> abbandonaHackathon(
             @PathVariable String teamId,
@@ -57,13 +57,13 @@ public class TeamController {
         }
     }
 
-    // DTO Helper interno per mappare il corpo della richiesta JSON di creazione
+    
     public static class TeamCreationRequest {
         private String id;
         private String name;
         private User creatore;
 
-        // Getters e Setters
+   
         public String getId() { return id; }
         public void setId(String id) { this.id = id; }
         public String getName() { return name; }

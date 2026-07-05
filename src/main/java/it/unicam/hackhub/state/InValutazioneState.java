@@ -21,7 +21,7 @@ public class InValutazioneState implements HackathonState {
     }
 
     @Override
-    public void inviaSottomissione(Hackathon hackathon, Team team, Submission submission) {
+    public void sendSubmission(Hackathon hackathon, Team team, Submission submission) {
         throw new IllegalStateException("Impossibile inviare o modificare la sottomissione: l'hackathon è in fase di valutazione!");
     }
 
@@ -33,7 +33,7 @@ public class InValutazioneState implements HackathonState {
 
 
     @Override
-    public void proclamaVincitore(Hackathon hackathon, Team team) {
+    public void proclaimWinner      (Hackathon hackathon, Team team) {
         if (!hackathon.getTeams().contains(team)) {
             throw new IllegalStateException("Team non partecipante");
         }
@@ -41,11 +41,11 @@ public class InValutazioneState implements HackathonState {
         hackathon.setWinner(team);
         hackathon.setState(new ConclusoState());
 
-        System.out.println("🏆 Vincitore proclamato: " + team.getName());
+        System.out.println("Vincitore proclamato: " + team.getName());
     }
 
     @Override
-    public void valutaSottomissione(Hackathon context, Team team, Submission submission, int score, String comment) {
+    public void rateSubmission(Hackathon context, Team team, Submission submission, int score, String comment) {
 
         if (submission == null) {
             throw new IllegalStateException("Sottomissione non trovata");
@@ -56,5 +56,9 @@ public class InValutazioneState implements HackathonState {
         }
 
         submission.rate(score, comment);
+
+
     }
+  
+  
 }

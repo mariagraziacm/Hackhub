@@ -8,11 +8,6 @@ import java.util.List;
 @Repository
 public interface StaffRepository extends JpaRepository<StaffMember, String> {
 
-    // I metodi save(), findById() e findAll() sono già inclusi automaticamente!
-
-    /**
-     
-Recupera tutti i membri dello staff (organizzatori, giudici e mentori) 
-associati a uno specifico hackathon.*/
+   
 List<StaffMember> findByHackathonId(String hackathonId);
 }

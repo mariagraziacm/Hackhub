@@ -48,7 +48,7 @@ public class HackathonService {
                 .build();
 
         hackathon.setOrganizer(organizer);
-        hackathon.setState(new InIscrizioneState()); // Forza stato iniziale
+        hackathon.setState(new InIscrizioneState()); 
 
         repo.save(hackathon);
         return hackathon;
@@ -61,7 +61,7 @@ public class HackathonService {
 
         Team team = teamService.getById(teamId);
 
-        // Controllo requisiti almeno un partecipante/leader
+        
         if (team.getMembers().isEmpty() && team.getLeader() == null) {
             throw new IllegalStateException("Il team non ha il numero giusto di partecipanti");
         }
@@ -76,7 +76,7 @@ public class HackathonService {
                 .orElseThrow(() -> new IllegalArgumentException("Hackathon non trovato"));
 
         Team team = teamService.getById(teamId);
-        hackathon.disiscriviTeam(team);
+        hackathon.removeTeamFromHackathon(team);
 
         repo.save(hackathon);
     }
@@ -106,7 +106,7 @@ public class HackathonService {
     }
 
     @Transactional
-    public void proclamaVincitore(String hackathonId, String teamId, String organizerId) {
+    public void proclaimWinner(String hackathonId, String teamId, String organizerId) {
         Hackathon hackathon = getById(hackathonId);
 
         if (!hackathon.getOrganizer().getId().equals(organizerId)) {
@@ -119,11 +119,11 @@ public class HackathonService {
 
         Team team = teamService.getById(teamId);
 
-        hackathon.getState().proclamaVincitore(hackathon, team);
+        hackathon.getState().proclaimWinner(hackathon, team);
 
         repo.save(hackathon);
 
-        System.out.println("🏆 Vincitore proclamato: " + team.getName());
+        System.out.println("Vincitore proclamato: " + team.getName());
     }
 
     @Transactional(readOnly = true)
@@ -131,18 +131,18 @@ public class HackathonService {
         Hackathon hackathon = repo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
 
-        // 1. controllo organizzatore (UC requisito)
+        // controllo organizzatore (
         if (!hackathon.getOrganizer().getId().equals(organizerId)) {
             throw new IllegalStateException("Non sei l'organizzatore");
         }
 
-        // 2. controllo stato (UC dice: concluso)
+        // controllo stato 
         if (!(hackathon.getState() instanceof InValutazioneState
                 || hackathon.getState() instanceof ConclusoState)) {
             throw new IllegalStateException("Hackathon non in fase corretta");
         }
 
-        // 3. recupero risultati
+        // recupero risultati
         return submissionRepo.findByHackathonId(hackathonId);
     }
 
@@ -151,19 +151,19 @@ public class HackathonService {
         Hackathon hackathon = repo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
 
-        // 1. controllo autorizzazione
+        // controllo autorizzazione
         if (!hackathon.getOrganizer().getId().equals(organizerId)) {
             throw new IllegalStateException("Non autorizzato");
         }
 
-        // 2. controllo stato (UC coerente)
+        // controllo stato 
         if (!(hackathon.getState() instanceof InIscrizioneState
                 || hackathon.getState() instanceof InCorsoState)) {
             throw new IllegalStateException("Hackathon non in fase di iscrizione o corso");
         }
 
-        // 3. recupero team
-        List<Team> teams = hackathon.getIscritti();
+        // recupero team
+        List<Team> teams = hackathon.getPartecipantTeams();
 
         if (teams.isEmpty()) {
             throw new IllegalStateException("Nessun team iscritto");
@@ -173,23 +173,23 @@ public class HackathonService {
     }
 
     @Transactional(readOnly = true)
-    public List<Hackathon> getStoricoStaff(String staffId) {
-        // 1. verifica staff valido
+    public List<Hackathon> getHistoryStaff(String staffId) {
+        // verifica staff valido
         StaffMember staff = staffService.getById(staffId);
 
-        // 2. prendi hackathon associati allo staff
+        // prendi hackathon associati allo staff
         List<Hackathon> all = repo.findAll();
 
-        List<Hackathon> storico = all.stream()
+        List<Hackathon> history = all.stream()
                 .filter(h -> h.getState() instanceof ConclusoState)
                 .filter(h -> isStaffInHackathon(h, staff))
                 .toList();
 
-        if (storico.isEmpty()) {
+        if (history.isEmpty()) {
             throw new IllegalStateException("Nessun hackathon concluso trovato");
         }
 
-        return storico;
+        return history;
     }
 
     private boolean isStaffInHackathon(Hackathon h, StaffMember staff) {

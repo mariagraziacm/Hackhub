@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import java.util.Base64;
 import java.util.Date;
 
-@Component // <-- Questa annotazione dice a Spring Boot di registrare la classe come Bean
+@Component 
 public class JwtUtil {
 
     private static final String SECRET = "mySecretKey123";

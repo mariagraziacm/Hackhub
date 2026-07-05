@@ -7,27 +7,26 @@ import java.util.Objects;
 @Table(name = "violations")
 public class Violation {
     
-    // ENUM (Rimane identico)
+    
     public enum ViolationStatus {
         PENDING, DISQUALIFY_TEAM, DISQUALIFY_MEMBER, NO_ACTION
     }
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id; 
     
-    private String hackathonId; // Rimosso final per JPA
-    private String teamId; // Rimosso final per JPA
-    private String reportedMemberId; // Rimosso final per JPA
-    private String mentorId; // Rimosso final per JPA
-    
-    @Lob // Consente testi di motivazione molto lunghi nel DB
-    private String reason; // Rimosso final per JPA
+    private String hackathonId; 
+    private String teamId; 
+    private String reportedMemberId; 
+    private String mentorId; 
+    @Lob 
+    private String reason;
 
-    // Inizializzazione con stato PENDING
-    @Enumerated(EnumType.STRING) // Salva l'enum nel database come testo
+    
+    @Enumerated(EnumType.STRING) 
     private ViolationStatus status = ViolationStatus.PENDING;
 
-    // Costruttore vuoto obbligatorio per Spring Boot / JPA
+    
     public Violation() {
     }
 
@@ -45,7 +44,7 @@ public class Violation {
         this.reason = requireNotBlank(reason, "reason obbligatorio");
     }
 
-    // --- GETTER ---
+  
     public String getId() { return id; }
     public String getHackathonId() { return hackathonId; }
     public String getTeamId() { return teamId; }
@@ -54,7 +53,6 @@ public class Violation {
     public String getReason() { return reason; }
     public ViolationStatus getStatus() { return status; }
 
-    // --- SETTER (Utili per gli aggiornamenti di JPA) ---
     public void setId(String id) { this.id = id; }
     public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
     public void setTeamId(String teamId) { this.teamId = teamId; }
@@ -63,7 +61,6 @@ public class Violation {
     public void setReason(String reason) { this.reason = reason; }
     public void setStatus(ViolationStatus status) { this.status = status; }
 
-    // --- LA TUA LOGICA DI BUSINESS RIMANE INTATTA ---
 
     public boolean isPending() {
         return ViolationStatus.PENDING.equals(status);

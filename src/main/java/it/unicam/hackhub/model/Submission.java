@@ -9,10 +9,10 @@ import java.util.Objects;
 public class Submission {
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id; 
     
-    private String hackathonId; // Rimosso final per JPA
-    private String teamId; // Rimosso final per JPA
+    private String hackathonId; 
+    private String teamId; 
     
     private int score;
     
@@ -25,10 +25,10 @@ public class Submission {
     @Lob
     private String description;
 
-    private LocalDateTime createdAt; // Rimosso final per JPA
+    private LocalDateTime createdAt; 
     private LocalDateTime updatedAt;
 
-    // Costruttore vuoto obbligatorio per Spring Boot / JPA
+  
     public Submission() {
     }
 
@@ -48,7 +48,7 @@ public class Submission {
         this.updatedAt = this.createdAt;
     }
 
-    // --- GETTER ---
+
     public String getId() { return id; }
     public String getHackathonId() { return hackathonId; }
     public String getTeamId() { return teamId; }
@@ -60,7 +60,7 @@ public class Submission {
     public String getComment() { return comment; }
     public boolean isEvaluated() { return evaluated; }
 
-    // --- SETTER (Utili per JPA) ---
+    
     public void setId(String id) { this.id = id; }
     public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
     public void setTeamId(String teamId) { this.teamId = teamId; }
@@ -72,7 +72,6 @@ public class Submission {
     public void setComment(String comment) { this.comment = comment; }
     public void setEvaluated(boolean evaluated) { this.evaluated = evaluated; }
 
-    // --- LA TUA LOGICA DI BUSINESS RIMANE IDENTICA ---
 
     public void update(String title, String description) {
         this.title = requireNotBlank(title, "title obbligatorio");

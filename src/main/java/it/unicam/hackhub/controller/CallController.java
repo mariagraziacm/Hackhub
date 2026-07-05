@@ -14,7 +14,7 @@ public class CallController {
         this.callService = callService;
     }
 
-    // PUT /api/calls/{callId}/response -> Gestisce la risposta del team (accetta o rifiuta)
+    
     @PutMapping("/{callId}/response")
     public ResponseEntity<String> handleCallResponse(
             @PathVariable String callId, 
@@ -32,7 +32,7 @@ public class CallController {
         }
     }
 
-    // DTO per gestire il corpo della risposta JSON
+
     public static class CallResponsePayload {
         private boolean accept;
 

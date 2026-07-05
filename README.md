@@ -1,6 +1,6 @@
 <h1>HackHub</h1>
  
-<h2>HackHub è una piattaforma web per la gestione di hackathon e competizioni di programmazione, sviluppata con Spring Boot e Java 21.</h2>
+<h3>HackHub è una piattaforma web per la gestione di hackathon e competizioni di programmazione, sviluppata con Spring Boot e Java 21.</h3>
 
 La piattaforma supporta l’intero ciclo di vita di un hackathon, dalla creazione alla valutazione finale delle submission ed erogazione del premio.
 
@@ -16,8 +16,8 @@ La piattaforma supporta l’intero ciclo di vita di un hackathon, dalla creazion
   <li><b>Utilities:</b> Lombok, Jakarta Validation</li>
 </ul>
 
-<h2>Design Patterns utilizzati</h2><br>
-<h3>h3>Builder Pattern</h3><br>
+<h2>Design Patterns utilizzati</h2><br><br><br>
+<h3>Builder Pattern</h3><br>
 
 Utilizzato per la creazione di oggetti complessi in modo fluido e sicuro.<br>
 

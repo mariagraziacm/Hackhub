@@ -20,7 +20,7 @@ public class HackathonController {
     }
 
 
-    @PostMapping
+    @PostMapping("/hackathons")
     public ResponseEntity<String> createHackathon(@RequestBody HackathonController.HackathonCreationPayload payload) {
         try {
             Hackathon h = hackathonService.createHackathon(

@@ -1,4 +1,4 @@
-📌 Endpoint principali
+ Endpoint principali
 
 | Endpoint | Metodo | Descrizione |
 |----------|--------|-------------|

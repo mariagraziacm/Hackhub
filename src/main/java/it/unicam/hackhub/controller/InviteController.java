@@ -47,7 +47,7 @@ public class InviteController {
     public ResponseEntity<String> declineInvite(@PathVariable String inviteId) {
         try {
             inviteService.declineInvite(inviteId);
-            return ResponseEntity.ok("SYSTEM: Invito rifiutato.");
+            return ResponseEntity.ok("Invito rifiutato.");
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body("SYSTEM [ERRORE]: " + e.getMessage());
         }
@@ -58,7 +58,7 @@ public class InviteController {
     public ResponseEntity<String> inviteMentor(@RequestBody StaffInvitePayload payload) {
         try {
             Invite invite = inviteService.inviteMentor(payload.getHackathonId(), payload.getUserId());
-            return ResponseEntity.ok("SYSTEM: Invito mentor creato (" + invite.getId() + ").");
+            return ResponseEntity.ok("Invito mentor creato (" + invite.getId() + ").");
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body("SYSTEM [ERRORE]: " + e.getMessage());
         }
@@ -68,7 +68,7 @@ public class InviteController {
     public ResponseEntity<String> inviteJudge(@RequestBody StaffInvitePayload payload) {
         try {
             Invite invite = inviteService.inviteJudge(payload.getHackathonId(), payload.getUserId());
-            return ResponseEntity.ok("SYSTEM: Invito judge creato (" + invite.getId() + ").");
+            return ResponseEntity.ok("Invito judge creato (" + invite.getId() + ").");
         } catch (IllegalStateException e) {
             return ResponseEntity.badRequest().body("SYSTEM [ERRORE]: " + e.getMessage());
         }

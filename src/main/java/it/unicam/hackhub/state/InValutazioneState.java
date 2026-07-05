@@ -34,7 +34,7 @@ public class InValutazioneState implements HackathonState {
 
     @Override
     public void proclaimWinner      (Hackathon hackathon, Team team) {
-        if (!hackathon.getTeams().contains(team)) {
+        if (!hackathon.getPartecipantTeams().contains(team)) {
             throw new IllegalStateException("Team non partecipante");
         }
 

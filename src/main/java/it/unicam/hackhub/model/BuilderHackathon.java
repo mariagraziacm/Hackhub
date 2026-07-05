@@ -1,7 +1,5 @@
 package it.unicam.hackhub.model;
 
-import it.unicam.hackhub.state.HackathonState;
-import it.unicam.hackhub.model.Hackathon;
 
 public class BuilderHackathon {
         private String id;

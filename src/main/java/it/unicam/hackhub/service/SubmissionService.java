@@ -98,7 +98,8 @@ public class SubmissionService {
             throw new IllegalStateException("Hackathon non in fase di valutazione");
         }
 
-        Judge judge = staffService.getJudge(judgeId);
+
+        staffService.getJudge(judgeId);
 
         Submission submission = repo.findByHackathonIdAndTeamId(hackathonId, teamId)
                 .orElseThrow(() -> new IllegalStateException("Submission non trovata"));
@@ -130,10 +131,11 @@ public class SubmissionService {
     public List<Submission> getSubmissionsByHackathon(String hackathonId, String staffId) {
         StaffMember staff = staffService.getById(staffId);
 
-        Hackathon hackathon = hackathonRepo.findById(hackathonId)
+    
+        hackathonRepo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
 
-        // CONTROLLO: staff assegnato all’hackathon
+     
         if (!staff.getHackathonId().equals(hackathonId)) {
             throw new IllegalStateException("Staff non assegnato a questo hackathon");
         }

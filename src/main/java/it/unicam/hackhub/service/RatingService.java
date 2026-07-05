@@ -1,7 +1,6 @@
 package it.unicam.hackhub.service;
 
 import it.unicam.hackhub.model.Hackathon;
-import it.unicam.hackhub.model.Judge;
 import it.unicam.hackhub.model.Submission;
 import it.unicam.hackhub.repository.HackathonRepository;
 import it.unicam.hackhub.repository.SubmissionRepository;
@@ -29,7 +28,7 @@ public class RatingService {
                                int score,
                                String comment) {
 
-        Judge judge = staffService.getJudge(judgeId);
+        staffService.getJudge(judgeId);
 
         Submission submission = submissionRepo.findById(submissionId)
                 .orElseThrow(() -> new IllegalStateException("Submission non trovata"));

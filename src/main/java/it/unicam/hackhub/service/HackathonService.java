@@ -147,7 +147,7 @@ public class HackathonService {
     }
 
     @Transactional(readOnly = true)
-    public List<Team> getIscrizioni(String hackathonId, String organizerId) {
+    public List<Team> getPartecipants(String hackathonId, String organizerId) {
         Hackathon hackathon = repo.findById(hackathonId)
                 .orElseThrow(() -> new IllegalStateException("Hackathon non trovato"));
 

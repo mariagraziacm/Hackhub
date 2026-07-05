@@ -84,7 +84,7 @@ public class HackathonController {
             @PathVariable String hackathonId, 
             @RequestParam String organizerId) {
         try {
-            List<Team> teams = hackathonService.getIscrizioni(hackathonId, organizerId);
+            List<Team> teams = hackathonService.getPartecipants(hackathonId, organizerId);
             return ResponseEntity.ok(teams);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());

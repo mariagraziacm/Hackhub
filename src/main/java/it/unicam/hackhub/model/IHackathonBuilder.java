@@ -5,4 +5,4 @@ public interface IHackathonBuilder {
     IHackathonBuilder setName(String name);
     IHackathonBuilder setSpecifications(String specifications);
     Hackathon build();
-}
+}//ciao

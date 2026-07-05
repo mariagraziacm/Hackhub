@@ -17,13 +17,13 @@ La piattaforma supporta l’intero ciclo di vita di un hackathon, dalla creazion
 </ul>
 
 <h2>Design Patterns utilizzati</h2><br>
-<h3>Builder Pattern</h3><br>
+<h3>Builder Pattern</h3>
 
 Utilizzato per la creazione di oggetti complessi in modo fluido e sicuro.<br>
 
-<h3>State Pattern</h3><br>
+<h3>State Pattern</h3>
 
-Utilizzato per gestire il ciclo di vita degli hackathon e delle submission.
+Utilizzato per gestire il ciclo di vita degli hackathon e delle submission.<br><br><br>
 
  
  Endpoint principali

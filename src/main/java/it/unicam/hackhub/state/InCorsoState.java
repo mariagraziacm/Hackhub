@@ -11,12 +11,12 @@ public class InCorsoState implements HackathonState {
     }
 
     @Override
-    public void iscriviTeam(Hackathon hackathon, Team team) {
+    public void addTeamToHackathon(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Impossibile iscriversi: l'hackathon è già in corso!");
     }
 
     @Override
-    public void disiscriviTeam(Hackathon hackathon, Team team) {
+    public void removeTeamFromHackathon(Hackathon hackathon, Team team) {
         hackathon.removeTeam(team);
     }
 

@@ -87,6 +87,19 @@ public class HackathonController {
         }
     }
 
+    // DELETE /api/hackathons/{hackathonId}/teams/{teamId} -> Rimuove un team da un hackathon
+    @DeleteMapping("/{hackathonId}/teams/{teamId}")
+    public ResponseEntity<String> removeTeamFromHackathon(
+            @PathVariable String hackathonId,
+            @PathVariable String teamId) {
+        try {
+            hackathonService.removeTeamFromHackathon(hackathonId, teamId);
+            return ResponseEntity.ok("Team rimosso con successo");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
+        }
+    }
+
     // DTO per la registrazione dell'hackathon
     public static class HackathonRegisterPayload {
         private String id;

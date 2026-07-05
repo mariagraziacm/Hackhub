@@ -19,9 +19,9 @@ public class HackathonService {
     private final StaffService staffService;
     private final SubmissionRepository submissionRepo;
 
-    public HackathonService(HackathonRepository repo, 
-                            TeamService teamService, 
-                            StaffService staffService, 
+    public HackathonService(HackathonRepository repo,
+                            TeamService teamService,
+                            StaffService staffService,
                             SubmissionRepository submissionRepo) {
         this.repo = repo;
         this.teamService = teamService;
@@ -66,7 +66,7 @@ public class HackathonService {
             throw new IllegalStateException("Il team non ha il numero giusto di partecipanti");
         }
 
-        hackathon.iscriviTeam(team);
+        hackathon.addTeamToHackathon(team);
         repo.save(hackathon);
     }
 

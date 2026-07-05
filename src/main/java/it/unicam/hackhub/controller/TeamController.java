@@ -23,6 +23,13 @@ public class TeamController {
     @PostMapping
     public ResponseEntity<?> creaTeam(@RequestBody TeamCreationRequest request) {
         try {
+            // Aggiungi questo log per vedere cosa arriva dal JSON
+            System.out.println("Ricevuta richiesta per team: " + request.getName());
+
+            // Assicuriamoci di non passare oggetti nulli o errati
+            if(request.getCreatore() == null) {
+                return ResponseEntity.badRequest().body("Creatore mancante nel JSON!");
+            }
             Team nuovoTeam = teamService.createTeam(request.getId(), request.getName(), request.getCreatore());
             return ResponseEntity.ok(nuovoTeam);
         } catch (IllegalArgumentException | IllegalStateException e) {

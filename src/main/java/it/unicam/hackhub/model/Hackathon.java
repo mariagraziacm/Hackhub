@@ -8,28 +8,27 @@ import java.util.List;
 
 @Entity
 @Table(name = "hackathons")
-public class Hackathon {
+public class Hackathon{
 
     @Id
-    private String id; // Rimosso final per JPA
+    private String id;
     
     private String name;
 
-    // Gestione dello State Pattern: salviamo il nome della classe dello stato come stringa nel DB
+    // Gestione dello State Pattern
     @Column(name = "state")
     private String stateClassName;
 
-    @Transient // Dice a JPA di ignorare questo campo, lo gestiamo noi a specchio con stateClassName
+    @Transient
     private HackathonState state;
 
-    // Un Hackathon ha molti Team iscritti. 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "hackathon_teams",
         joinColumns = @JoinColumn(name = "hackathon_id"),
         inverseJoinColumns = @JoinColumn(name = "team_id")
     )
-    private List<Team> teams = new ArrayList<>(); // Rimosso final per JPA
+    private List<Team> teams = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "winner_id")
@@ -43,19 +42,17 @@ public class Hackathon {
     @JoinColumn(name = "judge_id")
     private Judge judge;
 
-    // Un Hackathon ha molti Mentor dedicati.
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
         name = "hackathon_mentors",
         joinColumns = @JoinColumn(name = "hackathon_id"),
         inverseJoinColumns = @JoinColumn(name = "mentor_id")
     )
-    private List<Mentor> mentors = new ArrayList<>(); // Rimosso final per JPA
+    private List<Mentor> mentors = new ArrayList<>();
 
-    @Lob // Specifica che il testo può essere molto lungo (Large Object)
+    @Lob
     private String specifications;
 
-    // Costruttore vuoto obbligatorio per Spring Boot / JPA
     public Hackathon() {
     }
 
@@ -66,20 +63,17 @@ public class Hackathon {
         this.setState(new InIscrizioneState());
     }
 
-    // --- METODO DI POST-LOAD PER IL DATABASE ---
-    // Ricostruisce l'oggetto State corretto partendo dalla stringa salvata nel DB quando JPA carica l'entità
     @PostLoad
     protected void onPostLoad() {
         if (stateClassName != null) {
             try {
                 this.state = (HackathonState) Class.forName(stateClassName).getDeclaredConstructor().newInstance();
             } catch (Exception e) {
-                this.state = new InIscrizioneState(); // Fallback sicuro
+                this.state = new InIscrizioneState();
             }
         }
     }
 
-    // --- GETTER E SETTER ADATTATI ---
     public String getId() { return id; }
     public String getName() { return name; }
     public String getSpecifications() { return specifications; }
@@ -140,29 +134,28 @@ public class Hackathon {
     public void setId(String id) { this.id = id; }
     public void setName(String name) { this.name = name; }
 
-    // --- LA TUA LOGICA DI BUSINESS RIMANE INTATTA ---
 
-    public void iscriviTeam(Team team) {
-        getState().iscriviTeam(this, team);
+    public void addTeamToHackathon(Team team) {
+        getState().addTeamToHackathon(this, team);
     }
 
-    public void disiscriviTeam(Team team) {
-        getState().disiscriviTeam(this, team);
+    public void removeTeamFromHackathon(Team team) {
+        getState().removeTeamFromHackathon(this, team);
     }
 
     public void nextState() {
         getState().next(this);
     }
     
-    public void inviaSottomissione(Team team, Submission submission) {
+    public void sendSubmission(Team team, Submission submission) {
         getState().inviaSottomissione(this, team, submission);
     }
 
-    public void proclamaVincitore(Team team) {
-        getState().proclamaVincitore(this, team);
+    public void proclaimWinner(Team team) {
+        getState().proclaimWinner(this, team);
     }
 
-    public void valutaSottomissione(Team team, Submission submission, int score, String comment) {
-        getState().valutaSottomissione(this, team, submission, score, comment);
+    public void rateSubmission(Team team, Submission submission, int score, String comment) {
+        getState().rateSubmission(this, team, submission, score, comment);
     }
 }

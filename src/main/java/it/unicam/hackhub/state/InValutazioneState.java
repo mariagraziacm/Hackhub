@@ -11,12 +11,12 @@ public class InValutazioneState implements HackathonState {
     }
 
     @Override
-    public void iscriviTeam(Hackathon hackathon, Team team) {
+    public void addTeamToHackathon(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Valutazione in corso");
     }
 
     @Override
-    public void disiscriviTeam(Hackathon hackathon, Team team) {
+    public void removeTeamFromHackathon(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Non puoi disiscriverti in valutazione");
     }
 

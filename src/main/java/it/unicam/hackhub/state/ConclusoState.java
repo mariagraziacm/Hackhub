@@ -11,12 +11,12 @@ public class ConclusoState implements HackathonState {
     }
 
     @Override
-    public void iscriviTeam(Hackathon hackathon, Team team) {
+    public void addTeamToHackthon(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Hackathon concluso");
     }
 
     @Override
-    public void disiscriviTeam(Hackathon hackathon, Team team) {
+    public void removeFromHackathon(Hackathon hackathon, Team team) {
         throw new IllegalStateException("Hackathon concluso");
     }
 

@@ -11,7 +11,7 @@ public class InIscrizioneState implements HackathonState {
     }
 
     @Override
-    public void iscriviTeam(Hackathon hackathon, Team team) {
+    public void addTeamToHakchaton(Hackathon hackathon, Team team) {
         if (team.isFull()) {
             throw new IllegalStateException("Team pieno");
         }
@@ -19,7 +19,7 @@ public class InIscrizioneState implements HackathonState {
     }
 
     @Override
-    public void disiscriviTeam(Hackathon hackathon, Team team) {
+    public void removeTeamFromHackahon(Hackathon hackathon, Team team) {
         hackathon.removeTeam(team);
     }
 

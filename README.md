@@ -6,15 +6,18 @@ La piattaforma supporta l’intero ciclo di vita di un hackathon, dalla creazion
 
 
 <h3>Stack Tecnologico</h3>
-Framework: Spring Boot 4.x<br>
-Language: Java 21<br>
-Database: MySQL<br>
-ORM: Hibernate / JPA<br>
-Build Tool: Maven<br>
-Utilities: Lombok, Jakarta Validation
+
+<ul>
+  <li><b>Framework:</b> Spring Boot 3.2.4</li>
+  <li><b>Language:</b> Java 21</li>
+  <li><b>Database:</b> MySQL</li>
+  <li><b>ORM:</b> Hibernate / JPA</li>
+  <li><b>Build Tool:</b> Maven</li>
+  <li><b>Utilities:</b> Lombok, Jakarta Validation</li>
+</ul>
 
 <h2>Design Patterns utilizzati</h2><br>
-</h3>h3>Builder Pattern</h3><br>
+<h3>h3>Builder Pattern</h3><br>
 
 Utilizzato per la creazione di oggetti complessi in modo fluido e sicuro.<br>
 

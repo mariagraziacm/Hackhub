@@ -1,4 +1,4 @@
-package it.unicam.hackhub.external.price;
+package it.unicam.hackhub.external.prize;
 
 public class PrizeController {
     private final PrizeService prizeService;

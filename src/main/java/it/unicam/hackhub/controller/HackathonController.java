@@ -21,17 +21,32 @@ public class HackathonController {
 
 
     @PostMapping
-    public ResponseEntity<String> newHackathon(@RequestBody HackathonRegisterPayload payload) {
+    public ResponseEntity<String> createHackathon(@RequestBody HackathonController.HackathonCreationPayload payload) {
         try {
-            Hackathon nuovoHackathon = hackathonService.createHackathon(
-                    payload.getId(), 
-                    payload.getName(), 
-                    payload.getSpecifications(), 
+            Hackathon h = hackathonService.createHackathon(
+                    payload.getId(),
+                    payload.getName(),
+                    payload.getSpecifications(),
                     payload.getOrganizerId()
             );
-            return ResponseEntity.ok("SYSTEM: Hackathon '" + payload.getName() + "' creato con successo e impostato in fase '"
-                    + nuovoHackathon.getState().getName() + "'.");
-        } catch (IllegalArgumentException | IllegalStateException e) {
+            return ResponseEntity.ok("SYSTEM [SUCCESS]: Hackathon '" + h.getName() + "' creato dall'organizzatore.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("SYSTEM [ERRORE]: " + e.getMessage());
+        }
+    }
+
+
+
+    @PostMapping("/hackathons/mentors")
+    public ResponseEntity<String> addMentor(@RequestBody HackathonController.AssociationPayload payload) {
+        try {
+            hackathonService.addMentorToHackathon(
+                    payload.getHackathonId(),
+                    payload.getTargetId(),
+                    payload.getOrganizerId()
+            );
+            return ResponseEntity.ok("SYSTEM [SUCCESS]: Mentore aggiunto con successo all'hackathon.");
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body("SYSTEM [ERRORE]: " + e.getMessage());
         }
     }
@@ -87,6 +102,20 @@ public class HackathonController {
         }
     }
 
+    @PutMapping("/hackathons/winner")
+    public ResponseEntity<String> proclaimWinner(@RequestBody HackathonController.AssociationPayload payload) {
+        try {
+            hackathonService.proclaimWinner(
+                    payload.getHackathonId(),
+                    payload.getTargetId(),
+                    payload.getOrganizerId()
+            );
+            return ResponseEntity.ok("Vincitore proclamato con successo!");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("ERRORE: " + e.getMessage());
+        }
+    }
+
     
     @DeleteMapping("/{hackathonId}/teams/{teamId}")
     public ResponseEntity<String> removeTeamFromHackathon(
@@ -112,6 +141,36 @@ public class HackathonController {
         public void setName(String name) { this.name = name; }
         public String getSpecifications() { return specifications; }
         public void setSpecifications(String specifications) { this.specifications = specifications; }
+        public String getOrganizerId() { return organizerId; }
+        public void setOrganizerId(String organizerId) { this.organizerId = organizerId; }
+    }
+
+    public static class HackathonCreationPayload {
+        private String id;
+        private String name;
+        private String specifications;
+        private String organizerId;
+
+        public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+        public String getSpecifications() { return specifications; }
+        public void setSpecifications(String specifications) { this.specifications = specifications; }
+        public String getOrganizerId() { return organizerId; }
+        public void setOrganizerId(String organizerId) { this.organizerId = organizerId; }
+    }
+
+
+    public static class AssociationPayload {
+        private String hackathonId;
+        private String targetId;
+        private String organizerId;
+
+        public String getHackathonId() { return hackathonId; }
+        public void setHackathonId(String hackathonId) { this.hackathonId = hackathonId; }
+        public String getTargetId() { return targetId; }
+        public void setTargetId(String targetId) { this.targetId = targetId; }
         public String getOrganizerId() { return organizerId; }
         public void setOrganizerId(String organizerId) { this.organizerId = organizerId; }
     }

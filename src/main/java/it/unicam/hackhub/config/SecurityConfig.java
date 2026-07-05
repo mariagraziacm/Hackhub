@@ -98,7 +98,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-   /*  @Bean
+   @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Fondamentale per le API
@@ -107,7 +107,9 @@ public class SecurityConfig {
                         .anyRequest().permitAll() // Permette tutto
                 );
         return http.build();
-    }*/
+    }
+
+    /*
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -117,5 +119,5 @@ public class SecurityConfig {
                         .anyRequest().permitAll() 
                 );
         return http.build();
-    }
+    }*/
 }

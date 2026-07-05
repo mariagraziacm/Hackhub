@@ -1,4 +1,4 @@
-package it.unicam.hackhub.external.price;
+package it.unicam.hackhub.external.prize;
 
 import it.unicam.hackhub.model.Hackathon;
 import it.unicam.hackhub.model.Team;

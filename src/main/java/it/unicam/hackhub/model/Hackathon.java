@@ -105,8 +105,6 @@ public class Hackathon{
         }
     }
 
-    public List<Team> getTeams() { return java.util.Collections.unmodifiableList(teams); }
-    
     public void addTeam(Team team) {
         if (!teams.contains(team)) {
             teams.add(team);
